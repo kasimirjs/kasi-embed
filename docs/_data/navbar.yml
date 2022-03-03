@@ -1,0 +1,18 @@
+
+brand_src: "/assets/infracamp.png"
+brand_name: "kasimir"
+brand_href: "/"
+
+main:
+  - name: "Home"
+    href: "/"
+
+  - name: "Template"
+    href: "/tpl/"
+
+#  - name: "Getting started"
+#    href: "/getting-started/"
+#  - name: "Projects"
+#    href: /project/
+
+

@@ -1,0 +1,1 @@
+class KaToolsV1 {}

@@ -1,0 +1,19 @@
+
+<h2>Basic Templates</h2>
+
+<ka-tpl-app>
+    <template>
+        <div>Hello world</div>
+        <script>
+            let e = KaToolsV1_Template.instance;
+            console.log("Start Render");
+            e.render({a: "hallo", b: ["a", "b", "c"]});
+        </script>
+        <ka-tpl *for="let index in input">
+            Hier auch los
+            <div>Hallo Welt</div>
+        </ka-tpl>
+    </template>
+</ka-tpl-app>
+
+
