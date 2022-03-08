@@ -12,6 +12,7 @@ class KasimirLoader
         "core/query-select.js",
         "core/debounce.js",
         "core/eval.js",
+        "core/quick-template.js",
         "tpl/template-element.js",
         "tpl/template.js",
         "tpl/template-attrs.js",

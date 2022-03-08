@@ -75,6 +75,65 @@ KaToolsV1.debounce = async (min, max) => {
 
 }
 
+/* from core/eval.js */
+
+
+KaToolsV1.eval = (stmt, __scope, e, __refs) => {
+    const reserved = ["var", "null", "let", "const", "function", "class", "in", "of", "for", "true", "false", "await", "$this"];
+    let r = "var $this = e;";
+    for (let __name in __scope) {
+        if (reserved.indexOf(__name) !== -1)
+            continue;
+        r += `var ${__name} = __scope['${__name}'];`
+    }
+    // If the scope was cloned, the original will be in $scope. This is important when
+    // Using events [on.click], e.g.
+    if (typeof __scope.$scope === "undefined") {
+        r += "var $scope = __scope;";
+    }
+    try {
+        return eval(r + stmt)
+    } catch (ex) {
+        console.error("cannot eval() stmt: '" + stmt + "': " + ex + " on element ", e, "(context:", __scope, ")");
+        throw "eval('" + stmt + "') failed: " + ex;
+    }
+}
+
+/* from core/quick-template.js */
+
+class KaToolsV1_QuickTemplate {
+
+    constructor(selector) {
+        this.template = KaToolsV1.querySelector(selector);
+        if ( ! this.template instanceof HTMLTemplateElement) {
+            let error = "KaToolsV1_QuickTemplate: Parameter 1 is no <template> element. Selector: " + selector + "Element:" + this.template
+            console.warn(error);
+            throw error;
+        }
+        console.log(this.template);
+        this._tplElem = document.createElement("template");
+    }
+
+
+    appendTo(selector, $scope) {
+        let outerHtml = this.template.innerHTML;
+        console.log(outerHtml);
+        this._tplElem.innerHTML = outerHtml.replaceAll(/\[\[(.*?)\]\]/ig, (matches, stmt)=>{
+            try {
+                console.log("eval", stmt, $scope);
+                return KaToolsV1.eval(stmt, $scope)
+            } catch (e) {
+                console.error(`KaToolsV1_QuickTemplate: Error evaling stmt '${stmt}' on element `, this.template, "$scope:", $scope, "Error:", e);
+                throw e;
+            }
+        });
+
+        let target = KaToolsV1.querySelector(selector);
+        target.append(document.importNode(this._tplElem.content, true));
+    }
+
+}
+
 /* from tpl/template-element.js */
 class KaToolsV1_TemplateElement extends HTMLElement {
 'use strict';

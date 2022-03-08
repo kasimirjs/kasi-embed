@@ -7,6 +7,7 @@ packages: [jekyll, ruby-jekyll-coffeescript, ruby-jekyll-optional-front-matter]
 command:
   build:
     - sudo chmod 777 -R /var/www/html
+    - sudo chmod 777 /opt/docs/kasimir.js
     - composer update
 
 
