@@ -1,0 +1,11 @@
+
+<h2>Apply</h2>
+
+
+<div id="adiv1" [classlist]="{'text-success':isSuccess}">
+    Success? <span [textContent]="value">No value</span>
+
+</div>
+
+<button onclick="KaToolsV1.apply('#adiv1', {isSuccess: true, value: 'Hello World'}, true)">Apply() 1</button>
+

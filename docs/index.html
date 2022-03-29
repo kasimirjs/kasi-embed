@@ -15,12 +15,13 @@ title: KasimirJS EMBED Demos
 {% endraw %}
 </div>
 
-<script>
-    (async ()=>{
-        await KaToolsV1.domReady();
+<template ka-autostart>
+    <script>
         let tpl = new KaToolsV1_QuickTemplate('#qt1');
         tpl.appendTo("#target1", {name: "Matthias", cls: "text-primary"});
         tpl.appendTo("#target1", {name: "Jan", cls: "text-secondary"});
-    })()
-</script>
+
+    </script>
+</template>
+
 

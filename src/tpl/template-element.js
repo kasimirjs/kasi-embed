@@ -1,5 +1,4 @@
 class KaToolsV1_TemplateElement extends HTMLElement {
-'use strict';
 
     constructor() {
         super();

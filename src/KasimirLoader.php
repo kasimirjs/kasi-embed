@@ -13,9 +13,11 @@ class KasimirLoader
         "core/debounce.js",
         "core/eval.js",
         "core/quick-template.js",
+        "core/apply.js",
         "tpl/template-element.js",
         "tpl/template.js",
         "tpl/template-attrs.js",
+        "core/autostart.js",
     ];
 
 

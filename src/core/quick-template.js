@@ -2,7 +2,9 @@
 class KaToolsV1_QuickTemplate {
 
     constructor(selector) {
-        this.template = KaToolsV1.querySelector(selector);
+        if (typeof selector === "string")
+            selector = KaToolsV1.querySelector(selector);
+        this.template = selector;
         if ( ! this.template instanceof HTMLTemplateElement) {
             let error = "KaToolsV1_QuickTemplate: Parameter 1 is no <template> element. Selector: " + selector + "Element:" + this.template
             console.warn(error);
@@ -13,6 +15,9 @@ class KaToolsV1_QuickTemplate {
 
 
     appendTo(selector, $scope) {
+        if (typeof selector === "string")
+            selector = KaToolsV1.querySelector(selector);
+
         let outerHtml = this.template.innerHTML;
         this._tplElem.innerHTML = outerHtml.replaceAll(/\[\[(.*?)\]\]/ig, (matches, stmt)=>{
             try {
@@ -23,8 +28,7 @@ class KaToolsV1_QuickTemplate {
             }
         });
 
-        let target = KaToolsV1.querySelector(selector);
-        target.append(document.importNode(this._tplElem.content, true));
+        selector.append(document.importNode(this._tplElem.content, true));
     }
 
 }

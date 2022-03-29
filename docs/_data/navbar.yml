@@ -9,7 +9,8 @@ main:
 
   - name: "Template"
     href: "/tpl/"
-
+  - name: "Apply"
+    href: "/apply/"
 #  - name: "Getting started"
 #    href: "/getting-started/"
 #  - name: "Projects"

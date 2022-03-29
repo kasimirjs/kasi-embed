@@ -3,6 +3,12 @@
 /* from core/init.js */
 class KaToolsV1 {}
 
+/**
+ * The last element started by Autostarter
+ * @type {HTMLElement|HTMLScriptElement}
+ */
+let KaSelf = null;
+
 /* from core/dom-ready.js */
 /**
  * Wait for DomContentLoaded or resolve immediate
@@ -84,6 +90,10 @@ KaToolsV1.eval = (stmt, __scope, e, __refs) => {
     for (let __name in __scope) {
         if (reserved.indexOf(__name) !== -1)
             continue;
+        if (__name.indexOf("-") !== -1) {
+            console.error(`Invalid scope key '${__name}': Cannot contain - in scope:`, __scope);
+            throw `eval() failed: Invalid scope key: '${__name}': Cannot contain minus char '-'`;
+        }
         r += `var ${__name} = __scope['${__name}'];`
     }
     // If the scope was cloned, the original will be in $scope. This is important when
@@ -92,7 +102,8 @@ KaToolsV1.eval = (stmt, __scope, e, __refs) => {
         r += "var $scope = __scope;";
     }
     try {
-        return eval(r + stmt)
+        //console.log(r + stmt);
+        return eval(r  + '('+stmt+')')
     } catch (ex) {
         console.error("cannot eval() stmt: '" + stmt + "': " + ex + " on element ", e, "(context:", __scope, ")");
         throw "eval('" + stmt + "') failed: " + ex;
@@ -104,23 +115,25 @@ KaToolsV1.eval = (stmt, __scope, e, __refs) => {
 class KaToolsV1_QuickTemplate {
 
     constructor(selector) {
-        this.template = KaToolsV1.querySelector(selector);
+        if (typeof selector === "string")
+            selector = KaToolsV1.querySelector(selector);
+        this.template = selector;
         if ( ! this.template instanceof HTMLTemplateElement) {
             let error = "KaToolsV1_QuickTemplate: Parameter 1 is no <template> element. Selector: " + selector + "Element:" + this.template
             console.warn(error);
             throw error;
         }
-        console.log(this.template);
         this._tplElem = document.createElement("template");
     }
 
 
     appendTo(selector, $scope) {
+        if (typeof selector === "string")
+            selector = KaToolsV1.querySelector(selector);
+
         let outerHtml = this.template.innerHTML;
-        console.log(outerHtml);
         this._tplElem.innerHTML = outerHtml.replaceAll(/\[\[(.*?)\]\]/ig, (matches, stmt)=>{
             try {
-                console.log("eval", stmt, $scope);
                 return KaToolsV1.eval(stmt, $scope)
             } catch (e) {
                 console.error(`KaToolsV1_QuickTemplate: Error evaling stmt '${stmt}' on element `, this.template, "$scope:", $scope, "Error:", e);
@@ -128,15 +141,93 @@ class KaToolsV1_QuickTemplate {
             }
         });
 
-        let target = KaToolsV1.querySelector(selector);
-        target.append(document.importNode(this._tplElem.content, true));
+        selector.append(document.importNode(this._tplElem.content, true));
     }
 
 }
 
+/* from core/apply.js */
+
+KaToolsV1.apply = (selector, scope, recursive=false) => {
+    if (typeof selector === "string")
+        selector = KaToolsV1.querySelector(selector);
+
+    let attMap = {
+        "textcontent": "textContent",
+        "htmlcontent": "htmlContent"
+    }
+
+    for(let attName of selector.getAttributeNames()) {
+        if ( ! attName.startsWith("[") || ! attName.endsWith("]")) {
+            continue;
+        }
+
+        let attVal = selector.getAttribute(attName);
+        attName = attName.replace("[", "").replace("]", "");
+        let attType = attName.split(".")[0];
+        let attSelector = attName.split(".")[1] ?? null;
+
+        let r = KaToolsV1.eval(attVal, scope, selector);
+
+        switch (attType) {
+            case "classlist":
+                if (attSelector  !== null) {
+                    if (r === true) {
+                        selector.classList.add(attSelector)
+                    } else {
+                        selector.classList.remove(attSelector)
+                    }
+                    break;
+                }
+                for (let cname in r) {
+                    if (r[cname] === true) {
+                        selector.classList.add(cname);
+                    } else {
+                        selector.classList.remove(cname);
+                    }
+                }
+                break;
+
+
+            case "attr":
+                if (attSelector  !== null) {
+                    if (r === null || r === false) {
+                        selector.attributes.removeNamedItem(attSelector)
+                    } else {
+                        selector.classList.setNamedItem(attSelector, r);
+                    }
+                    break;
+                }
+                for (let cname in r) {
+                    if (r[cname] ===null || r[cname] === false) {
+                        selector.attributes.removeNamedItem(cname);
+                    } else {
+                        selector.attributes.setNamedItem(cname, r[cname]);
+                    }
+                }
+                break;
+
+            default:
+                if (typeof attMap[attType] !== "undefined")
+                    attType = attMap[attType];
+                if (typeof selector[attType] === "undefined") {
+                    console.warn("apply(): trying to set undefined property ", attType, "on element", selector);
+                }
+                selector[attType] = r;
+                break;
+        }
+
+        if (recursive) {
+            for (let e of selector.children) {
+                KaToolsV1.apply(e, scope, recursive);
+            }
+        }
+
+    }
+}
+
 /* from tpl/template-element.js */
 class KaToolsV1_TemplateElement extends HTMLElement {
-'use strict';
 
     constructor() {
         super();
@@ -277,3 +368,18 @@ KaToolsV1_Template.prototype.functions[/^\*for$/] = ($scope, tplElem, attrVal) =
     console.log("applying for");
     return true; // For maintains the elements itself
 }
+
+/* from core/autostart.js */
+
+(async ()=>{
+    await KaToolsV1.domReady();
+    for (let e of document.querySelectorAll("template[ka-autostart]")) {
+        let ne = document.importNode(KaToolsV1.querySelector("script", e.content), true).cloneNode(true);
+        KaSelf = ne;
+        if (e.nextElementSibling === null) {
+            ne.parentNode.append(ne);
+            continue;
+        }
+        e.parentNode.insertBefore(ne, e.nextElementSibling);
+    }
+})()
