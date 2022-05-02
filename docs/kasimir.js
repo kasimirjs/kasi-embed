@@ -104,7 +104,7 @@ KaToolsV1.eval = (stmt, __scope, e, __refs) => {
         r += "var $scope = __scope;";
     }
     try {
-        //console.log(r + stmt);
+        // console.log(r + '(' + stmt + ')');
         return eval(r  + '('+stmt+')')
     } catch (ex) {
         console.error("cannot eval() stmt: '" + stmt + "': " + ex + " on element ", e, "(context:", __scope, ")");
@@ -160,7 +160,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
     }
 
     for(let attName of selector.getAttributeNames()) {
-        console.log(attName);
+        //console.log(attName);
         if ( ! attName.startsWith("[") || ! attName.endsWith("]")) {
             continue;
         }
@@ -193,6 +193,17 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 }
                 break;
 
+            case "bind":
+                selector.value = typeof r !== "undefined" ? r : "";
+                selector.addEventListener("change", () => {
+                    scope = {...scope, __curVal: selector.value}
+                    KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                })
+                selector.addEventListener("keyup", () => {
+                    scope = {...scope, __curVal: selector.value}
+                    KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                })
+                break;
 
             case "attr":
                 if (attSelector  !== null) {
@@ -260,6 +271,8 @@ KaToolsV1.elwalk = (elem, fn, recursive=false, includeTemplates=false) => {
 }
 
 /* from tpl/templatify.js */
+
+KaToolsV1._ka_el_idx = 0;
 /**
  *
  * @param {HTMLElement} elem
@@ -269,6 +282,7 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
 
     if (returnMode) {
         let returnTpl = document.createElement("template");
+        returnTpl.setAttribute("_kaidx", (KaToolsV1._ka_el_idx++).toString())
         /* @var {HTMLTemplateElement} returnTpl */
         returnTpl.innerHTML = elem.innerHTML;
         KaToolsV1.templatify(returnTpl.content, false);
@@ -280,6 +294,7 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
 
     let wrapElem = (el, attName, attVal) => {
         let tpl = document.createElement("template");
+        tpl.setAttribute("_kaidx", (KaToolsV1._ka_el_idx++).toString())
         let clonedEl = el.cloneNode(true);
         clonedEl.removeAttribute(attName);
         tpl.content.append(clonedEl);
@@ -335,7 +350,7 @@ class KaV1Renderer {
         let elList = [];
         for (let curE of elements.children) {
             curE = curE.cloneNode(true);
-            console.log("push", curE);
+            curE._ka_maintained_by = this.template.getAttribute("_kaidx");
             elList.push(curE);
             this.template.parentNode.insertBefore(curE, this.template.__kasibling);
         }
@@ -343,6 +358,7 @@ class KaV1Renderer {
     }
 
     _renderFor($scope, stmt) {
+        //console.log("kachilds", this.template.__kachilds);
         if (typeof this.template.__kachilds === "undefined")
             this.template.__kachilds = [];
 
@@ -360,7 +376,7 @@ class KaV1Renderer {
                 curScope[matches.groups.target] = selectVal[index];
 
             if (this.template.__kachilds.length < eIndex + 1) {
-                console.log("append");
+                //console.log("append", eIndex, this.template.__kachilds.length);
                 this._appendTemplate();
             }
             this._maintain(curScope, this.template.__kachilds[eIndex]);
@@ -372,13 +388,19 @@ class KaV1Renderer {
     _maintain($scope, childs) {
         for (let child of childs) {
             KaToolsV1.elwalk(child, (el) => {
-                console.log("walk", el);
+                //console.log("walk", el);
                 if (el instanceof HTMLTemplateElement) {
-                    console.log("maintain", el);
+                    //console.log("maintain", el);
                     let r = new KaV1Renderer(el);
                     r.render($scope);
                     return false;
                 }
+
+                if (typeof el._ka_maintained_by !== "undefined" && el._ka_maintained_by !== this.template.getAttribute("_kaidx")) {
+                    return false;
+                }
+
+                KaToolsV1.apply(el, $scope);
 
             }, true);
         }
@@ -389,7 +411,10 @@ class KaV1Renderer {
         if (this.template.hasAttribute("ka:for")) {
             this._renderFor($scope, this.template.getAttribute("ka:for"));
         } else {
-            this._appendTemplate();
+            if (typeof this.template._ka_active === "undefined") {
+                this._appendTemplate();
+                this.template._ka_active = true;
+            }
             this._maintain($scope, this.template.__kachilds);
         }
     }

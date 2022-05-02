@@ -1,0 +1,55 @@
+---
+title: Template with forms
+---
+
+
+<h1>Template with Form Bindings</h1>
+
+<template id="form1">
+    <table>
+        <thead>
+            <tr>
+                <td>Yo</td>
+                <td ka:for="let lang of languages" [textContent]="lang">
+
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+        <tr ka:for="let translation in translations">
+            <td [textContent]="translation">
+
+            </td>
+            <td ka:for="let lang of languages">
+                <input type="text" [bind]="translations[translation][lang]">
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
+</template>
+
+<div id="output1" class="container"></div>
+<script>
+
+    let tpl = KaToolsV1.templatify(KaToolsV1.querySelector("#form1"));
+    document.querySelector("#output1").appendChild(tpl);
+    let renderer = new KaV1Renderer(tpl);
+
+    let scope = {
+        languages: ["de", "ui", "at"],
+        translations: {
+            'Big dumb kthin': {de: "wrust"},
+            'Other': {de: "mehl"},
+            'Laslelu ääöößß': {de: "butter"}
+        }
+    }
+    for (let i=0; i<1000; i++)
+        scope.translations["wurst" + i] = {de: ""};
+
+    // renderer.render(scope)
+</script>
+
+<button onclick="renderer.render(scope)">Render</button>
+<button onclick="console.log(scope)">GetData</button>

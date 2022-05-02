@@ -24,7 +24,7 @@ class KaV1Renderer {
         let elList = [];
         for (let curE of elements.children) {
             curE = curE.cloneNode(true);
-            console.log("push", curE);
+            curE._ka_maintained_by = this.template.getAttribute("_kaidx");
             elList.push(curE);
             this.template.parentNode.insertBefore(curE, this.template.__kasibling);
         }
@@ -32,6 +32,7 @@ class KaV1Renderer {
     }
 
     _renderFor($scope, stmt) {
+        //console.log("kachilds", this.template.__kachilds);
         if (typeof this.template.__kachilds === "undefined")
             this.template.__kachilds = [];
 
@@ -49,7 +50,7 @@ class KaV1Renderer {
                 curScope[matches.groups.target] = selectVal[index];
 
             if (this.template.__kachilds.length < eIndex + 1) {
-                console.log("append");
+                //console.log("append", eIndex, this.template.__kachilds.length);
                 this._appendTemplate();
             }
             this._maintain(curScope, this.template.__kachilds[eIndex]);
@@ -61,13 +62,19 @@ class KaV1Renderer {
     _maintain($scope, childs) {
         for (let child of childs) {
             KaToolsV1.elwalk(child, (el) => {
-                console.log("walk", el);
+                //console.log("walk", el);
                 if (el instanceof HTMLTemplateElement) {
-                    console.log("maintain", el);
+                    //console.log("maintain", el);
                     let r = new KaV1Renderer(el);
                     r.render($scope);
                     return false;
                 }
+
+                if (typeof el._ka_maintained_by !== "undefined" && el._ka_maintained_by !== this.template.getAttribute("_kaidx")) {
+                    return false;
+                }
+
+                KaToolsV1.apply(el, $scope);
 
             }, true);
         }
@@ -78,7 +85,10 @@ class KaV1Renderer {
         if (this.template.hasAttribute("ka:for")) {
             this._renderFor($scope, this.template.getAttribute("ka:for"));
         } else {
-            this._appendTemplate();
+            if (typeof this.template._ka_active === "undefined") {
+                this._appendTemplate();
+                this.template._ka_active = true;
+            }
             this._maintain($scope, this.template.__kachilds);
         }
     }

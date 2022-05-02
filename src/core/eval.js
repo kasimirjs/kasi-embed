@@ -18,7 +18,7 @@ KaToolsV1.eval = (stmt, __scope, e, __refs) => {
         r += "var $scope = __scope;";
     }
     try {
-        //console.log(r + stmt);
+        // console.log(r + '(' + stmt + ')');
         return eval(r  + '('+stmt+')')
     } catch (ex) {
         console.error("cannot eval() stmt: '" + stmt + "': " + ex + " on element ", e, "(context:", __scope, ")");

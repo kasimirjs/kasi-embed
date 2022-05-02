@@ -6,7 +6,7 @@
     <div ka:for="let user of users">
         <div>User:</div>
         <div ka:for="let subu of user.sub">
-            Subuser
+            Subuser <span [textContent]="JSON.stringify(subu.name)"></span>
         </div>
     </div>
     <span ka:for="let instance of users">

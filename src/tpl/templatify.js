@@ -1,3 +1,5 @@
+
+KaToolsV1._ka_el_idx = 0;
 /**
  *
  * @param {HTMLElement} elem
@@ -7,6 +9,7 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
 
     if (returnMode) {
         let returnTpl = document.createElement("template");
+        returnTpl.setAttribute("_kaidx", (KaToolsV1._ka_el_idx++).toString())
         /* @var {HTMLTemplateElement} returnTpl */
         returnTpl.innerHTML = elem.innerHTML;
         KaToolsV1.templatify(returnTpl.content, false);
@@ -18,6 +21,7 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
 
     let wrapElem = (el, attName, attVal) => {
         let tpl = document.createElement("template");
+        tpl.setAttribute("_kaidx", (KaToolsV1._ka_el_idx++).toString())
         let clonedEl = el.cloneNode(true);
         clonedEl.removeAttribute(attName);
         tpl.content.append(clonedEl);

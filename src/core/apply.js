@@ -9,7 +9,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
     }
 
     for(let attName of selector.getAttributeNames()) {
-        console.log(attName);
+        //console.log(attName);
         if ( ! attName.startsWith("[") || ! attName.endsWith("]")) {
             continue;
         }
@@ -42,6 +42,17 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 }
                 break;
 
+            case "bind":
+                selector.value = typeof r !== "undefined" ? r : "";
+                selector.addEventListener("change", () => {
+                    scope = {...scope, __curVal: selector.value}
+                    KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                })
+                selector.addEventListener("keyup", () => {
+                    scope = {...scope, __curVal: selector.value}
+                    KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                })
+                break;
 
             case "attr":
                 if (attSelector  !== null) {
