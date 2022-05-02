@@ -62,7 +62,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
             case "options":
                 console.log(selector, selector.value);
                 let value = selector.value;
-                selector.options.length = 0;
+                //selector.options.length = 0;
                 for (let option in r) {
                     if (isNaN(option)) {
                         selector.options.add(new Option(r[option], option));
