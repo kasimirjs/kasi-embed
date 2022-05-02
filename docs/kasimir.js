@@ -213,15 +213,15 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
             case "options":
                 console.log(selector, selector.value);
                 let value = selector.value;
-                selector.options.length = 0;
+                //selector.options.length = 0;
                 for (let option in r) {
                     if (isNaN(option)) {
-                        selector.options.add(new Option(r[option], option));
+                        selector.appendChild(new Option(r[option], option));
                     } else {
                         if (typeof r[option].text !== "undefined") {
-                            selector.options.add(new Option(r[option].text, r[option].value));
+                            selector.appendChild(new Option(r[option].text, r[option].value));
                         } else {
-                            selector.options.add(new Option(r[option], r[option]));
+                            selector.appendChild(new Option(r[option], r[option]));
                         }
                     }
                 }
