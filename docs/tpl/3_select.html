@@ -7,6 +7,11 @@ title: Template with forms
     <div>
         <select  kap:options="options" kap:bind="$scope.selected1"></select>
         <select  kap:options="options2" kap:bind="$scope.selected2"></select>
+        <label for="id1"><input type="checkbox" kap:bind="$scope.check1"> check1</label>
+        <label for="id1"><input type="checkbox" kap:bind="$scope.check2"> check2</label>
+        <h4>Bindarray</h4>
+        <label ka:for="let o of options"><input type="checkbox" kap:attr:value="o" kap:bindarray="$scope.check3"> <span kap:textContent="o"></span></label>
+
     </div>
 </template>
 
@@ -26,7 +31,10 @@ title: Template with forms
         options2: [
             {text: "Hello World", value: "abcd"},
             {text: "Hello World2", value: "abcd2"}
-        ]
+        ],
+        check1: true,
+        check2: false,
+        check3: ["a"]
     }
 
 

@@ -42,21 +42,61 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 }
                 break;
 
-            case "bind":
-                selector.value = typeof r !== "undefined" ? r : "";
+            case "bindarray":
+                if ( ! Array.isArray(r)) {
+                    console.error("kap:bindarr: Not an array!", r, selector);
+                    return;
+                }
+                if (r.indexOf(selector.value) === -1)
+                    selector.checked = false;
+                else
+                    selector.checked = true;
+
                 if (typeof selector._kap_bind === "undefined") {
                     selector.addEventListener("change", () => {
-                        scope = {$scope: scope, ...scope, __curVal: selector.value}
-                        KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
-                        console.log("changed", selector.value);
-                    })
-                    selector.addEventListener("keyup", () => {
-                        scope = {$scope: scope,...scope, __curVal: selector.value}
+
+                        let arr = KaToolsV1.eval(attVal, scope, selector);
+
+                        if (arr.indexOf(selector.value) === -1 && selector.checked)
+                            arr.push(selector.value);
+                        if (arr.indexOf(selector.value) !== -1 && ! selector.checked)
+                            arr = arr.filter((e) => e !== selector.value);
+                        scope = {$scope: scope, ...scope, __curVal: arr};
                         KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
                     })
                     selector._kap_bind = true;
                 }
+                break;
 
+            case "bind":
+                if (selector.type === "checkbox" || selector.type === "radio") {
+                    if (r === true)
+                        selector.checked = true;
+                    else
+                        selector.checked = false;
+                } else {
+                    selector.value = typeof r !== "undefined" ? r : "";
+                }
+
+                if (typeof selector._kap_bind === "undefined") {
+                    selector.addEventListener("change", () => {
+
+                        let value = null;
+                        if (selector.type === "checkbox" || selector.type === "radio") {
+                            value = selector.checked
+                        } else {
+                            value = selector.value
+                        }
+                        scope = {$scope: scope, ...scope, __curVal: value}
+                        KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                    })
+                    selector.addEventListener("keyup", () => {
+                        scope = {$scope: scope,...scope, __curVal: selector.value}
+                        KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+
+                    })
+                    selector._kap_bind = true;
+                }
                 break;
 
             case "options":
