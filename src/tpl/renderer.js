@@ -1,0 +1,85 @@
+
+
+
+class KaV1Renderer {
+
+    constructor(template) {
+        this.template = template;
+    }
+
+    _error(msg) {
+        console.error(`[ka-template] ${msg} on element`, this.template);
+        throw `[ka-template] ${msg} on element` + this.template;
+    }
+
+    _appendTemplate() {
+        if (typeof this.template.__kachilds === "undefined")
+            this.template.__kachilds = [];
+
+        if (typeof this.template.__kasibling === "undefined")
+            this.template.__kasibling = this.template.nextElementSibling;
+
+        let elements = this.template.content;
+
+        let elList = [];
+        for (let curE of elements.children) {
+            curE = curE.cloneNode(true);
+            console.log("push", curE);
+            elList.push(curE);
+            this.template.parentNode.insertBefore(curE, this.template.__kasibling);
+        }
+        this.template.__kachilds.push(elList);
+    }
+
+    _renderFor($scope, stmt) {
+        if (typeof this.template.__kachilds === "undefined")
+            this.template.__kachilds = [];
+
+        let matches = stmt.match(/^(let)\s+(?<target>.+)\s+(?<type>of|in)\s+(?<select>.+)$/);
+        if (matches === null) {
+            this._error(`Can't parse ka:for='${stmt}'`);
+        }
+        let selectVal = KaToolsV1.eval(matches.groups.select, $scope, this.template);
+        let eIndex = 0;
+        for (let index in selectVal) {
+            let curScope = {...$scope};
+            curScope[matches.groups.target] = index;
+
+            if (matches.groups.type === "of")
+                curScope[matches.groups.target] = selectVal[index];
+
+            if (this.template.__kachilds.length < eIndex + 1) {
+                console.log("append");
+                this._appendTemplate();
+            }
+            this._maintain(curScope, this.template.__kachilds[eIndex]);
+            eIndex++;
+        }
+
+    }
+
+    _maintain($scope, childs) {
+        for (let child of childs) {
+            KaToolsV1.elwalk(child, (el) => {
+                console.log("walk", el);
+                if (el instanceof HTMLTemplateElement) {
+                    console.log("maintain", el);
+                    let r = new KaV1Renderer(el);
+                    r.render($scope);
+                    return false;
+                }
+
+            }, true);
+        }
+    }
+
+
+    render($scope) {
+        if (this.template.hasAttribute("ka:for")) {
+            this._renderFor($scope, this.template.getAttribute("ka:for"));
+        } else {
+            this._appendTemplate();
+            this._maintain($scope, this.template.__kachilds);
+        }
+    }
+}

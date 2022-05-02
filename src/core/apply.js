@@ -9,6 +9,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
     }
 
     for(let attName of selector.getAttributeNames()) {
+        console.log(attName);
         if ( ! attName.startsWith("[") || ! attName.endsWith("]")) {
             continue;
         }
@@ -43,17 +44,17 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
             case "attr":
                 if (attSelector  !== null) {
                     if (r === null || r === false) {
-                        selector.attributes.removeNamedItem(attSelector)
+                        selector.removeAttribute(attSelector)
                     } else {
-                        selector.classList.setNamedItem(attSelector, r);
+                        selector.setAttribute(attSelector, r);
                     }
                     break;
                 }
                 for (let cname in r) {
                     if (r[cname] ===null || r[cname] === false) {
-                        selector.attributes.removeNamedItem(cname);
+                        selector.removeAttribute(cname);
                     } else {
-                        selector.attributes.setNamedItem(cname, r[cname]);
+                        selector.setAttribute(cname, r[cname]);
                     }
                 }
                 break;
@@ -68,11 +69,12 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 break;
         }
 
-        if (recursive) {
-            for (let e of selector.children) {
-                KaToolsV1.apply(e, scope, recursive);
-            }
-        }
 
+
+    }
+    if (recursive) {
+        for (let e of selector.children) {
+            KaToolsV1.apply(e, scope, recursive);
+        }
     }
 }

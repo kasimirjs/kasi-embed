@@ -14,10 +14,13 @@ class KasimirLoader
         "core/eval.js",
         "core/quick-template.js",
         "core/apply.js",
-        "tpl/template-element.js",
+        "core/elwalk.js",
+        "tpl/templatify.js",
+        "tpl/renderer.js",
         "tpl/template.js",
         "tpl/template-attrs.js",
         "core/autostart.js",
+        "core/router.js",
     ];
 
 

@@ -11,6 +11,9 @@ main:
     href: "/tpl/"
   - name: "Apply"
     href: "/apply/"
+
+  - name: "Router"
+    href: "/router/"
 #  - name: "Getting started"
 #    href: "/getting-started/"
 #  - name: "Projects"

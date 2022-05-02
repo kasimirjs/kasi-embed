@@ -10,7 +10,9 @@ KaToolsV1._debounceInterval = {i: null, time: null};
  * @param max   Trigger event automatically after this time
  * @return {Promise<unknown>}
  */
-KaToolsV1.debounce = async (min, max) => {
+KaToolsV1.debounce = async (min, max=null) => {
+    if (max === null)
+        max = min;
     let dbi = KaToolsV1._debounceInterval;
     return new Promise((resolve) => {
         if (dbi.time < (+new Date()) - max && dbi.i !== null) {

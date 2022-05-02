@@ -62,7 +62,9 @@ KaToolsV1._debounceInterval = {i: null, time: null};
  * @param max   Trigger event automatically after this time
  * @return {Promise<unknown>}
  */
-KaToolsV1.debounce = async (min, max) => {
+KaToolsV1.debounce = async (min, max=null) => {
+    if (max === null)
+        max = min;
     let dbi = KaToolsV1._debounceInterval;
     return new Promise((resolve) => {
         if (dbi.time < (+new Date()) - max && dbi.i !== null) {
@@ -158,6 +160,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
     }
 
     for(let attName of selector.getAttributeNames()) {
+        console.log(attName);
         if ( ! attName.startsWith("[") || ! attName.endsWith("]")) {
             continue;
         }
@@ -192,17 +195,17 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
             case "attr":
                 if (attSelector  !== null) {
                     if (r === null || r === false) {
-                        selector.attributes.removeNamedItem(attSelector)
+                        selector.removeAttribute(attSelector)
                     } else {
-                        selector.classList.setNamedItem(attSelector, r);
+                        selector.setAttribute(attSelector, r);
                     }
                     break;
                 }
                 for (let cname in r) {
                     if (r[cname] ===null || r[cname] === false) {
-                        selector.attributes.removeNamedItem(cname);
+                        selector.removeAttribute(cname);
                     } else {
-                        selector.attributes.setNamedItem(cname, r[cname]);
+                        selector.setAttribute(cname, r[cname]);
                     }
                 }
                 break;
@@ -217,162 +220,196 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 break;
         }
 
-        if (recursive) {
-            for (let e of selector.children) {
-                KaToolsV1.apply(e, scope, recursive);
-            }
+
+
+    }
+    if (recursive) {
+        for (let e of selector.children) {
+            KaToolsV1.apply(e, scope, recursive);
         }
+    }
+}
+
+/* from core/elwalk.js */
+/**
+ *
+ * @param {HTMLElement} elem
+ * @param fn
+ * @param recursive
+ */
+KaToolsV1.elwalk = (elem, fn, recursive=false, includeTemplates=false) => {
+    if (Array.isArray(elem))
+        elem.children = elem;
+    if (typeof elem.children === "undefined")
+        return;
+    if (includeTemplates) {
+        if (elem instanceof HTMLTemplateElement)
+            child = elem.content
+    }
+    for(let child of elem.children) {
+        let ret = fn(child);
+        if (ret === false)
+            continue; // No recursiion
+
+        if (recursive && typeof child.children !== "undefined")
+            KaToolsV1.elwalk(child, fn, recursive);
 
     }
 }
 
-/* from tpl/template-element.js */
-class KaToolsV1_TemplateElement extends HTMLElement {
+/* from tpl/templatify.js */
+/**
+ *
+ * @param {HTMLElement} elem
+ * @return {HTMLTemplateElement}
+ */
+KaToolsV1.templatify = (elem, returnMode=true) => {
 
-    constructor() {
-        super();
-
-        this.tplChilds = [];
-        this.tplNextSibling = null;
-
+    if (returnMode) {
+        let returnTpl = document.createElement("template");
+        /* @var {HTMLTemplateElement} returnTpl */
+        returnTpl.innerHTML = elem.innerHTML;
+        KaToolsV1.templatify(returnTpl.content, false);
+        return returnTpl;
     }
 
+    if (elem instanceof HTMLTemplateElement)
+        elem = elem.content;
 
-    async pushElement(srcnode) {
-        return new Promise((resolve) => {
-            if (this.tplNextSibling === null)
-                this.tplNextSibling = this.nextElementSibling;
-            let e = null;
-            if (typeof srcnode.cloneNode === "function")
-                e = document.importNode(srcnode.cloneNode(true), true);
-            else
-                e = srcnode;
-            let nodes = [];
-            if (e instanceof DocumentFragment) {
-                for (let node of e.childNodes.entries()) {
-                    nodes.push(node[1]);
-                    console.log("node", node[1]);
-                }
-            } else {
-                nodes = [e];
-            }
-            this.tplChilds.push(nodes);
-            for (let e of nodes) {
-                console.log("pushing", e);
-                e.kaTplOwner = this;
-                if (e instanceof NodeList) {
-                    for (let el of e)
-                        this.parentElement.insertBefore(el, this.tplNextSibling);
-                } else {
-                    this.parentElement.insertBefore(e, this.tplNextSibling);
-                }
-
-            }
-            resolve();
-        })
-
+    let wrapElem = (el, attName, attVal) => {
+        let tpl = document.createElement("template");
+        let clonedEl = el.cloneNode(true);
+        clonedEl.removeAttribute(attName);
+        tpl.content.append(clonedEl);
+        tpl.setAttribute(attName, attVal);
+        el.replaceWith(tpl);
+        return tpl;
     }
 
-
-    async walkElements(nodes, $scope, mainTpl) {
-
-        console.log("startWalk", nodes, typeof nodes, nodes.render);
-        let list = [];
-        if (nodes instanceof Array) {
-
-            console.log("is Array!");
-            list = nodes;
-        } else if (nodes instanceof KaToolsV1_TemplateElement) {
-            console.log("trigger render", nodes);
-            nodes.render($scope, mainTpl);
-        } else if (nodes instanceof HTMLElement) {
-            list = nodes.children
-        }else if (nodes instanceof NodeList) {
-            list = nodes
-        } else if (nodes instanceof Text) {
+    KaToolsV1.elwalk(elem, (el) => {
+        console.log(el);
+        if ( ! el instanceof HTMLElement)
             return;
-        } else {
-            console.error("Undefined Element type in walkElements():", nodes);
-            throw "Undefined Element type in walkElements():" + nodes;
-        }
-        console.log("Walking",  list, list.length);
-        for (let i = 0; i<list.length; i++) {
-            let e = list[i];
-            await this.walkElements(e, $scope, mainTpl);
-        }
-    }
-
-
-    async render($scope, mainTpl) {
-        console.log ("Rendering ka-tpl:", this);
-        let isMaintanied = false;
-        for (let attrName of this.getAttributeNames()) {
-            for(let regex in KaToolsV1_Template.prototype.functions) {
-                console.log("regex", regex, attrName);
-                if (attrName.match(regex)) {
-                    isMaintanied = KaToolsV1_Template.prototype.functions[regex]($scope, this, attrName, this.getAttribute(attrName));
-                    break;
-                }
+        let tpl = null;
+        for (let attrName of el.getAttributeNames()) {
+            if (attrName === "ka:for") {
+                tpl = wrapElem(el, "ka:for", el.getAttribute("ka:for"));
+                KaToolsV1.templatify(tpl, false);
+                break;
+            }
+            if (attrName === "ka:if") {
+                tpl = wrapElem(el, "ka:if", el.getAttribute("ka:if"));
+                KaToolsV1.templatify(tpl, false);
+                break;
             }
         }
-        if ( ! isMaintanied && this.tplChilds.length === 0) {
-            await this.pushElement(this.childNodes);
-            //await KaToolsV1.debounce(100,200);
-            this.walkElements(this.childNodes, $scope, mainTpl);
+    }, true, false);
+}
+
+/* from tpl/renderer.js */
+
+
+
+class KaV1Renderer {
+
+    constructor(template) {
+        this.template = template;
+    }
+
+    _error(msg) {
+        console.error(`[ka-template] ${msg} on element`, this.template);
+        throw `[ka-template] ${msg} on element` + this.template;
+    }
+
+    _appendTemplate() {
+        if (typeof this.template.__kachilds === "undefined")
+            this.template.__kachilds = [];
+
+        if (typeof this.template.__kasibling === "undefined")
+            this.template.__kasibling = this.template.nextElementSibling;
+
+        let elements = this.template.content;
+
+        let elList = [];
+        for (let curE of elements.children) {
+            curE = curE.cloneNode(true);
+            console.log("push", curE);
+            elList.push(curE);
+            this.template.parentNode.insertBefore(curE, this.template.__kasibling);
+        }
+        this.template.__kachilds.push(elList);
+    }
+
+    _renderFor($scope, stmt) {
+        if (typeof this.template.__kachilds === "undefined")
+            this.template.__kachilds = [];
+
+        let matches = stmt.match(/^(let)\s+(?<target>.+)\s+(?<type>of|in)\s+(?<select>.+)$/);
+        if (matches === null) {
+            this._error(`Can't parse ka:for='${stmt}'`);
+        }
+        let selectVal = KaToolsV1.eval(matches.groups.select, $scope, this.template);
+        let eIndex = 0;
+        for (let index in selectVal) {
+            let curScope = {...$scope};
+            curScope[matches.groups.target] = index;
+
+            if (matches.groups.type === "of")
+                curScope[matches.groups.target] = selectVal[index];
+
+            if (this.template.__kachilds.length < eIndex + 1) {
+                console.log("append");
+                this._appendTemplate();
+            }
+            this._maintain(curScope, this.template.__kachilds[eIndex]);
+            eIndex++;
+        }
+
+    }
+
+    _maintain($scope, childs) {
+        for (let child of childs) {
+            KaToolsV1.elwalk(child, (el) => {
+                console.log("walk", el);
+                if (el instanceof HTMLTemplateElement) {
+                    console.log("maintain", el);
+                    let r = new KaV1Renderer(el);
+                    r.render($scope);
+                    return false;
+                }
+
+            }, true);
         }
     }
 
-    connectedCallback() {
-        console.log("connected!!!!!!!!!!!");
-        this.hidden = true;
+
+    render($scope) {
+        if (this.template.hasAttribute("ka:for")) {
+            this._renderFor($scope, this.template.getAttribute("ka:for"));
+        } else {
+            this._appendTemplate();
+            this._maintain($scope, this.template.__kachilds);
+        }
     }
 }
-
-customElements.define("ka-tpl", KaToolsV1_TemplateElement);
 
 /* from tpl/template.js */
 
-
-class KaToolsV1_Template extends KaToolsV1_TemplateElement {
-
-    render($scope) {
-        //super.render($scope, this);
-        console.log("array main", this.tplChilds);
-        this.walkElements(this.tplChilds, $scope, this);
-    }
-
-    async connectedCallback() {
-        super.connectedCallback();
-        KaToolsV1_Template.instance = this;
-        await KaToolsV1.domReady();
-        console.log("appending", this, this.querySelector("template").content);
-        this.pushElement(this.querySelector("template").content)
-    }
-
-}
-
-/**
- * Reference to the last defined App-Template
- *
- * @type {KaToolsV1_Template}
- */
-KaToolsV1_Template.instance = null;
-
-customElements.define("ka-tpl-app", KaToolsV1_Template);
-
 /* from tpl/template-attrs.js */
-KaToolsV1_Template.prototype.functions = {};
-
-
-KaToolsV1_Template.prototype.functions[/^\*for$/] = ($scope, tplElem, attrVal) => {
-    console.log("applying for");
-    return true; // For maintains the elements itself
-}
 
 /* from core/autostart.js */
 
 (async ()=>{
     await KaToolsV1.domReady();
+
+    // Unescape entities replaced by jekyll template engine
+    for (let e of document.querySelectorAll("template[ka-unescape]")) {
+        let data = e.innerHTML;
+        e.innerHTML = data.replaceAll("&lt;", "<")
+            .replaceAll("&amp;", "&")
+            .replaceAll("&gt;", ">");
+    }
+
     for (let e of document.querySelectorAll("template[ka-autostart]")) {
         let ne = document.importNode(KaToolsV1.querySelector("script", e.content), true).cloneNode(true);
         KaSelf = ne;
@@ -383,3 +420,6 @@ KaToolsV1_Template.prototype.functions[/^\*for$/] = ($scope, tplElem, attrVal) =
         e.parentNode.insertBefore(ne, e.nextElementSibling);
     }
 })()
+
+/* from core/router.js */
+

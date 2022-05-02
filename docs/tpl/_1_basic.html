@@ -1,19 +1,46 @@
 
 <h2>Basic Templates</h2>
 
-<ka-tpl-app>
-    <template>
-        <div>Hello world</div>
-        <script>
-            let e = KaToolsV1_Template.instance;
-            console.log("Start Render");
-            e.render({a: "hallo", b: ["a", "b", "c"]});
-        </script>
-        <ka-tpl *for="let index in input">
-            Hier auch los
-            <div>Hallo Welt</div>
-        </ka-tpl>
-    </template>
-</ka-tpl-app>
+<template id="tpl1">
+    <h3>Template</h3>
+    <div ka:for="let user of users">
+        <div>User:</div>
+        <div ka:for="let subu of user.sub">
+            Subuser
+        </div>
+    </div>
+    <span ka:for="let instance of users">
+        <div>Active</div>
+    </span>
+</template>
 
+<div id="output1"></div>
+<script>
 
+    let tpl = KaToolsV1.templatify(KaToolsV1.querySelector("#tpl1"));
+    document.querySelector("#output1").appendChild(tpl);
+    let renderer = new KaV1Renderer(tpl);
+    renderer.render({
+        users: [
+            {   uname: "user1",
+                sub: [
+                    {name: "user1"},
+                    {name: "user2"},
+                ]
+            },
+            {   uname: "user1",
+                sub: [
+                    {name: "user1"},
+                    {name: "user2"},
+                ]
+            },
+            {
+                uname: "user2",
+                sub: [
+                    {name: "user21"},
+                    {name: "user22"}
+                ]
+            }
+        ]
+    })
+</script>
