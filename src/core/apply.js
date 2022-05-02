@@ -17,7 +17,9 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
         let attVal = selector.getAttribute(attName);
         attName = attName.replace("[", "").replace("]", "");
         let attType = attName.split(".")[0];
-        let attSelector = attName.split(".")[1] ?? null;
+        let attSelector = attName.split(".")[1];
+        if (typeof attSelector === "undefined")
+            attSelector = null;
 
         let r = KaToolsV1.eval(attVal, scope, selector);
 
