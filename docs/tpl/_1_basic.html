@@ -4,7 +4,8 @@
 <template id="tpl1">
     <h3>Template</h3>
     <div ka:for="let user of users">
-        <div>User:</div>
+        <div >User:</div>
+        <div ka:if="user.uname === 'user1'">User1!</div>
         <div ka:for="let subu of user.sub">
             Subuser <span [textContent]="JSON.stringify(subu.name)"></span>
         </div>
@@ -28,7 +29,7 @@
                     {name: "user2"},
                 ]
             },
-            {   uname: "user1",
+            {   uname: "user2",
                 sub: [
                     {name: "user1"},
                     {name: "user2"},

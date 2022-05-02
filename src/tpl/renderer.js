@@ -5,6 +5,10 @@ class KaV1Renderer {
 
     constructor(template) {
         this.template = template;
+        if (typeof this.template.__kachilds === "undefined")
+            this.template.__kachilds = [];
+        if (typeof this.template.__kasibling === "undefined")
+            this.template.__kasibling = this.template.nextElementSibling;
     }
 
     _error(msg) {
@@ -13,12 +17,6 @@ class KaV1Renderer {
     }
 
     _appendTemplate() {
-        if (typeof this.template.__kachilds === "undefined")
-            this.template.__kachilds = [];
-
-        if (typeof this.template.__kasibling === "undefined")
-            this.template.__kasibling = this.template.nextElementSibling;
-
         let elements = this.template.content;
 
         let elList = [];
@@ -31,10 +29,20 @@ class KaV1Renderer {
         this.template.__kachilds.push(elList);
     }
 
+    _removeLastChild() {
+        if (this.template.__kachilds.length === 0)
+            return;
+        let childs = this.template.__kachilds[this.template.__kachilds.length - 1];
+        for (let curE of childs) {
+            this.template.parentElement.removeChild(curE);
+        }
+        this.template.__kachilds.length = this.template.__kachilds.length - 1;
+
+    }
+
     _renderFor($scope, stmt) {
         //console.log("kachilds", this.template.__kachilds);
-        if (typeof this.template.__kachilds === "undefined")
-            this.template.__kachilds = [];
+
 
         let matches = stmt.match(/^(let)\s+(?<target>.+)\s+(?<type>of|in)\s+(?<select>.+)$/);
         if (matches === null) {
@@ -81,9 +89,22 @@ class KaV1Renderer {
     }
 
 
+    _renderIf($scope, stmt) {
+         let selectVal = KaToolsV1.eval(stmt, $scope, this.template);
+         if (selectVal === true && this.template.__kachilds.length === 0) {
+             this._appendTemplate();
+             this._maintain($scope, this.template.__kachilds[0]);
+         } else {
+             this._removeLastChild();
+         }
+    }
+
+
     render($scope) {
         if (this.template.hasAttribute("ka:for")) {
             this._renderFor($scope, this.template.getAttribute("ka:for"));
+        } else if (this.template.hasAttribute("ka:if")) {
+            this._renderIf($scope, this.template.getAttribute("ka:if"));
         } else {
             if (typeof this.template._ka_active === "undefined") {
                 this._appendTemplate();
