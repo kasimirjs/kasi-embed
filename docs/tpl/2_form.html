@@ -10,18 +10,18 @@ title: Template with forms
         <thead>
             <tr>
                 <td>Yo</td>
-                <td ka:for="let lang of languages" [textContent]="lang">
+                <td ka:for="let lang of languages" kap:textContent="lang">
 
                 </td>
             </tr>
         </thead>
         <tbody>
         <tr ka:for="let translation in translations">
-            <td [textContent]="translation">
+            <td kap:textContent="translation">
 
             </td>
             <td ka:for="let lang of languages">
-                <input type="text" [bind]="translations[translation][lang]">
+                <input type="text" kap:bind="translations[translation][lang]">
             </td>
 
         </tr>

@@ -51,7 +51,7 @@ class KaV1Renderer {
         let selectVal = KaToolsV1.eval(matches.groups.select, $scope, this.template);
         let eIndex = 0;
         for (let index in selectVal) {
-            let curScope = {...$scope};
+            let curScope = {$scope: $scope, ...$scope};
             curScope[matches.groups.target] = index;
 
             if (matches.groups.type === "of")

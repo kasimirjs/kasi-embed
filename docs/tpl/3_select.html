@@ -1,0 +1,36 @@
+---
+title: Template with forms
+---
+<h1>Select fields</h1>
+
+<template id="select1">
+    <div>
+        <select  kap:options="options" kap:bind="$scope.selected1"></select>
+        <select  kap:options="options2" kap:bind="$scope.selected2"></select>
+    </div>
+</template>
+
+<div id="output1" class="container"></div>
+<script>
+
+    let tpl = KaToolsV1.templatify(KaToolsV1.querySelector("#select1"));
+    document.querySelector("#output1").appendChild(tpl);
+    let renderer = new KaV1Renderer(tpl);
+
+    let scope = {
+        selected1: "b",
+        options: [
+            "a", "b", "c"
+        ],
+        selected2: "abcd2",
+        options2: [
+            {text: "Hello World", value: "abcd"},
+            {text: "Hello World2", value: "abcd2"}
+        ]
+    }
+
+
+    renderer.render(scope)
+</script>
+<button onclick="renderer.render(scope)">Render</button>
+<button onclick="console.log(scope)">GetData</button>

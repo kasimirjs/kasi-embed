@@ -17,8 +17,6 @@ class KasimirLoader
         "core/elwalk.js",
         "tpl/templatify.js",
         "tpl/renderer.js",
-        "tpl/template.js",
-        "tpl/template-attrs.js",
         "core/autostart.js",
         "core/router.js",
     ];

@@ -10,14 +10,14 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
 
     for(let attName of selector.getAttributeNames()) {
         //console.log(attName);
-        if ( ! attName.startsWith("[") || ! attName.endsWith("]")) {
+        if ( ! attName.startsWith("kap:")) {
             continue;
         }
 
         let attVal = selector.getAttribute(attName);
-        attName = attName.replace("[", "").replace("]", "");
-        let attType = attName.split(".")[0];
-        let attSelector = attName.split(".")[1];
+
+        let attType = attName.split(":")[1];
+        let attSelector = attName.split(":")[2];
         if (typeof attSelector === "undefined")
             attSelector = null;
 
@@ -44,14 +44,38 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
 
             case "bind":
                 selector.value = typeof r !== "undefined" ? r : "";
-                selector.addEventListener("change", () => {
-                    scope = {...scope, __curVal: selector.value}
-                    KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
-                })
-                selector.addEventListener("keyup", () => {
-                    scope = {...scope, __curVal: selector.value}
-                    KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
-                })
+                if (typeof selector._kap_bind === "undefined") {
+                    selector.addEventListener("change", () => {
+                        scope = {$scope: scope, ...scope, __curVal: selector.value}
+                        KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                        console.log("changed", selector.value);
+                    })
+                    selector.addEventListener("keyup", () => {
+                        scope = {$scope: scope,...scope, __curVal: selector.value}
+                        KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                    })
+                    selector._kap_bind = true;
+                }
+
+                break;
+
+            case "options":
+                console.log(selector, selector.value);
+                let value = selector.value;
+                selector.options.length = 0;
+                for (let option in r) {
+                    if (isNaN(option)) {
+                        selector.options.add(new Option(r[option], option));
+                    } else {
+                        if (typeof r[option].text !== "undefined") {
+                            selector.options.add(new Option(r[option].text, r[option].value));
+                        } else {
+                            selector.options.add(new Option(r[option], r[option]));
+                        }
+                    }
+                }
+                if (value !== null)
+                    selector.value = value;
                 break;
 
             case "attr":
