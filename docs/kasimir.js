@@ -368,7 +368,7 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
     }
 
     KaToolsV1.elwalk(elem, (el) => {
-        console.log(el);
+        //console.log(el);
         if ( ! el instanceof HTMLElement)
             return;
         let tpl = null;
