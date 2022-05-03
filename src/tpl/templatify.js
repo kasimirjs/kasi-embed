@@ -2,10 +2,13 @@
 KaToolsV1._ka_el_idx = 0;
 /**
  *
- * @param {HTMLElement} elem
+ * @param {HTMLElement|string} elem
  * @return {HTMLTemplateElement}
  */
 KaToolsV1.templatify = (elem, returnMode=true) => {
+    if (typeof elem === "string")
+        elem = KaToolsV1.querySelector(elem);
+
 
     if (returnMode) {
         let returnTpl = document.createElement("template");
