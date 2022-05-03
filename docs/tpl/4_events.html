@@ -17,7 +17,7 @@ title: Events
     renderer.render({
         data: ["a", "b", "c"],
         $fn: {
-            buttonclick: ($scope, $event, cdata) => alert(console.log([cdata, $scope, $event]))
+            buttonclick: ($scope, $event, cdata) => alert([cdata, $scope, $event])
         }
     });
 </script>
