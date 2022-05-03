@@ -84,7 +84,7 @@ class KaV1Renderer {
 
                 KaToolsV1.apply(el, $scope);
 
-            }, true);
+            }, true, true);
         }
     }
 

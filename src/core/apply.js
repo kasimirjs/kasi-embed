@@ -21,6 +21,30 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
         if (typeof attSelector === "undefined")
             attSelector = null;
 
+
+        if (attType === "on") {
+            if (selector._ka_on === true)
+                continue;
+            let attScope = {$scope: scope, ...scope}
+            if (attSelector !== null) {
+
+                selector.addEventListener(attSelector, (e) => {
+                    attScope["$event"] = e;
+                    return KaToolsV1.eval(attVal, attScope, selector);
+                });
+            } else {
+                let actionArr = KaToolsV1.eval(attVal, attScope, selector)
+                for (let eventName in actionArr) {
+                    selector.addEventListener(eventName, (e) => {
+                        attScope["$event"] = e;
+                        return actionArr[eventName](attScope, e);
+                    });
+                }
+            }
+            selector._ka_on = true;
+            continue;
+        }
+
         let r = KaToolsV1.eval(attVal, scope, selector);
 
         switch (attType) {
@@ -41,6 +65,8 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                     }
                 }
                 break;
+
+
 
             case "bindarray":
                 if ( ! Array.isArray(r)) {

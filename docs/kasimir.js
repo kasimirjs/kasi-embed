@@ -172,6 +172,30 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
         if (typeof attSelector === "undefined")
             attSelector = null;
 
+
+        if (attType === "on") {
+            if (selector._ka_on === true)
+                continue;
+            let attScope = {$scope: scope, ...scope}
+            if (attSelector !== null) {
+
+                selector.addEventListener(attSelector, (e) => {
+                    attScope["$event"] = e;
+                    return KaToolsV1.eval(attVal, attScope, selector);
+                });
+            } else {
+                let actionArr = KaToolsV1.eval(attVal, attScope, selector)
+                for (let eventName in actionArr) {
+                    selector.addEventListener(eventName, (e) => {
+                        attScope["$event"] = e;
+                        return actionArr[eventName](attScope, e);
+                    });
+                }
+            }
+            selector._ka_on = true;
+            continue;
+        }
+
         let r = KaToolsV1.eval(attVal, scope, selector);
 
         switch (attType) {
@@ -192,6 +216,8 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                     }
                 }
                 break;
+
+
 
             case "bindarray":
                 if ( ! Array.isArray(r)) {
@@ -314,14 +340,15 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
  * @param fn
  * @param recursive
  */
-KaToolsV1.elwalk = (elem, fn, recursive=false, includeTemplates=false) => {
+KaToolsV1.elwalk = (elem, fn, recursive=false, includeFirst=false) => {
     if (Array.isArray(elem))
         elem.children = elem;
     if (typeof elem.children === "undefined")
         return;
-    if (includeTemplates) {
-        if (elem instanceof HTMLTemplateElement)
-            child = elem.content
+    if (includeFirst && elem instanceof HTMLElement) {
+        let ret = fn(elem);
+        if (ret === false)
+            return false;
     }
     for(let child of elem.children) {
         let ret = fn(child);
@@ -474,7 +501,7 @@ class KaV1Renderer {
 
                 KaToolsV1.apply(el, $scope);
 
-            }, true);
+            }, true, true);
         }
     }
 

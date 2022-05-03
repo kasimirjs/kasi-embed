@@ -11,6 +11,7 @@ command:
     - composer update
 
 
+
   jekyll: |
     JEKYLL_LOG_LEVEL=info jekyll serve -s /opt/docs -d /var/www/html --drafts --livereload --port 4000 --livereload-port 4100 --host 0.0.0.0
 
