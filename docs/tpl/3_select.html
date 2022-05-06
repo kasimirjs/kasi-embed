@@ -34,7 +34,10 @@ title: Template with forms
         ],
         check1: true,
         check2: false,
-        check3: ["a"]
+        check3: ["a"],
+        $on:  {
+            change: (e) => console.log("$on.change", e)
+        }
     }
 
 

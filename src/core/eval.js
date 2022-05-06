@@ -1,6 +1,9 @@
 
 
 KaToolsV1.eval = (stmt, __scope, e, __refs) => {
+    if (stmt.endsWith(";"))
+        stmt = stmt.slice(0, -1);
+
     const reserved = ["var", "null", "let", "const", "function", "class", "in", "of", "for", "true", "false", "await", "$this"];
     let r = "var $this = e;";
     for (let __name in __scope) {

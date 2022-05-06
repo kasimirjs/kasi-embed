@@ -79,7 +79,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                     selector.checked = true;
 
                 if (typeof selector._kap_bind === "undefined") {
-                    selector.addEventListener("change", () => {
+                    selector.addEventListener("change", (event) => {
 
                         let arr = KaToolsV1.eval(attVal, scope, selector);
 
@@ -89,6 +89,8 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                             arr = arr.filter((e) => e !== selector.value);
                         scope = {$scope: scope, ...scope, __curVal: arr};
                         KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                        if (scope.$on && scope.$on.change)
+                            scope.$on.change(event);
                     })
                     selector._kap_bind = true;
                 }
@@ -105,7 +107,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 }
 
                 if (typeof selector._kap_bind === "undefined") {
-                    selector.addEventListener("change", () => {
+                    selector.addEventListener("change", (event) => {
 
                         let value = null;
                         if (selector.type === "checkbox" || selector.type === "radio") {
@@ -115,10 +117,14 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                         }
                         scope = {$scope: scope, ...scope, __curVal: value}
                         KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                        if (scope.$on && scope.$on.change)
+                            scope.$on.change(event);
                     })
-                    selector.addEventListener("keyup", () => {
+                    selector.addEventListener("keyup", (event) => {
                         scope = {$scope: scope,...scope, __curVal: selector.value}
                         KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                        if (scope.$on && scope.$on.change)
+                            scope.$on.change(event);
 
                     })
                     selector._kap_bind = true;
