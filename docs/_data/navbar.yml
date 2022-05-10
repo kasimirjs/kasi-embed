@@ -14,6 +14,10 @@ main:
 
   - name: "Router"
     href: "/router/"
+
+  - name: "Call"
+    href: "/call/"
+
 #  - name: "Getting started"
 #    href: "/getting-started/"
 #  - name: "Projects"

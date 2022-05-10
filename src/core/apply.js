@@ -48,6 +48,12 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
         let r = KaToolsV1.eval(attVal, scope, selector);
 
         switch (attType) {
+            case "ref":
+                if (typeof scope.$ref === "undefined")
+                    scope.$ref = {};
+                scope.$ref[r] = selector;
+                break;
+
             case "classlist":
                 if (attSelector  !== null) {
                     if (r === true) {

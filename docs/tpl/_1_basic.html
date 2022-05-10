@@ -21,6 +21,8 @@
     let tpl = KaToolsV1.templatify(KaToolsV1.querySelector("#tpl1"));
     document.querySelector("#output1").appendChild(tpl);
     let renderer = new KaV1Renderer(tpl);
+
+
     renderer.render({
         users: [
             {   uname: "user1",

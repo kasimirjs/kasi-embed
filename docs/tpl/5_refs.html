@@ -1,0 +1,23 @@
+---
+title: Events
+---
+
+<template id="evt1">
+    <div >
+        <button kap:ref="'button1'" ka:for="let cData of data" kap:on:click="$fn.buttonclick($scope, $event, cData)"><span kap:textContent="cData"></span></button>
+    </div>
+</template>
+
+<div id="output1"></div>
+<script>
+
+    let tpl = KaToolsV1.templatify(KaToolsV1.querySelector("#evt1"));
+    document.querySelector("#output1").appendChild(tpl);
+    let renderer = new KaV1Renderer(tpl);
+    renderer.render({
+        data: ["a", "b", "c"],
+        $fn: {
+            buttonclick: ($scope, $event, cdata) => alert([cdata, $scope, $event])
+        }
+    });
+</script>

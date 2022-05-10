@@ -14,7 +14,9 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
         let returnTpl = document.createElement("template");
         returnTpl.setAttribute("_kaidx", (KaToolsV1._ka_el_idx++).toString())
         /* @var {HTMLTemplateElement} returnTpl */
-        returnTpl.innerHTML = elem.innerHTML;
+        returnTpl.innerHTML = elem.innerHTML
+            .replaceAll(/\[\[(.*?)\]\]/g, (matches, m1) => `<span kap:textContent="${m1}"></span>`);
+
         KaToolsV1.templatify(returnTpl.content, false);
         return returnTpl;
     }
