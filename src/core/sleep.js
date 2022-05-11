@@ -1,7 +1,6 @@
 KaToolsV1.sleep = (sleepms) => {
     return new Promise((resolve) => {
-        dbi.i = window.setTimeout(() => {
-            dbi.i = null;
+        window.setTimeout(() => {
             return resolve('done');
         }, sleepms);
     });

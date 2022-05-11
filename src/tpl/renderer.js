@@ -64,6 +64,9 @@ class KaV1Renderer {
             this._maintain(curScope, this.template.__kachilds[eIndex]);
             eIndex++;
         }
+        for(let remIdx = eIndex; remIdx < this.template.__kachilds.length; ) {
+            this._removeLastChild();
+        }
 
     }
 
