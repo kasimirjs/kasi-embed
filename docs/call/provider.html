@@ -1,0 +1,43 @@
+---
+title: KasimirJS Embed Templateing
+---
+<div class="container mt-5">
+<h2>Provider / Call</h2>
+
+
+<script>
+
+    KaToolsV1.provider.define("arg1", () => {
+
+        return "Hello World"
+    });
+
+    KaToolsV1.provider.define("arg2", async (arg1) => {
+        console.log("called arg2 provider");
+        await KaToolsV1.sleep(2000)
+
+        return "He said:" + arg1;
+    });
+
+    let p1 = KaToolsV1.provider.get("arg2");
+    p1.then((value) => console.log("eins", value));
+
+    let p2 = KaToolsV1.provider.get("arg2");
+    p2.then((value) => console.log("zwei", value));
+
+
+    let fn = (arg1, arg2) => {
+        console.log("done", arguments);
+    }
+
+    console.log("args", fn + "", KaToolsV1.getArgs(fn));
+
+    (async ()=>{
+        console.log(await KaToolsV1.provider.arguments(fn));
+    })()
+
+
+
+</script>
+
+</div>

@@ -13,6 +13,7 @@
 KaToolsV1.getArgs = (func) => {
     return (func + '')
         .replace(/[/][/].*$/mg,'') // strip single-line comments
+        .replace(/^(.*?)=>.*$/s, (m, m1) => m1)
         .replace(/\s+/g, '') // strip white space
         .replace(/[/][*][^/*]*[*][/]/g, '') // strip multi-line comments
         .split('){', 1)[0].replace(/^[^(]*[(]/, '') // extract the parameters
