@@ -1,11 +1,15 @@
 
 KaToolsV1.provider = new class {
-    #services = {};
+
+    constructor() {
+        this._services = {};
+    }
+
 
 
     async get(name) {
         return new Promise(async (resolve, reject) => {
-            let service = this.#services[name];
+            let service = this._services[name];
             if (typeof service === "undefined")
                 return reject(`Provider cannot resolve '${name}'`)
             if(service.resolved)
@@ -47,14 +51,14 @@ KaToolsV1.provider = new class {
 
 
     defineValue(name, value) {
-        this.#services[name] = {
+        this._services[name] = {
             value: value,
             resolved: true
         }
     }
 
     define(name, callback, params={}) {
-        this.#services[name] = {
+        this._services[name] = {
             cb: callback,
             params: params,
             value: null,

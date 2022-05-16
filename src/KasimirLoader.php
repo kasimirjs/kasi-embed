@@ -16,12 +16,17 @@ class KasimirLoader
         "core/quick-template.js",
         "core/apply.js",
         "core/elwalk.js",
+        "core/is-constructor.js",
 
         "tpl/templatify.js",
         "tpl/renderer.js",
 
         "app/getArgs.js",
         "app/provider.js",
+
+        "ce/ce_define.js",
+        "ce/html.js",
+        "ce/kaelement.js",
 
         "core/autostart.js",
         "core/router.js",

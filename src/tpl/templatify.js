@@ -8,7 +8,10 @@ KaToolsV1._ka_el_idx = 0;
 KaToolsV1.templatify = (elem, returnMode=true) => {
     if (typeof elem === "string")
         elem = KaToolsV1.querySelector(elem);
-
+    if ( ! (elem instanceof Node)) {
+        console.error("[ka-templatify] Parameter 1 is not a html element: ", elem)
+        throw `[ka-templify] Parameter 1 is not a html element: ${elem}`;
+    }
 
     if (returnMode) {
         let returnTpl = document.createElement("template");

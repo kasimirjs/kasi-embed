@@ -392,6 +392,18 @@ KaToolsV1.elwalk = (elem, fn, recursive=false, includeFirst=false) => {
     }
 }
 
+/* from core/is-constructor.js */
+/**
+ * Returns true if fn in parameter 1 is a contructor
+ *
+ *
+ * @param fn
+ * @returns {boolean}
+ */
+KaToolsV1.is_constructor = (fn) => {
+    return fn.toString().startsWith("class")
+}
+
 /* from tpl/templatify.js */
 
 KaToolsV1._ka_el_idx = 0;
@@ -403,7 +415,10 @@ KaToolsV1._ka_el_idx = 0;
 KaToolsV1.templatify = (elem, returnMode=true) => {
     if (typeof elem === "string")
         elem = KaToolsV1.querySelector(elem);
-
+    if ( ! (elem instanceof Node)) {
+        console.error("[ka-templatify] Parameter 1 is not a html element: ", elem)
+        throw `[ka-templify] Parameter 1 is not a html element: ${elem}`;
+    }
 
     if (returnMode) {
         let returnTpl = document.createElement("template");
@@ -598,14 +613,18 @@ KaToolsV1.getArgs = (func) => {
 /* from app/provider.js */
 
 KaToolsV1.provider = new class {
-    #services = {};
+
+    constructor() {
+        this._services = {};
+    }
+
 
 
     async get(name) {
         return new Promise(async (resolve, reject) => {
-            let service = this.#services[name];
+            let service = this._services[name];
             if (typeof service === "undefined")
-                throw `Cannot resolve '${name}'`
+                return reject(`Provider cannot resolve '${name}'`)
             if(service.resolved)
                 return resolve(service.value);
             service.promises.push(resolve);
@@ -633,7 +652,11 @@ KaToolsV1.provider = new class {
                     retArgs.push(params[argName]);
                     continue;
                 }
-                retArgs.push(await this.get(argName))
+                try {
+                    retArgs.push(await this.get(argName))
+                } catch(e) {
+                    return reject(e);
+                }
             }
             resolve(retArgs);
         });
@@ -641,14 +664,14 @@ KaToolsV1.provider = new class {
 
 
     defineValue(name, value) {
-        this.#services[name] = {
+        this._services[name] = {
             value: value,
             resolved: true
         }
     }
 
     define(name, callback, params={}) {
-        this.#services[name] = {
+        this._services[name] = {
             cb: callback,
             params: params,
             value: null,
@@ -657,6 +680,95 @@ KaToolsV1.provider = new class {
         }
     }
 }();
+
+/* from ce/ce_define.js */
+
+
+KaToolsV1.ce_define = (elementName, controller, template=null, waitEvent=null) => {
+    let ctrlClass = null;
+    if ( KaToolsV1.is_constructor(controller)) {
+        ctrlClass = controller;
+    } else {
+        ctrlClass = class extends KaToolsV1_CustomElement{};
+        ctrlClass.prototype.connected = controller;
+    }
+
+    ctrlClass.__tpl = template;
+    ctrlClass.__waitEvent = waitEvent;
+
+    customElements.define(elementName, ctrlClass);
+
+}
+
+/* from ce/html.js */
+
+
+KaToolsV1.html = (htmlContent) => {
+    let e = document.createElement("template");
+    e.innerHTML = htmlContent;
+    return e;
+}
+
+/* from ce/kaelement.js */
+
+class KaToolsV1_CustomElement extends HTMLElement {
+    static __runMethod = "connected";
+
+    constructor(props) {
+        super(props);
+        /**
+         *
+         * @protected
+         * @type {KaV1Renderer}
+         */
+        this.$tpl = null;
+
+
+        this.__isConnected = false;
+    }
+
+
+    isConnected() {
+        return this.isConnected;
+    }
+
+    async connectedCallback() {
+        console.log(this, this[this.constructor.__runMethod], this.constructor.__runMethod);
+        let renderer = null;
+        let callback = this.connected;
+        callback.bind(this);
+
+        if (this.constructor.__tpl !== null) {
+            let tpl = KaToolsV1.templatify(this.constructor.__tpl);
+            this.appendChild(tpl);
+            this.$tpl = new KaV1Renderer(tpl);
+        }
+        if (this.constructor.__waitEvent !== null) {
+            let wd = this.constructor.__waitEvent.split("@");
+            let eventName = wd[0];
+            let target = document;
+            if (wd.length === 2) {
+                target = KaToolsV1.querySelector(wd[1]);
+            }
+            target.addEventListener(eventName, async (event) => {
+                callback(... await KaToolsV1.provider.arguments(callback, {
+                    "$this": this,
+                    "$tpl": this.$tpl,
+                    "$event": event
+                }));
+                this.__isConnected = true;
+            })
+            return;
+        }
+        console.log(callback);
+        callback(... await KaToolsV1.provider.arguments(callback, {
+            "$this": this,
+            "$tpl": this.$tpl
+        }));
+        this.__isConnected = true;
+    }
+
+}
 
 /* from core/autostart.js */
 

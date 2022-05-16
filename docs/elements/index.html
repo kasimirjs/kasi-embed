@@ -1,0 +1,39 @@
+---
+
+title: Custom Elements
+---
+
+<script>
+
+     KaToolsV1.ce_define("test-element2", ($tpl) => {
+        $tpl.render({});
+    }, KaToolsV1.html(`<div>Element2</div>`));
+
+
+    KaToolsV1.ce_define("test-element1", class extends KaToolsV1_CustomElement {
+
+        constructor() {
+            super();
+        }
+
+        set val(val) {
+            console.log("setta", val)
+            this.$tpl.render({"val": val});
+        }
+
+        connected($tpl) {
+            console.log(this);
+
+            $tpl.render({"val": 1})
+        }
+    }, KaToolsV1.html`<div>Hello World [[val]]<test-element2></test-element2></div>`)
+
+
+
+</script>
+
+<test-element1></test-element1>
+<test-element2></test-element2>
+
+
+<button onclick="KaToolsV1.querySelector('test-element1').val = 'muh'">Click 1</button>

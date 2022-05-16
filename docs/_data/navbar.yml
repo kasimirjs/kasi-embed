@@ -17,7 +17,8 @@ main:
 
   - name: "Call"
     href: "/call/"
-
+  - name: "Elements"
+    href: "/elements/"
 #  - name: "Getting started"
 #    href: "/getting-started/"
 #  - name: "Projects"
