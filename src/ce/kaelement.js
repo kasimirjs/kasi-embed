@@ -21,7 +21,6 @@ class KaToolsV1_CustomElement extends HTMLElement {
     }
 
     async connectedCallback() {
-        console.log(this, this[this.constructor.__runMethod], this.constructor.__runMethod);
         let renderer = null;
         let callback = this.connected;
         callback.bind(this);
@@ -48,7 +47,7 @@ class KaToolsV1_CustomElement extends HTMLElement {
             })
             return;
         }
-        console.log(callback);
+
         callback(... await KaToolsV1.provider.arguments(callback, {
             "$this": this,
             "$tpl": this.$tpl
