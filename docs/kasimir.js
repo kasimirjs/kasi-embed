@@ -562,12 +562,14 @@ class KaV1Renderer {
 
     _renderIf($scope, stmt) {
          let selectVal = KaToolsV1.eval(stmt, $scope, this.template);
-         if (selectVal === true && this.template.__kachilds.length === 0) {
-             this._appendTemplate();
-             this._maintain($scope, this.template.__kachilds[0]);
-         } else {
-             this._removeLastChild();
-         }
+        if (selectVal === true) {
+            if (this.template.__kachilds.length === 0)
+                this._appendTemplate();
+
+            this._maintain($scope, this.template.__kachilds[0]);
+        } else {
+            this._removeLastChild();
+        }
     }
 
 
