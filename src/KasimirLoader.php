@@ -26,6 +26,7 @@ class KasimirLoader
 
         "ce/ce_define.js",
         "ce/html.js",
+        "ce/loadHtml.js",
         "ce/kaelement.js",
 
         "core/autostart.js",

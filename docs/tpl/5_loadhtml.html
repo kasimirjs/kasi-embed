@@ -1,0 +1,17 @@
+---
+---
+
+
+<script>
+
+
+    KaToolsV1.ce_define("demo-loadhtml", ($tpl) => {
+        scope = {
+            "msg": "Hello World",
+            ok: true
+        }
+        $tpl.render(scope);
+    }, KaToolsV1.loadHtml("/tpl/ext_tpl.html"));
+
+</script>
+<demo-loadhtml></demo-loadhtml>

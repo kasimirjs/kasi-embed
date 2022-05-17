@@ -686,7 +686,8 @@ KaToolsV1.provider = new class {
 /* from ce/ce_define.js */
 
 
-KaToolsV1.ce_define = (elementName, controller, template=null, waitEvent=null) => {
+KaToolsV1.ce_define = async (elementName, controller, template=null, waitEvent=null) => {
+    template = await template;
     let ctrlClass = null;
     if ( KaToolsV1.is_constructor(controller)) {
         ctrlClass = controller;
@@ -708,6 +709,19 @@ KaToolsV1.ce_define = (elementName, controller, template=null, waitEvent=null) =
 KaToolsV1.html = (htmlContent) => {
     let e = document.createElement("template");
     e.innerHTML = htmlContent;
+    return e;
+}
+
+/* from ce/loadHtml.js */
+KaToolsV1.loadHtml = async (url) => {
+    let e = document.createElement("template");
+    let result = await fetch(url);
+    if ( ! result.ok) {
+        console.error(`[loadHtml] failed to load '${url}'`);
+        throw `[loadHtml] failed to load '${url}'`
+    }
+    let body = await result.text();
+    e.innerHTML = body;
     return e;
 }
 

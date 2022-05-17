@@ -1,6 +1,7 @@
 
 
-KaToolsV1.ce_define = (elementName, controller, template=null, waitEvent=null) => {
+KaToolsV1.ce_define = async (elementName, controller, template=null, waitEvent=null) => {
+    template = await template;
     let ctrlClass = null;
     if ( KaToolsV1.is_constructor(controller)) {
         ctrlClass = controller;
