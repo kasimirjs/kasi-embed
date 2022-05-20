@@ -133,40 +133,6 @@ KaToolsV1.eval = (stmt, __scope, e, __refs) => {
 
 /* from core/quick-template.js */
 
-class KaToolsV1_QuickTemplate {
-
-    constructor(selector) {
-        if (typeof selector === "string")
-            selector = KaToolsV1.querySelector(selector);
-        this.template = selector;
-        if ( ! this.template instanceof HTMLTemplateElement) {
-            let error = "KaToolsV1_QuickTemplate: Parameter 1 is no <template> element. Selector: " + selector + "Element:" + this.template
-            console.warn(error);
-            throw error;
-        }
-        this._tplElem = document.createElement("template");
-    }
-
-
-    appendTo(selector, $scope) {
-        if (typeof selector === "string")
-            selector = KaToolsV1.querySelector(selector);
-
-        let outerHtml = this.template.innerHTML;
-        this._tplElem.innerHTML = outerHtml.replaceAll(/\[\[(.*?)\]\]/ig, (matches, stmt)=>{
-            try {
-                return KaToolsV1.eval(stmt, $scope)
-            } catch (e) {
-                console.error(`KaToolsV1_QuickTemplate: Error evaling stmt '${stmt}' on element `, this.template, "$scope:", $scope, "Error:", e);
-                throw e;
-            }
-        });
-
-        selector.append(document.importNode(this._tplElem.content, true));
-    }
-
-}
-
 /* from core/apply.js */
 
 KaToolsV1.apply = (selector, scope, recursive=false) => {
@@ -180,7 +146,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
 
     for(let attName of selector.getAttributeNames()) {
         //console.log(attName);
-        if ( ! attName.startsWith("kap:")) {
+        if ( ! attName.startsWith("ka:")) {
             continue;
         }
 
@@ -408,6 +374,7 @@ KaToolsV1.is_constructor = (fn) => {
 
 KaToolsV1._ka_el_idx = 0;
 /**
+ * Generate a renderable Template from <template> Element
  *
  * @param {HTMLElement|string} elem
  * @return {HTMLTemplateElement}
@@ -425,7 +392,7 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
         returnTpl.setAttribute("_kaidx", (KaToolsV1._ka_el_idx++).toString())
         /* @var {HTMLTemplateElement} returnTpl */
         returnTpl.innerHTML = elem.innerHTML
-            .replaceAll(/\[\[(.*?)\]\]/g, (matches, m1) => `<span kap:textContent="${m1}"></span>`);
+            .replaceAll(/\[\[(.*?)\]\]/g, (matches, m1) => `<span ka:textContent="${m1}"></span>`);
 
         KaToolsV1.templatify(returnTpl.content, false);
         return returnTpl;
@@ -465,11 +432,11 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
     }, true, false);
 }
 
-/* from tpl/renderer.js */
+/* from tpl/template.js */
 
 
 
-class KaV1Renderer {
+KaToolsV1.Template = class {
 
     constructor(template) {
         this.template = template;
@@ -544,7 +511,7 @@ class KaV1Renderer {
                 //console.log("walk", el);
                 if (el instanceof HTMLTemplateElement) {
                     //console.log("maintain", el);
-                    let r = new KaV1Renderer(el);
+                    let r = new this.constructor(el);
                     r.render($scope);
                     return false;
                 }
@@ -554,7 +521,8 @@ class KaV1Renderer {
                 }
 
                 KaToolsV1.apply(el, $scope);
-
+                if (el instanceof HTMLElement && el.tagName.indexOf("-") !== -1)
+                    return false; // Skip CustomElements, must have - in name, (apply but don't go into elements)
             }, true, true);
         }
     }
@@ -573,6 +541,11 @@ class KaV1Renderer {
     }
 
 
+    /**
+     * Render / Update the Template
+     *
+     * @param $scope
+     */
     render($scope) {
         if (this.template.hasAttribute("ka:for")) {
             this._renderFor($scope, this.template.getAttribute("ka:for"));
@@ -586,7 +559,7 @@ class KaV1Renderer {
             this._maintain($scope, this.template.__kachilds);
         }
     }
-}
+};
 
 /* from app/getArgs.js */
 /**
@@ -621,27 +594,64 @@ KaToolsV1.provider = new class {
     }
 
 
-
+    /**
+     * Get / wait for a value
+     *
+     * @param name
+     * @returns {Promise<unknown>}
+     */
     async get(name) {
         return new Promise(async (resolve, reject) => {
             let service = this._services[name];
-            if (typeof service === "undefined")
-                return reject(`Provider cannot resolve '${name}'`)
-            if(service.resolved)
+            if (typeof service === "undefined") {
+                // get before defined function
+                this._services[name] = {
+                    cb: null,
+                    params: null,
+                    state: null,
+                    promises: [{resolve, reject}]
+                }
+                return
+            }
+
+            // Already resolved/rejected: Resolve/Reject Promise immediately
+            if(service.state === "resolved")
                 return resolve(service.value);
-            service.promises.push(resolve);
-            if (service.promises.length > 1)
-                return;
-            service.value = await service.cb(...await this.arguments(service.cb, service.params));
-            service.resolved = true;
-            service.promises.forEach(elem => elem(service.value));
+            if(service.state === "rejected")
+                return reject(service.value);
+
+            // Not resolved/rejected yet? Queue Promise
+            service.promises.push({resolve, reject});
+            await this._resolve(name);
         });
     }
 
+
+    async _resolve(name) {
+        let service = this._services[name];
+
+        // Resolve only once
+        if (service.state !== null)
+            return;
+        service.state = "waiting";
+
+        try {
+            service.value = await service.cb(...await this.arguments(service.cb, service.params));
+            service.state = "resolved";
+            service.promises.forEach(prom => prom.resolve(service.value));
+        } catch (e) {
+            service.value = await service.cb(...await this.arguments(service.cb, service.params));
+            service.state = "rejected";
+            service.promises.forEach(prom => prom.reject(e));
+        }
+    }
+
     /**
+     * Build arguments list depending on the name of arguments determined
+     * by KaToolsV1.getArgs()
      *
-     * @param cb
-     * @param params
+     * @param cb {function}
+     * @param params {object}
      * @returns {Promise<Array>}
      */
     async arguments(cb, params = {}) {
@@ -665,39 +675,68 @@ KaToolsV1.provider = new class {
     }
 
 
+    /**
+     * Define a fixed value
+     *
+     * @param name {string}
+     * @param value {any}
+     */
     defineValue(name, value) {
-        this._services[name] = {
-            value: value,
-            resolved: true
-        }
+        this.defineService(name, () => value);
     }
 
-    define(name, callback, params={}) {
-        this._services[name] = {
-            cb: callback,
-            params: params,
-            value: null,
-            resolved: false,
-            promises: []
+    /**
+     * Define a service (callback to return the value)
+     *
+     * @param name {string}
+     * @param callback {function}
+     * @param params {object}
+     */
+    defineService(name, callback, params={}) {
+        let service = this._services[name];
+        if (typeof service === "undefined") {
+            this._services[name] = {
+                cb: callback,
+                params: params,
+                state: null,
+                promises: []
+            }
+            return;
         }
+        // Resolve queued Promises
+        service.cb = callback;
+        service.params = params;
+
+        if (service.promises.length > 0) {
+            // Resolve Promises added before define
+            this._resolve(name);
+        }
+
     }
 }();
 
 /* from ce/ce_define.js */
-
-
-KaToolsV1.ce_define = async (elementName, controller, template=null, waitEvent=null) => {
+/**
+ * Define a new CustomElement
+ *
+ * @param elementName
+ * @param controller
+ * @param template
+ * @param options
+ * @returns {Promise<void>}
+ */
+KaToolsV1.ce_define = async (elementName, controller, template=null, options={waitEvent: null}) => {
     template = await template;
     let ctrlClass = null;
     if ( KaToolsV1.is_constructor(controller)) {
         ctrlClass = controller;
     } else {
-        ctrlClass = class extends KaToolsV1_CustomElement{};
-        ctrlClass.prototype.connected = controller;
+        ctrlClass = class extends KaToolsV1.CustomElement{};
+        ctrlClass.__callback = controller;
     }
 
     ctrlClass.__tpl = template;
-    ctrlClass.__waitEvent = waitEvent;
+    ctrlClass.__options = options;
 
     customElements.define(elementName, ctrlClass);
 
@@ -725,17 +764,16 @@ KaToolsV1.loadHtml = async (url) => {
     return e;
 }
 
-/* from ce/kaelement.js */
+/* from ce/custom-element.js */
 
-class KaToolsV1_CustomElement extends HTMLElement {
-    static __runMethod = "connected";
+KaToolsV1.CustomElement = class extends HTMLElement {
 
     constructor(props) {
         super(props);
         /**
          *
          * @protected
-         * @type {KaV1Renderer}
+         * @type {KaToolsV1.Template}
          */
         this.$tpl = null;
 
@@ -749,17 +787,18 @@ class KaToolsV1_CustomElement extends HTMLElement {
     }
 
     async connectedCallback() {
-        let renderer = null;
-        let callback = this.connected;
+        let callback = this.constructor.__callback;
         callback.bind(this);
 
+        console.log("Loading", this, callback);
         if (this.constructor.__tpl !== null) {
             let tpl = KaToolsV1.templatify(this.constructor.__tpl);
             this.appendChild(tpl);
-            this.$tpl = new KaV1Renderer(tpl);
+            this.$tpl = new KaToolsV1.Template(tpl);
+            console.log("Tpl is", tpl);
         }
-        if (this.constructor.__waitEvent !== null) {
-            let wd = this.constructor.__waitEvent.split("@");
+        if (this.constructor.__options.waitEvent !== null) {
+            let wd = this.constructor.__options.waitEvent.split("@");
             let eventName = wd[0];
             let target = document;
             if (wd.length === 2) {
@@ -776,6 +815,7 @@ class KaToolsV1_CustomElement extends HTMLElement {
             return;
         }
 
+        console.log("trigger");
         callback(... await KaToolsV1.provider.arguments(callback, {
             "$this": this,
             "$tpl": this.$tpl
@@ -783,7 +823,7 @@ class KaToolsV1_CustomElement extends HTMLElement {
         this.__isConnected = true;
     }
 
-}
+};
 
 /* from core/autostart.js */
 

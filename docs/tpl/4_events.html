@@ -4,7 +4,7 @@ title: Events
 
 <template id="evt1">
     <div >
-        <button ka:for="let cData of data" kap:on:click="$fn.buttonclick($scope, $event, cData)"><span kap:textContent="cData"></span></button>
+        <button ka:for="let cData of data" ka:on:click="$fn.buttonclick($scope, $event, cData)"><span ka:textContent="cData"></span></button>
     </div>
 </template>
 
@@ -13,7 +13,7 @@ title: Events
 
     let tpl = KaToolsV1.templatify(KaToolsV1.querySelector("#evt1"));
     document.querySelector("#output1").appendChild(tpl);
-    let renderer = new KaV1Renderer(tpl);
+    let renderer = new KaToolsV1.Template(tpl);
     renderer.render({
         data: ["a", "b", "c"],
         $fn: {

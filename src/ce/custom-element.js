@@ -1,13 +1,12 @@
 
-class KaToolsV1_CustomElement extends HTMLElement {
-    static __runMethod = "connected";
+KaToolsV1.CustomElement = class extends HTMLElement {
 
     constructor(props) {
         super(props);
         /**
          *
          * @protected
-         * @type {KaV1Renderer}
+         * @type {KaToolsV1.Template}
          */
         this.$tpl = null;
 
@@ -21,17 +20,18 @@ class KaToolsV1_CustomElement extends HTMLElement {
     }
 
     async connectedCallback() {
-        let renderer = null;
-        let callback = this.connected;
+        let callback = this.constructor.__callback;
         callback.bind(this);
 
+        console.log("Loading", this, callback);
         if (this.constructor.__tpl !== null) {
             let tpl = KaToolsV1.templatify(this.constructor.__tpl);
             this.appendChild(tpl);
-            this.$tpl = new KaV1Renderer(tpl);
+            this.$tpl = new KaToolsV1.Template(tpl);
+            console.log("Tpl is", tpl);
         }
-        if (this.constructor.__waitEvent !== null) {
-            let wd = this.constructor.__waitEvent.split("@");
+        if (this.constructor.__options.waitEvent !== null) {
+            let wd = this.constructor.__options.waitEvent.split("@");
             let eventName = wd[0];
             let target = document;
             if (wd.length === 2) {
@@ -48,6 +48,7 @@ class KaToolsV1_CustomElement extends HTMLElement {
             return;
         }
 
+        console.log("trigger");
         callback(... await KaToolsV1.provider.arguments(callback, {
             "$this": this,
             "$tpl": this.$tpl
@@ -55,4 +56,4 @@ class KaToolsV1_CustomElement extends HTMLElement {
         this.__isConnected = true;
     }
 
-}
+};

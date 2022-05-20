@@ -19,7 +19,7 @@ class KasimirLoader
         "core/is-constructor.js",
 
         "tpl/templatify.js",
-        "tpl/renderer.js",
+        "tpl/template.js",
 
         "app/getArgs.js",
         "app/provider.js",
@@ -27,7 +27,7 @@ class KasimirLoader
         "ce/ce_define.js",
         "ce/html.js",
         "ce/loadHtml.js",
-        "ce/kaelement.js",
+        "ce/custom-element.js",
 
         "core/autostart.js",
         "core/router.js",

@@ -1,6 +1,7 @@
 
 KaToolsV1._ka_el_idx = 0;
 /**
+ * Generate a renderable Template from <template> Element
  *
  * @param {HTMLElement|string} elem
  * @return {HTMLTemplateElement}
@@ -18,7 +19,7 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
         returnTpl.setAttribute("_kaidx", (KaToolsV1._ka_el_idx++).toString())
         /* @var {HTMLTemplateElement} returnTpl */
         returnTpl.innerHTML = elem.innerHTML
-            .replaceAll(/\[\[(.*?)\]\]/g, (matches, m1) => `<span kap:textContent="${m1}"></span>`);
+            .replaceAll(/\[\[(.*?)\]\]/g, (matches, m1) => `<span ka:textContent="${m1}"></span>`);
 
         KaToolsV1.templatify(returnTpl.content, false);
         return returnTpl;

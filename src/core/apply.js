@@ -10,7 +10,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
 
     for(let attName of selector.getAttributeNames()) {
         //console.log(attName);
-        if ( ! attName.startsWith("kap:")) {
+        if ( ! attName.startsWith("ka:")) {
             continue;
         }
 

@@ -17,11 +17,11 @@ title: Template with forms
         </thead>
         <tbody>
         <tr ka:for="let translation in translations">
-            <td kap:textContent="translation">
-
+            <td>
+                [[translation]]
             </td>
             <td ka:for="let lang of languages">
-                <input type="text" kap:bind="translations[translation][lang]">
+                <input type="text" ka:bind="translations[translation][lang]">
             </td>
 
         </tr>
@@ -35,7 +35,7 @@ title: Template with forms
 
     let tpl = KaToolsV1.templatify(KaToolsV1.querySelector("#form1"));
     document.querySelector("#output1").appendChild(tpl);
-    let renderer = new KaV1Renderer(tpl);
+    let renderer = new KaToolsV1.Template(tpl);
 
     let scope = {
         languages: ["de", "ui", "at"],

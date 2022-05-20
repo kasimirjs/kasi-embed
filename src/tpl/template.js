@@ -1,7 +1,7 @@
 
 
 
-class KaV1Renderer {
+KaToolsV1.Template = class {
 
     constructor(template) {
         this.template = template;
@@ -76,7 +76,7 @@ class KaV1Renderer {
                 //console.log("walk", el);
                 if (el instanceof HTMLTemplateElement) {
                     //console.log("maintain", el);
-                    let r = new KaV1Renderer(el);
+                    let r = new this.constructor(el);
                     r.render($scope);
                     return false;
                 }
@@ -86,7 +86,8 @@ class KaV1Renderer {
                 }
 
                 KaToolsV1.apply(el, $scope);
-
+                if (el instanceof HTMLElement && el.tagName.indexOf("-") !== -1)
+                    return false; // Skip CustomElements, must have - in name, (apply but don't go into elements)
             }, true, true);
         }
     }
@@ -105,6 +106,11 @@ class KaV1Renderer {
     }
 
 
+    /**
+     * Render / Update the Template
+     *
+     * @param $scope
+     */
     render($scope) {
         if (this.template.hasAttribute("ka:for")) {
             this._renderFor($scope, this.template.getAttribute("ka:for"));
@@ -118,4 +124,4 @@ class KaV1Renderer {
             this._maintain($scope, this.template.__kachilds);
         }
     }
-}
+};

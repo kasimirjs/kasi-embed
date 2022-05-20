@@ -5,12 +5,12 @@ title: Template with forms
 
 <template id="select1">
     <div>
-        <select  kap:options="options" kap:bind="$scope.selected1"></select>
-        <select  kap:options="options2" kap:bind="$scope.selected2"></select>
-        <label for="id1"><input type="checkbox" kap:bind="$scope.check1"> check1</label>
-        <label for="id1"><input type="checkbox" kap:bind="$scope.check2"> check2</label>
+        <select  ka:options="options" ka:bind="$scope.selected1"></select>
+        <select  ka:options="options2" ka:bind="$scope.selected2"></select>
+        <label for="id1"><input type="checkbox" ka:bind="$scope.check1"> check1</label>
+        <label for="id1"><input type="checkbox" ka:bind="$scope.check2"> check2</label>
         <h4>Bindarray</h4>
-        <label ka:for="let o of options"><input type="checkbox" kap:attr:value="o" kap:bindarray="$scope.check3"> [[ o ]] </label>
+        <label ka:for="let o of options"><input type="checkbox" ka:attr:value="o" ka:bindarray="$scope.check3"> [[ o ]] </label>
 
     </div>
 </template>
@@ -20,7 +20,7 @@ title: Template with forms
 
     let tpl = KaToolsV1.templatify(KaToolsV1.querySelector("#select1"));
     document.querySelector("#output1").appendChild(tpl);
-    let renderer = new KaV1Renderer(tpl);
+    let renderer = new KaToolsV1.Template(tpl);
 
     let scope = {
         selected1: "b",

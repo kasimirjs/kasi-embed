@@ -7,7 +7,7 @@
         <div >User:</div>
         <div ka:if="user.uname === 'user1'">User1!</div>
         <div ka:for="let subu of user.sub">
-            Subuser <span [textContent]="JSON.stringify(subu.name)"></span>
+            Subuser [[JSON.stringify(subu.name)]]
         </div>
     </div>
     <span ka:for="let instance of users">
@@ -20,7 +20,7 @@
 
     let tpl = KaToolsV1.templatify(KaToolsV1.querySelector("#tpl1"));
     document.querySelector("#output1").appendChild(tpl);
-    let renderer = new KaV1Renderer(tpl);
+    let renderer = new KaToolsV1.Template(tpl);
 
 
     renderer.render({

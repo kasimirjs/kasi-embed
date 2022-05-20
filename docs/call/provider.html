@@ -7,12 +7,12 @@ title: KasimirJS Embed Templateing
 
 <script>
 
-    KaToolsV1.provider.define("arg1", () => {
+    KaToolsV1.provider.defineService("arg1", () => {
 
         return "Hello World"
     });
 
-    KaToolsV1.provider.define("arg2", async (arg1) => {
+    KaToolsV1.provider.defineService("arg2", async (arg1) => {
         console.log("called arg2 provider");
         await KaToolsV1.sleep(2000)
 
@@ -30,12 +30,22 @@ title: KasimirJS Embed Templateing
         console.log("done", arguments);
     }
 
+
+    let fn2 = (arg3) => {
+        console.log("definition of arguments after calling")
+    }
+
     console.log("args", fn + "", KaToolsV1.getArgs(fn));
 
     (async ()=>{
         console.log(await KaToolsV1.provider.arguments(fn));
+        console.log(await KaToolsV1.provider.arguments(fn2));
     })()
 
+
+    KaToolsV1.provider.defineService("arg3", () => {
+        return "Late loading dependency";
+    })
 
 
 </script>
