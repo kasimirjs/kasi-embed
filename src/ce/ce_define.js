@@ -12,7 +12,7 @@ KaToolsV1.ce_define = async (elementName, controller, template=null, options={wa
     let ctrlClass = null;
     if ( KaToolsV1.is_constructor(controller)) {
         ctrlClass = controller;
-        ctrlClass.__callback = ctrlClass.prototype.connected;
+        ctrlClass.__callback = null;
     } else {
         ctrlClass = class extends KaToolsV1.CustomElement{};
         ctrlClass.__callback = controller;

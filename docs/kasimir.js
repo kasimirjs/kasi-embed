@@ -754,7 +754,7 @@ KaToolsV1.ce_define = async (elementName, controller, template=null, options={wa
     let ctrlClass = null;
     if ( KaToolsV1.is_constructor(controller)) {
         ctrlClass = controller;
-        ctrlClass.__callback = ctrlClass.prototype.connected;
+        ctrlClass.__callback = null;
     } else {
         ctrlClass = class extends KaToolsV1.CustomElement{};
         ctrlClass.__callback = controller;
@@ -802,11 +802,22 @@ KaToolsV1.CustomElement = class extends HTMLElement {
         super(props);
         /**
          *
-         * @protected
-         * @type {KaToolsV1.Template}
+         * @public
+         * @property $tpl {KaToolsV1.Template}
+         * @var {KaToolsV1.Template}
          */
-        this.$tpl = null;
+        this.__tpl = null;
+
         this.__isConnected = false;
+    }
+
+    /**
+     * The Template associated with this Element
+     *
+     * @return {KaToolsV1.Template}
+     */
+    get $tpl () {
+        return this.__tpl
     }
 
 
@@ -814,16 +825,27 @@ KaToolsV1.CustomElement = class extends HTMLElement {
         return this.isConnected;
     }
 
+    /**
+     * @abstract
+     * @return {Promise<void>}
+     */
+    async connected() {
+        console.warn("connected() method not overridden in", this);
+    }
+
     async connectedCallback() {
         let callback = this.constructor.__callback;
-        callback.bind(this);
+        if (callback === null) {
+        } else {
+            callback.bind(this);
+        }
 
         if (this.constructor.__tpl !== null) {
             let tpl = KaToolsV1.templatify(this.constructor.__tpl);
             this.appendChild(tpl);
-            this.$tpl = new KaToolsV1.Template(tpl);
-            console.log("Tpl is", tpl);
+            this.__tpl = new KaToolsV1.Template(tpl);
         }
+
         if (this.constructor.__options.waitEvent !== null) {
             let wd = this.constructor.__options.waitEvent.split("@");
             let eventName = wd[0];
@@ -842,7 +864,17 @@ KaToolsV1.CustomElement = class extends HTMLElement {
             return;
         }
 
-        console.log("trigger");
+        if (callback === null) {
+            // Class: Call connected() Method
+            this.connected(...await KaToolsV1.provider.arguments(this.connected, {
+                "$this": this,
+                "$tpl": this.$tpl
+            }));
+            this.__isConnected = true;
+            return
+        }
+
+        // Function
         callback(... await KaToolsV1.provider.arguments(callback, {
             "$this": this,
             "$tpl": this.$tpl
