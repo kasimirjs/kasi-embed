@@ -9,6 +9,8 @@ KaToolsV1.Template = class {
             this.template.__kachilds = [];
         if (typeof this.template.__kasibling === "undefined")
             this.template.__kasibling = this.template.nextElementSibling;
+
+        this.$scope = {};
     }
 
     _error(msg) {
@@ -105,13 +107,28 @@ KaToolsV1.Template = class {
         }
     }
 
+    /**
+     * Remove all rendered elements
+     */
+    dispose() {
+        for(;this.template.__kachilds.length > 0;)
+            this._removeLastChild();
+    }
+
 
     /**
      * Render / Update the Template
      *
+     * Once the scope in parameter 1 was set, it will render
+     * without any parameters. Scope is available via property $scope
+     *
      * @param $scope
      */
-    render($scope) {
+    render($scope = null) {
+        if ($scope === null)
+            $scope = this.$scope;
+        this.$scope = $scope;
+
         if (this.template.hasAttribute("ka:for")) {
             this._renderFor($scope, this.template.getAttribute("ka:for"));
         } else if (this.template.hasAttribute("ka:if")) {

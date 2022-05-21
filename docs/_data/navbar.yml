@@ -9,15 +9,14 @@ main:
 
   - name: "Template"
     href: "/tpl/"
+
   - name: "Apply"
     href: "/apply/"
 
-  - name: "Router"
-    href: "/router/"
-
-  - name: "Call"
+  - name: "Provider"
     href: "/call/"
-  - name: "Elements"
+
+  - name: "CustomElements"
     href: "/elements/"
 #  - name: "Getting started"
 #    href: "/getting-started/"
