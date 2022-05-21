@@ -10,14 +10,14 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
 
     for(let attName of selector.getAttributeNames()) {
         //console.log(attName);
-        if ( ! attName.startsWith("ka:")) {
+        if ( ! attName.startsWith("ka.")) {
             continue;
         }
 
         let attVal = selector.getAttribute(attName);
 
-        let attType = attName.split(":")[1];
-        let attSelector = attName.split(":")[2];
+        let attType = attName.split(".")[1];
+        let attSelector = attName.split(".")[2];
         if (typeof attSelector === "undefined")
             attSelector = null;
 

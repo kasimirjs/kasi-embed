@@ -19,7 +19,7 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
         returnTpl.setAttribute("_kaidx", (KaToolsV1._ka_el_idx++).toString())
         /* @var {HTMLTemplateElement} returnTpl */
         returnTpl.innerHTML = elem.innerHTML
-            .replaceAll(/\[\[(.*?)\]\]/g, (matches, m1) => `<span ka:textContent="${m1}"></span>`);
+            .replaceAll(/\[\[(.*?)\]\]/g, (matches, m1) => `<span ka.textContent="${m1}"></span>`);
 
         KaToolsV1.templatify(returnTpl.content, false);
         return returnTpl;
@@ -45,13 +45,13 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
             return;
         let tpl = null;
         for (let attrName of el.getAttributeNames()) {
-            if (attrName === "ka:for") {
-                tpl = wrapElem(el, "ka:for", el.getAttribute("ka:for"));
+            if (attrName === "ka.for") {
+                tpl = wrapElem(el, "ka.for", el.getAttribute("ka.for"));
                 KaToolsV1.templatify(tpl, false);
                 break;
             }
-            if (attrName === "ka:if") {
-                tpl = wrapElem(el, "ka:if", el.getAttribute("ka:if"));
+            if (attrName === "ka.if") {
+                tpl = wrapElem(el, "ka.if", el.getAttribute("ka.if"));
                 KaToolsV1.templatify(tpl, false);
                 break;
             }

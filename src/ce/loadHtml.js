@@ -1,3 +1,8 @@
+/**
+ *
+ * @param url {string}
+ * @return {Promise<HTMLTemplateElement>}
+ */
 KaToolsV1.loadHtml = async (url) => {
     let e = document.createElement("template");
     let result = await fetch(url);

@@ -1,0 +1,2 @@
+	scripting.attr.ka-if =
+		attribute ka-if { common.data.functionbody }

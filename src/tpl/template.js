@@ -46,9 +46,9 @@ KaToolsV1.Template = class {
         //console.log("kachilds", this.template.__kachilds);
 
 
-        let matches = stmt.match(/^(let)\s+(?<target>.+)\s+(?<type>of|in)\s+(?<select>.+)$/);
+        let matches = stmt.match(/^(let)?\s*(?<target>.+)\s+(?<type>of|in)\s+(?<select>.+)$/);
         if (matches === null) {
-            this._error(`Can't parse ka:for='${stmt}'`);
+            this._error(`Can't parse ka.for='${stmt}'`);
         }
         let selectVal = KaToolsV1.eval(matches.groups.select, $scope, this.template);
         let eIndex = 0;
@@ -129,10 +129,10 @@ KaToolsV1.Template = class {
             $scope = this.$scope;
         this.$scope = $scope;
 
-        if (this.template.hasAttribute("ka:for")) {
-            this._renderFor($scope, this.template.getAttribute("ka:for"));
-        } else if (this.template.hasAttribute("ka:if")) {
-            this._renderIf($scope, this.template.getAttribute("ka:if"));
+        if (this.template.hasAttribute("ka.for")) {
+            this._renderFor($scope, this.template.getAttribute("ka.for"));
+        } else if (this.template.hasAttribute("ka.if")) {
+            this._renderIf($scope, this.template.getAttribute("ka.if"));
         } else {
             if (typeof this.template._ka_active === "undefined") {
                 this._appendTemplate();

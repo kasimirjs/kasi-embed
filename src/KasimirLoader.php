@@ -13,7 +13,6 @@ class KasimirLoader
         "core/debounce.js",
         "core/sleep.js",
         "core/eval.js",
-        "core/quick-template.js",
         "core/apply.js",
         "core/elwalk.js",
         "core/is-constructor.js",

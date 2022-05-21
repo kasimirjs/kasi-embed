@@ -3,14 +3,14 @@
 
 <template id="tpl1">
     <h3>Template</h3>
-    <div ka:for="let user of users">
+    <div ka.for="let user of users">
         <div >User:</div>
-        <div ka:if="user.uname === 'user1'">User1!</div>
-        <div ka:for="let subu of user.sub">
+        <div ka.if="user.uname === 'user1'">User1!</div>
+        <div ka.for="let subu of user.sub">
             Subuser [[JSON.stringify(subu.name)]]
         </div>
     </div>
-    <span ka:for="let instance of users">
+    <span ka.for="let instance of users">
         <div>Active</div>
     </span>
 </template>
