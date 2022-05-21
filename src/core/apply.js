@@ -174,6 +174,17 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 }
                 break;
 
+            case "prop":
+                if (attSelector  !== null) {
+                    // Set Property directly
+                    selector[attSelector] = r;
+                    break;
+                }
+                for (let cname in r) {
+                    selector[cname] = r[cname];
+                }
+                break;
+
             default:
                 if (typeof attMap[attType] !== "undefined")
                     attType = attMap[attType];

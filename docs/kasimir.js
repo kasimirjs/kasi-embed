@@ -308,6 +308,17 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 }
                 break;
 
+            case "prop":
+                if (attSelector  !== null) {
+                    // Set Property directly
+                    selector[attSelector] = r;
+                    break;
+                }
+                for (let cname in r) {
+                    selector[cname] = r[cname];
+                }
+                break;
+
             default:
                 if (typeof attMap[attType] !== "undefined")
                     attType = attMap[attType];
@@ -477,8 +488,6 @@ KaToolsV1.Template = class {
 
     _renderFor($scope, stmt) {
         //console.log("kachilds", this.template.__kachilds);
-
-
         let matches = stmt.match(/^(let)?\s*(?<target>.+)\s+(?<type>of|in)\s+(?<select>.+)$/);
         if (matches === null) {
             this._error(`Can't parse ka.for='${stmt}'`);
@@ -797,8 +806,6 @@ KaToolsV1.CustomElement = class extends HTMLElement {
          * @type {KaToolsV1.Template}
          */
         this.$tpl = null;
-
-
         this.__isConnected = false;
     }
 
@@ -811,7 +818,6 @@ KaToolsV1.CustomElement = class extends HTMLElement {
         let callback = this.constructor.__callback;
         callback.bind(this);
 
-        console.log("Loading", this, callback);
         if (this.constructor.__tpl !== null) {
             let tpl = KaToolsV1.templatify(this.constructor.__tpl);
             this.appendChild(tpl);

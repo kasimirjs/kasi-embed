@@ -44,8 +44,6 @@ KaToolsV1.Template = class {
 
     _renderFor($scope, stmt) {
         //console.log("kachilds", this.template.__kachilds);
-
-
         let matches = stmt.match(/^(let)?\s*(?<target>.+)\s+(?<type>of|in)\s+(?<select>.+)$/);
         if (matches === null) {
             this._error(`Can't parse ka.for='${stmt}'`);

@@ -9,8 +9,6 @@ KaToolsV1.CustomElement = class extends HTMLElement {
          * @type {KaToolsV1.Template}
          */
         this.$tpl = null;
-
-
         this.__isConnected = false;
     }
 
@@ -23,7 +21,6 @@ KaToolsV1.CustomElement = class extends HTMLElement {
         let callback = this.constructor.__callback;
         callback.bind(this);
 
-        console.log("Loading", this, callback);
         if (this.constructor.__tpl !== null) {
             let tpl = KaToolsV1.templatify(this.constructor.__tpl);
             this.appendChild(tpl);
