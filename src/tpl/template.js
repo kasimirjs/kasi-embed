@@ -61,7 +61,7 @@ KaToolsV1.Template = class {
                 //console.log("append", eIndex, this.template.__kachilds.length);
                 this._appendTemplate();
             }
-            this._maintain(curScope, this.template.__kachilds[eIndex]);
+            this._maintain(curScope, this.template.__kachilds[eIndex], eIndex);
             eIndex++;
         }
         for(let remIdx = eIndex; remIdx < this.template.__kachilds.length; ) {
@@ -70,8 +70,9 @@ KaToolsV1.Template = class {
 
     }
 
-    _maintain($scope, childs) {
+    _maintain($scope, childs, forIndex=0) {
         for (let child of childs) {
+            child._ka_for_index = forIndex;
             KaToolsV1.elwalk(child, (el) => {
                 //console.log("walk", el);
                 if (el instanceof HTMLTemplateElement) {

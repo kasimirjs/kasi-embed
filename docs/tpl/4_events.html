@@ -6,6 +6,7 @@ title: Events
     <div >
         <button ka.for="let cData of data" ka.on.click="$fn.buttonclick($scope, $event, cData)"><span ka.textContent="cData"></span></button>
     </div>
+    <input type="text" ka.on="{click: ($this, $event) => {console.log('click', $this, $event)}}">
 </template>
 
 <div id="output1"></div>

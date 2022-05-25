@@ -22,26 +22,39 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
             attSelector = null;
 
 
+        let registerEventHandler = function(element, action, callbackOrCode, scope) {
+            if (typeof element._ka_on === "undefined")
+                element._ka_on = {};
+
+            if (typeof element._ka_on[action] === "undefined")
+                element.addEventListener(action, (e) => element._ka_on[action](e));
+
+            element._ka_on[action] = async(e) => {
+                scope["$event"] = e;
+                if (typeof callbackOrCode === "function") {
+                    return callbackOrCode(... await KaToolsV1.provider.arguments(callbackOrCode, {
+                        ...scope,
+                        "$event": e,
+                        "$this": element,
+                        "$scope": scope
+                    }));
+                } else {
+                    return KaToolsV1.eval(callbackOrCode, scope, element);
+                }
+            };
+        }
+
         if (attType === "on") {
-            if (selector._ka_on === true)
-                continue;
             let attScope = {$scope: scope, ...scope}
             if (attSelector !== null) {
-
-                selector.addEventListener(attSelector, (e) => {
-                    attScope["$event"] = e;
-                    return KaToolsV1.eval(attVal, attScope, selector);
-                });
+                registerEventHandler(selector, attSelector, attVal, attScope);
             } else {
-                let actionArr = KaToolsV1.eval(attVal, attScope, selector)
-                for (let eventName in actionArr) {
-                    selector.addEventListener(eventName, (e) => {
-                        attScope["$event"] = e;
-                        return actionArr[eventName](attScope, e);
-                    });
+                let callBackMap = KaToolsV1.eval(attVal, attScope, selector);
+                for(let curAction in callBackMap) {
+                    registerEventHandler(selector, curAction, callBackMap[curAction], attScope);
                 }
+
             }
-            selector._ka_on = true;
             continue;
         }
 
@@ -138,7 +151,6 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 break;
 
             case "options":
-                console.log(selector, selector.value);
                 let value = selector.value;
                 selector.innerHTML = "";
                 for (let option in r) {
