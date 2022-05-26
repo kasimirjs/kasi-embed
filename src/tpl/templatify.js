@@ -19,7 +19,7 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
         returnTpl.setAttribute("_kaidx", (KaToolsV1._ka_el_idx++).toString())
         /* @var {HTMLTemplateElement} returnTpl */
         returnTpl.innerHTML = elem.innerHTML
-            .replaceAll(/\[\[(.*?)\]\]/g, (matches, m1) => `<span ka.textContent="${m1}"></span>`);
+            .replace(/\[\[(.*?)\]\]/g, (matches, m1) => `<span ka.textContent="${m1}"></span>`);
 
         KaToolsV1.templatify(returnTpl.content, false);
         return returnTpl;

@@ -199,6 +199,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 if (typeof scope.$ref === "undefined")
                     scope.$ref = {};
                 scope.$ref[r] = selector;
+                scope.$ref.$last = selector;
                 break;
 
             case "classlist":
@@ -222,6 +223,17 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
 
 
             case "bindarray":
+                if (attSelector === "default")
+                    continue;
+                if (typeof r === "undefined") {
+                    // Bind default values
+                    if (selector.hasAttribute("ka.bind.default")) {
+                        scope = {$scope: scope, ...scope};
+                        scope = {$scope: scope, ...scope, __curVal: KaToolsV1.eval(selector.getAttribute("ka.bind.default"), scope, this)}
+                        KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                        r = scope.__curVal;
+                    }
+                }
                 if ( ! Array.isArray(r)) {
                     console.error("kap:bindarr: Not an array!", r, selector);
                     return;
@@ -250,6 +262,17 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 break;
 
             case "bind":
+                if (attSelector === "default")
+                    continue;
+                if (typeof r === "undefined") {
+                    // Bind default values
+                    if (selector.hasAttribute("ka.bind.default")) {
+                        scope = {$scope: scope, ...scope};
+                        scope = {$scope: scope, ...scope, __curVal: KaToolsV1.eval(selector.getAttribute("ka.bind.default"), scope, this)}
+                        KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                        r = scope.__curVal;
+                    }
+                }
                 if (selector.type === "checkbox" || selector.type === "radio") {
                     if (r === true)
                         selector.checked = true;
@@ -413,7 +436,7 @@ KaToolsV1.templatify = (elem, returnMode=true) => {
         returnTpl.setAttribute("_kaidx", (KaToolsV1._ka_el_idx++).toString())
         /* @var {HTMLTemplateElement} returnTpl */
         returnTpl.innerHTML = elem.innerHTML
-            .replaceAll(/\[\[(.*?)\]\]/g, (matches, m1) => `<span ka.textContent="${m1}"></span>`);
+            .replace(/\[\[(.*?)\]\]/g, (matches, m1) => `<span ka.textContent="${m1}"></span>`);
 
         KaToolsV1.templatify(returnTpl.content, false);
         return returnTpl;

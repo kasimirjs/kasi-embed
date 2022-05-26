@@ -1,0 +1,21 @@
+---
+title: Events
+---
+
+<template id="evt1">
+    <div >
+        <input type="text" ka.bind="data.name" ka.bind.default="'Hallo Spencer'">
+    </div>
+</template>
+
+<div id="output1"></div>
+<script>
+
+    let tpl = KaToolsV1.templatify(KaToolsV1.querySelector("#evt1"));
+    document.querySelector("#output1").appendChild(tpl);
+    let renderer = new KaToolsV1.Template(tpl);
+    renderer.render({
+        data: {},
+    });
+    console.log(renderer.$scope);
+</script>
