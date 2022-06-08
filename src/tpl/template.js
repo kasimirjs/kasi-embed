@@ -44,11 +44,18 @@ KaToolsV1.Template = class {
 
     _renderFor($scope, stmt) {
         //console.log("kachilds", this.template.__kachilds);
-        let matches = stmt.match(/^(let)?\s*(?<target>.+)\s+(?<type>of|in)\s+(?<select>.+)$/);
+        let matches = stmt.match(/^(let)?\s*(?<target>.+)\s+(?<type>of|in|repeat)\s+(?<select>.+)$/);
         if (matches === null) {
             this._error(`Can't parse ka.for='${stmt}'`);
         }
         let selectVal = KaToolsV1.eval(matches.groups.select, $scope, this.template);
+
+        if (matches.groups.type === "repeat") {
+            if (typeof selectVal !== "number")
+                this._error(`Error ka.for='${stmt}': Selected val must be number in repeat loop`);
+            selectVal = new Array(selectVal).fill(null);
+        }
+
         let eIndex = 0;
         for (let index in selectVal) {
             let curScope = {$scope: $scope, ...$scope};

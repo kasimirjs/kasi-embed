@@ -192,13 +192,17 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
             continue;
         }
 
-        let r = KaToolsV1.eval(attVal, scope, selector);
+        let r = null;
+        if (typeof attVal !== "undefined" && typeof attVal !== null && attVal !== "")
+            r = KaToolsV1.eval(attVal, scope, selector);
 
         switch (attType) {
             case "ref":
                 if (typeof scope.$ref === "undefined")
                     scope.$ref = {};
-                scope.$ref[r] = selector;
+                // Allow ref without parameter to use $ref.$last
+                if (r !== null)
+                    scope.$ref[r] = selector;
                 scope.$ref.$last = selector;
                 break;
 
@@ -229,7 +233,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                     // Bind default values
                     if (selector.hasAttribute("ka.bind.default")) {
                         scope = {$scope: scope, ...scope};
-                        scope = {$scope: scope, ...scope, __curVal: KaToolsV1.eval(selector.getAttribute("ka.bind.default"), scope, this)}
+                        scope = {$scope: scope, ...scope, __curVal: KaToolsV1.eval(selector.getAttribute("ka.bind.default"), scope, selector)}
                         KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
                         r = scope.__curVal;
                     }
@@ -268,16 +272,23 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                     // Bind default values
                     if (selector.hasAttribute("ka.bind.default")) {
                         scope = {$scope: scope, ...scope};
-                        scope = {$scope: scope, ...scope, __curVal: KaToolsV1.eval(selector.getAttribute("ka.bind.default"), scope, this)}
+                        scope = {$scope: scope, ...scope, __curVal: KaToolsV1.eval(selector.getAttribute("ka.bind.default"), scope, selector)}
                         KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
                         r = scope.__curVal;
                     }
                 }
                 if (selector.type === "checkbox" || selector.type === "radio") {
-                    if (r === true)
-                        selector.checked = true;
-                    else
-                        selector.checked = false;
+                    if (selector.hasAttribute("value")) {
+                        if (r === selector.getAttribute("value"))
+                            selector.checked = true;
+                        else
+                            selector.checked = false;
+                    } else {
+                        if (r === true)
+                            selector.checked = true;
+                        else
+                            selector.checked = false;
+                    }
                 } else {
                     selector.value = typeof r !== "undefined" ? r : "";
                 }
@@ -287,7 +298,13 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
 
                         let value = null;
                         if (selector.type === "checkbox" || selector.type === "radio") {
-                            value = selector.checked
+                            if (selector.hasAttribute("value")) {
+                                if (selector.checked === false)
+                                    return;
+                                value = selector.getAttribute("value");
+                            } else {
+                                value = selector.checked
+                            }
                         } else {
                             value = selector.value
                         }
@@ -523,11 +540,18 @@ KaToolsV1.Template = class {
 
     _renderFor($scope, stmt) {
         //console.log("kachilds", this.template.__kachilds);
-        let matches = stmt.match(/^(let)?\s*(?<target>.+)\s+(?<type>of|in)\s+(?<select>.+)$/);
+        let matches = stmt.match(/^(let)?\s*(?<target>.+)\s+(?<type>of|in|repeat)\s+(?<select>.+)$/);
         if (matches === null) {
             this._error(`Can't parse ka.for='${stmt}'`);
         }
         let selectVal = KaToolsV1.eval(matches.groups.select, $scope, this.template);
+
+        if (matches.groups.type === "repeat") {
+            if (typeof selectVal !== "number")
+                this._error(`Error ka.for='${stmt}': Selected val must be number in repeat loop`);
+            selectVal = new Array(selectVal).fill(null);
+        }
+
         let eIndex = 0;
         for (let index in selectVal) {
             let curScope = {$scope: $scope, ...$scope};
