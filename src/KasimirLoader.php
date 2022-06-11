@@ -13,6 +13,7 @@ class KasimirLoader
         "core/debounce.js",
         "core/sleep.js",
         "core/eval.js",
+        "core/str-to-camelcase.js",
         "core/apply.js",
         "core/elwalk.js",
         "core/is-constructor.js",

@@ -92,11 +92,12 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
 
             case "style":
                 if (attSelector  !== null) {
-                    selector.style[attSelector] = r;
+
+                    selector.style[KaToolsV1.strToCamelCase(attSelector)] = r;
                     break;
                 }
                 for (let cname in r) {
-                    selector.style[cname] = r[cname];
+                    selector.style[KaToolsV1.strToCamelCase(cname)] = r[cname];
                 }
                 break;
 
