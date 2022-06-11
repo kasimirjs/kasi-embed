@@ -44,7 +44,11 @@ KaToolsV1.CustomElement = class extends HTMLElement {
         }
 
         if (this.constructor.__tpl !== null) {
-            let tpl = KaToolsV1.templatify(this.constructor.__tpl);
+            let origTpl = this.constructor.__tpl;
+            if (origTpl instanceof KaToolsV1.RemoteTemplate)
+                origTpl = await origTpl.load();
+
+            let tpl = KaToolsV1.templatify(origTpl);
             this.appendChild(tpl);
             this.__tpl = new KaToolsV1.Template(tpl);
         }
