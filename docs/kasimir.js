@@ -224,7 +224,15 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 }
                 break;
 
-
+            case "style":
+                if (attSelector  !== null) {
+                    selector.style[attSelector] = r;
+                    break;
+                }
+                for (let cname in r) {
+                    selector.style[cname] = r[cname];
+                }
+                break;
 
             case "bindarray":
                 if (attSelector === "default")
