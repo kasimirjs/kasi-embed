@@ -49,7 +49,14 @@ KaToolsV1.CustomElement = class extends HTMLElement {
                 origTpl = await origTpl.load();
 
             let tpl = KaToolsV1.templatify(origTpl);
-            this.appendChild(tpl);
+
+            if (this.constructor.__options.shadowDom === true) {
+                let shadowDom = this.attachShadow(this.constructor.__options.shadowDomOptions);
+                shadowDom.appendChild(tpl);
+            } else {
+                this.appendChild(tpl);
+            }
+
             this.__tpl = new KaToolsV1.Template(tpl);
         }
 

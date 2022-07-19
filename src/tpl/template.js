@@ -94,8 +94,8 @@ KaToolsV1.Template = class {
                 }
 
                 KaToolsV1.apply(el, $scope);
-                if (el instanceof HTMLElement && el.tagName.indexOf("-") !== -1)
-                    return false; // Skip CustomElements, must have - in name, (apply but don't go into elements)
+                if (el instanceof HTMLElement && (el.hasAttribute("ka.stop") || el instanceof KaToolsV1.CustomElement))
+                    return false; // Skip Element rendering
             }, true, true);
         }
     }

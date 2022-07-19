@@ -7,7 +7,14 @@
  * @param options
  * @returns {Promise<void>}
  */
-KaToolsV1.ce_define = async (elementName, controller, template=null, options={waitEvent: null}) => {
+KaToolsV1.ce_define = async (elementName, controller, template=null, options={waitEvent: null, shadowDom: false, shadowDomOptions: {mode: 'open'}}) => {
+    let opts = {
+        waitEvent: null,
+        shadowDom: false,
+        shadowDomOptions: {mode: 'open'},
+        ...options
+    }
+
     template = await template;
     let ctrlClass = null;
     if ( KaToolsV1.is_constructor(controller)) {
@@ -19,7 +26,7 @@ KaToolsV1.ce_define = async (elementName, controller, template=null, options={wa
     }
 
     ctrlClass.__tpl = template;
-    ctrlClass.__options = options;
+    ctrlClass.__options = opts;
 
     customElements.define(elementName, ctrlClass);
 
