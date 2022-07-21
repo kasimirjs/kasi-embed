@@ -92,12 +92,17 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
 
             case "style":
                 if (attSelector  !== null) {
-
-                    selector.style[KaToolsV1.strToCamelCase(attSelector)] = r;
+                    let val = r;
+                    if (typeof val === "number" && ["left", "top", "height", "width", "bottom", "right", "line-height", "font-size"].indexOf(attSelector) !== -1)
+                        val = val + "px";
+                    selector.style[KaToolsV1.strToCamelCase(attSelector)] = val;
                     break;
                 }
                 for (let cname in r) {
-                    selector.style[KaToolsV1.strToCamelCase(cname)] = r[cname];
+                    let val = r[cname];
+                    if (typeof val === "number" && ["left", "top", "height", "width", "bottom", "right", "line-height", "font-size"].indexOf(cname) !== -1)
+                        val = val + "px";
+                    selector.style[KaToolsV1.strToCamelCase(cname)] = val;
                 }
                 break;
 
@@ -238,11 +243,11 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
             case "prop":
                 if (attSelector  !== null) {
                     // Set Property directly
-                    selector[attSelector] = r;
+                    selector[KaToolsV1.strToCamelCase(attSelector)] = r;
                     break;
                 }
                 for (let cname in r) {
-                    selector[cname] = r[cname];
+                    selector[KaToolsV1.strToCamelCase(cname)] = r[cname];
                 }
                 break;
 
