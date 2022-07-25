@@ -32,6 +32,8 @@ class KasimirLoader
 
         "core/autostart.js",
         "core/router.js",
+
+        "default/event-dispatcher.js",
     ];
 
 
