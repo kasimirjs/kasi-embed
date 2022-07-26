@@ -5,7 +5,8 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
 
     let attMap = {
         "textcontent": "textContent",
-        "htmlcontent": "htmlContent"
+        "htmlcontent": "innerHTML",
+        "innerhtml": "innerHTML",
     }
 
     for(let attName of selector.getAttributeNames()) {

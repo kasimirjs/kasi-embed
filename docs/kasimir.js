@@ -131,6 +131,43 @@ KaToolsV1.eval = (stmt, __scope, e, __refs) => {
     }
 }
 
+/* from core/import-template.js */
+/**
+ * Import a node from external template in current context including the script tags
+ *
+ * @param node {HTMLElement}
+ * @param src {string}      The source filename (for debugging)
+ */
+KaToolsV1.importTemplate = function (node, src="undefined file") {
+    let chels = node instanceof HTMLTemplateElement ? node.content.childNodes : node.childNodes;
+
+    for (let s of chels) {
+        if (s.tagName !== "SCRIPT") {
+            KaToolsV1.importTemplate(s, src);
+            continue;
+        }
+        let n = document.createElement("script");
+
+        for (let attName of s.getAttributeNames())
+            n.setAttribute(attName, s.getAttribute(attName));
+        n.innerHTML = s.innerHTML;
+        try {
+            let handler = onerror;
+            window.onerror = (msg, url, line) => {
+                console.error(`[ka-include]: Script error in '${src}': ${msg} in line ${line}:\n>>>>>>>>\n`,
+                    n.innerHTML.split("\n")[line-1],
+                    "\n<<<<<<<<\n",
+                    n.innerHTML);
+            }
+            s.replaceWith(n);
+            window.onerror = handler;
+        } catch (e) {
+            console.error(`[ka-include]: Script error in '${src}': ${e}`, e);
+            throw e;
+        }
+    }
+}
+
 /* from core/str-to-camelcase.js */
 /**
  * Transform any input to CamelCase
@@ -141,10 +178,7 @@ KaToolsV1.eval = (stmt, __scope, e, __refs) => {
  * @return {string}
  */
 KaToolsV1.strToCamelCase = function (str) {
-    return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
-        if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
-        return index === 0 ? match.toLowerCase() : match.toUpperCase();
-    });
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, idx) => idx === 0 ? ltr.toLowerCase() : ltr.toUpperCase()).replace(/[^a-zA-Z0-9]+/g, '');
 }
 
 /* from core/apply.js */
@@ -155,7 +189,8 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
 
     let attMap = {
         "textcontent": "textContent",
-        "htmlcontent": "htmlContent"
+        "htmlcontent": "innerHTML",
+        "innerhtml": "innerHTML",
     }
 
     for(let attName of selector.getAttributeNames()) {
@@ -536,6 +571,7 @@ KaToolsV1.Template = class {
         if (typeof this.template.__kasibling === "undefined")
             this.template.__kasibling = this.template.nextElementSibling;
 
+        this.__renderCount = 0;
         this.$scope = {};
     }
 
@@ -660,6 +696,7 @@ KaToolsV1.Template = class {
         if ($scope === null)
             $scope = this.$scope;
         this.$scope = $scope;
+        $this.__renderCount++;
 
         if (this.template.hasAttribute("ka.for")) {
             this._renderFor($scope, this.template.getAttribute("ka.for"));
@@ -673,6 +710,16 @@ KaToolsV1.Template = class {
             this._maintain($scope, this.template.__kachilds);
         }
     }
+
+    /**
+     * Return true if this template was renderd the first time
+     *
+     * @returns {boolean}
+     */
+    isFirstRender() {
+        return this.__renderCount === 1;
+    }
+
 };
 
 /* from app/getArgs.js */
@@ -938,6 +985,12 @@ KaToolsV1.CustomElement = class extends HTMLElement {
          */
         this.__tpl = null;
 
+        /**
+         *
+         * @type {KaToolsV1.EventDispatcher}
+         * @private
+         */
+        this.__eventDispatcher = null;
         this.__isConnected = false;
     }
 
@@ -950,6 +1003,14 @@ KaToolsV1.CustomElement = class extends HTMLElement {
         return this.__tpl
     }
 
+    /**
+     * Get the application internal event dispatcher
+     *
+     * @returns {KaToolsV1.EventDispatcher}
+     */
+    get $eventDispatcher () {
+        return this.__eventDispatcher
+    }
 
     isConnected() {
         return this.isConnected;
@@ -964,6 +1025,7 @@ KaToolsV1.CustomElement = class extends HTMLElement {
     }
 
     async connectedCallback() {
+        this.__eventDispatcher = await KaToolsV1.provider.get("$eventDispatcher");
         let callback = this.constructor.__callback;
         if (callback === null) {
         } else {

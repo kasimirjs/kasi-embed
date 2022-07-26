@@ -11,6 +11,12 @@ KaToolsV1.CustomElement = class extends HTMLElement {
          */
         this.__tpl = null;
 
+        /**
+         *
+         * @type {KaToolsV1.EventDispatcher}
+         * @private
+         */
+        this.__eventDispatcher = null;
         this.__isConnected = false;
     }
 
@@ -23,6 +29,14 @@ KaToolsV1.CustomElement = class extends HTMLElement {
         return this.__tpl
     }
 
+    /**
+     * Get the application internal event dispatcher
+     *
+     * @returns {KaToolsV1.EventDispatcher}
+     */
+    get $eventDispatcher () {
+        return this.__eventDispatcher
+    }
 
     isConnected() {
         return this.isConnected;
@@ -37,6 +51,7 @@ KaToolsV1.CustomElement = class extends HTMLElement {
     }
 
     async connectedCallback() {
+        this.__eventDispatcher = await KaToolsV1.provider.get("$eventDispatcher");
         let callback = this.constructor.__callback;
         if (callback === null) {
         } else {

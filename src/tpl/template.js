@@ -10,6 +10,7 @@ KaToolsV1.Template = class {
         if (typeof this.template.__kasibling === "undefined")
             this.template.__kasibling = this.template.nextElementSibling;
 
+        this.__renderCount = 0;
         this.$scope = {};
     }
 
@@ -134,6 +135,7 @@ KaToolsV1.Template = class {
         if ($scope === null)
             $scope = this.$scope;
         this.$scope = $scope;
+        $this.__renderCount++;
 
         if (this.template.hasAttribute("ka.for")) {
             this._renderFor($scope, this.template.getAttribute("ka.for"));
@@ -147,4 +149,14 @@ KaToolsV1.Template = class {
             this._maintain($scope, this.template.__kachilds);
         }
     }
+
+    /**
+     * Return true if this template was renderd the first time
+     *
+     * @returns {boolean}
+     */
+    isFirstRender() {
+        return this.__renderCount === 1;
+    }
+
 };

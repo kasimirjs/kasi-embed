@@ -17,7 +17,8 @@ command:
 
   dev:
     - killall jekyll ||  echo "no job"
-    - D:kick jekyll
+    - sleep 1
+    - "D:kick jekyll"
 
   killall:
     killall jekyll
