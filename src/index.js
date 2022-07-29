@@ -16,7 +16,7 @@ import "tpl/template.js"
 import "app/getArgs.js"
 import "app/provider.js"
 
-import "ce/ce_define.js"
+import "ce/ce_define"
 import "ce/html.js"
 import "ce/htmlFile.js"
 import "ce/loadHtml.js"
