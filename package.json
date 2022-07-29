@@ -1,0 +1,30 @@
+{
+  "name": "kasimir-embed",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kasimirjs/kasi-editor.git"
+  },
+  "author": "Matthias Leuffen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kasimirjs/kasi-editor/issues"
+  },
+  "homepage": "https://github.com/kasimirjs/kasi-editor#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "webpack": "*",
+    "webpack-cli": "*",
+    "webpack-dev-server": "*"
+  }
+}
