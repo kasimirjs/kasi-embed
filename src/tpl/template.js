@@ -135,7 +135,7 @@ KaToolsV1.Template = class {
         if ($scope === null)
             $scope = this.$scope;
         this.$scope = $scope;
-        $this.__renderCount++;
+        this.__renderCount++;
 
         if (this.template.hasAttribute("ka.for")) {
             this._renderFor($scope, this.template.getAttribute("ka.for"));

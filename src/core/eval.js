@@ -24,7 +24,7 @@ KaToolsV1.eval = (stmt, __scope, e, __refs) => {
         // console.log(r + '(' + stmt + ')');
         return eval(r  + '('+stmt+')')
     } catch (ex) {
-        console.error("cannot eval() stmt: '" + stmt + "': " + ex + " on element ", e, "(context:", __scope, ")");
+        console.error("cannot eval() stmt: '" + stmt + "': " + ex, " on element ", e, ex, "(context:", __scope, ")");
         throw "eval('" + stmt + "') failed: " + ex;
     }
 }

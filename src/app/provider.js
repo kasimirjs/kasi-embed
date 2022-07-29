@@ -10,9 +10,10 @@ KaToolsV1.provider = new class {
      * Get / wait for a value
      *
      * @param name
+     * @param lateResolving {boolean}   Trigger no warning if the name is not yet resolvable (late resolving)
      * @returns {Promise<unknown>}
      */
-    async get(name) {
+    async get(name, lateResolving=false) {
         return new Promise(async (resolve, reject) => {
             let service = this._services[name];
             if (typeof service === "undefined") {
@@ -23,6 +24,8 @@ KaToolsV1.provider = new class {
                     state: null,
                     promises: [{resolve, reject}]
                 }
+                if (!lateResolving)
+                    console.warn("trying to get undefined service " + name);
                 return
             }
 
@@ -67,6 +70,9 @@ KaToolsV1.provider = new class {
      * @returns {Promise<Array>}
      */
     async arguments(cb, params = {}) {
+        if (! (typeof cb === "function")) {
+            throw "Invalid function in parameter 1: " + cb;
+        }
         return new Promise(async (resolve, reject) => {
             let args = KaToolsV1.getArgs(cb);
             let retArgs = [];

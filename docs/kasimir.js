@@ -131,7 +131,7 @@ KaToolsV1.eval = (stmt, __scope, e, __refs) => {
     }
 }
 
-/* from core/import-template.js */
+/* from core/exec-imported-script-tags.js */
 /**
  * Import a node from external template in current context including the script tags
  *
