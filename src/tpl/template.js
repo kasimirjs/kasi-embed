@@ -1,5 +1,5 @@
 
-
+import {KaToolsV1} from "../core/init";
 
 KaToolsV1.Template = class {
 
@@ -115,7 +115,7 @@ KaToolsV1.Template = class {
     }
 
     /**
-     * Remove all rendered elements
+     * Remove all rendered element
      */
     dispose() {
         for(;this.template.__kachilds.length > 0;)

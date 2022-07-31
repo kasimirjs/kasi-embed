@@ -1,3 +1,4 @@
+import {KaToolsV1} from "../core/init";
 
 KaToolsV1.apply = (selector, scope, recursive=false) => {
     if (typeof selector === "string")

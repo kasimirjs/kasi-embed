@@ -1,3 +1,5 @@
+import {KaToolsV1} from "../core/init";
+
 /**
  * Return array of arguments of the function
  *

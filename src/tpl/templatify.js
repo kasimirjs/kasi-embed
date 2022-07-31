@@ -1,3 +1,4 @@
+import {KaToolsV1} from "../core/init";
 
 KaToolsV1._ka_el_idx = 0;
 /**

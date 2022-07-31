@@ -1,3 +1,5 @@
+import {KaToolsV1} from "../core/init";
+
 /**
  *
  * @param {HTMLElement} elem

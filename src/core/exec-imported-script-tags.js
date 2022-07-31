@@ -1,3 +1,5 @@
+import {KaToolsV1} from "../core/init";
+
 /**
  * Execute scirpt tag imported from a template or remote location
  *

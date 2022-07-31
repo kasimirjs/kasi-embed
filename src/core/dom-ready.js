@@ -1,3 +1,5 @@
+import {KaToolsV1} from "./init";
+
 /**
  * Wait for DomContentLoaded or resolve immediate
  *

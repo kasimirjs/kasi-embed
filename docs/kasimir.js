@@ -676,7 +676,7 @@ KaToolsV1.Template = class {
     }
 
     /**
-     * Remove all rendered elements
+     * Remove all rendered element
      */
     dispose() {
         for(;this.template.__kachilds.length > 0;)
@@ -1114,7 +1114,7 @@ KaToolsV1.CustomElement = class extends HTMLElement {
 /* from core/router.js */
 
 
-/* from default/event-dispatcher.js */
+/* from default/MessageBus.js */
 /**
  * Access this by using Dependency Injection $eventDispatcher
  *

@@ -1,3 +1,5 @@
+import {KaToolsV1} from "../core/init";
+
 /**
  * Query a Element or trigger an Exception
  *

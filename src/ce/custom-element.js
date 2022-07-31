@@ -1,8 +1,10 @@
+import {KaToolsV1} from "../core/init";
 
 KaToolsV1.CustomElement = class extends HTMLElement {
 
     constructor(props) {
         super(props);
+
         /**
          *
          * @public
@@ -51,7 +53,8 @@ KaToolsV1.CustomElement = class extends HTMLElement {
     }
 
     async connectedCallback() {
-        this.__eventDispatcher = await KaToolsV1.provider.get("$eventDispatcher");
+
+        this.__eventDispatcher = await KaToolsV1.provider.get("$bus");
         let callback = this.constructor.__callback;
         if (callback === null) {
         } else {

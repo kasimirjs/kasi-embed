@@ -1,3 +1,5 @@
+import {KaToolsV1} from "../core/init";
+
 /**
  * Transform any input to CamelCase
  *

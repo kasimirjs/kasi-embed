@@ -1,3 +1,5 @@
+import {KaToolsV1} from "../core/init";
+
 /**
  * Returns true if fn in parameter 1 is a contructor
  *
