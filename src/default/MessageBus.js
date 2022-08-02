@@ -1,7 +1,6 @@
 
 import {KaMessage} from "./Message";
 
-let kaMessageBusInstance = null;
 
 /**
  * Access this by using Dependency Injection $bus
@@ -20,19 +19,9 @@ export class KaMessageBus {
 
     /**
      *
-     * @return {KaMessageBus}
-     */
-    static getInstance() {
-        if (kaMessageBusInstance === null)
-            kaMessageBusInstance = new KaMessageBus();
-        return kaMessageBusInstance;
-    }
-
-    /**
-     *
      * @template T
-     * @param message KaToolsV1.Message<T>
-     * @param fn {function(event: <T>)}
+     * @param message T
+     * @param fn {function(msg: T<>)}
      * @returns {string}    The listener ID to unregister
      */
     on(message, fn) {
@@ -50,7 +39,7 @@ export class KaMessageBus {
 
     /**
      *
-     * @param message {KaMessageBus}
+     * @param message {KaMessage}
      */
     async trigger(message) {
         for (let curListenerId in this.listeners) {

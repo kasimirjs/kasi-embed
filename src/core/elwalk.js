@@ -22,7 +22,7 @@ export function ka_elwalk (elem, fn, recursive=false, includeFirst=false) {
             continue; // No recursiion
 
         if (recursive && typeof child.children !== "undefined")
-            KaToolsV1.elwalk(child, fn, recursive);
+            ka_elwalk(child, fn, recursive);
 
     }
 }

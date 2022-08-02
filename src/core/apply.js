@@ -38,7 +38,7 @@ export function ka_apply (selector, scope, recursive=false) {
                 if (typeof callbackOrCode === "function") {
                     return callbackOrCode(e, element, scope);
                 } else {
-                    return KaToolsV1.eval(callbackOrCode, scope, element);
+                    return ka_eval(callbackOrCode, scope, element);
                 }
             };
         }

@@ -12,6 +12,8 @@ import {KaToolsV1} from "../core/init";
  * @return {HTMLElement|null}
  */
 export function ka_get_parent_element (selector, element) {
+    if (element === null)
+        return null;
     if (selector instanceof HTMLElement) {
         if (selector === element) {
             return element;
@@ -22,5 +24,5 @@ export function ka_get_parent_element (selector, element) {
     }
     if (element.parentElement === null)
         return null;
-    return KaToolsV1.getParentElement(selector, element.parentElement);
+    return ka_get_parent_element(selector, element.parentElement);
 }

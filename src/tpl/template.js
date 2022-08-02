@@ -1,6 +1,7 @@
 import {ka_eval} from "../core/eval";
 import {ka_elwalk} from "../core/elwalk";
 import {ka_apply} from "../core/apply";
+import {KaCustomElement} from "../ce/custom-element";
 
 
 export class KaTemplate {
@@ -97,7 +98,7 @@ export class KaTemplate {
                 }
 
                 ka_apply(el, $scope);
-                if (el instanceof HTMLElement && (el.hasAttribute("ka.stop") || el instanceof KaToolsV1.CustomElement))
+                if (el instanceof HTMLElement && (el.hasAttribute("ka.stop") || el instanceof KaCustomElement))
                     return false; // Skip Element rendering
             }, true, true);
         }
@@ -105,7 +106,7 @@ export class KaTemplate {
 
 
     _renderIf($scope, stmt) {
-         let selectVal = KaToolsV1.eval(stmt, $scope, this.template);
+         let selectVal = ka_eval(stmt, $scope, this.template);
         if (selectVal === true) {
             if (this.template.__kachilds.length === 0)
                 this._appendTemplate();

@@ -1,9 +1,26 @@
 import {KaToolsV1} from "../core/init";
 
+
+let _ka_container = null;
+
 export class KaContainer {
 
     constructor() {
         this._services = {};
+    }
+
+
+    static createInstance(instance) {
+        _ka_container = instance;
+    }
+
+    /**
+     *
+     * @abstract
+     * @return {KaContainer}
+     */
+    static getInstance() {
+        return _ka_container;
     }
 
 
@@ -52,11 +69,11 @@ export class KaContainer {
         service.state = "waiting";
 
         try {
-            service.value = await service.cb(...await this.arguments(service.cb, service.params));
+            service.value = await service.cb();
             service.state = "resolved";
             service.promises.forEach(prom => prom.resolve(service.value));
         } catch (e) {
-            service.value = await service.cb(...await this.arguments(service.cb, service.params));
+            service.value = await service.cb();
             service.state = "rejected";
             service.promises.forEach(prom => prom.reject(e));
         }

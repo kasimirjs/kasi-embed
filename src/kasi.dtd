@@ -1,9 +1,0 @@
-<!ENTITY % kasimir
-        "ka:if     %Script;       #IMPLIED
-  ka:for  %Script;       #IMPLIED
-">
-<!ENTITY % Script "CDATA">
-<!ATTLIST div
-        ka:if   %Script;  #IMPLIED
-        ks:for  %Script;
-        >

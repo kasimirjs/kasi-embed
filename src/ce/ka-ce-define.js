@@ -1,3 +1,6 @@
+import {ka_is_constructor} from "../core/is-constructor";
+
+import {KaCustomElement} from "./custom-element";
 
 /**
  * Define a new CustomElement
@@ -18,11 +21,11 @@ export async function ka_ce_define(elementName, controller, template=null, optio
 
     template = await template;
     let ctrlClass = null;
-    if ( KaToolsV1.is_constructor(controller)) {
+    if (ka_is_constructor(controller)) {
         ctrlClass = controller;
         ctrlClass.__callback = null;
     } else {
-        ctrlClass = class extends KaToolsV1.CustomElement{};
+        ctrlClass = class extends KaCustomElement{};
         ctrlClass.__callback = controller;
     }
 

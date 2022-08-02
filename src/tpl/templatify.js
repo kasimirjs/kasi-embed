@@ -1,4 +1,5 @@
 import {ka_query_selector} from "../core/query-select";
+import {ka_elwalk} from "../core/elwalk";
 
 
 window._ka_el_idx = 0;
@@ -41,7 +42,7 @@ export function ka_templatify (elem, returnMode=true) {
         return tpl;
     }
 
-    KaToolsV1.elwalk(elem, (el) => {
+    ka_elwalk(elem, (el) => {
         //console.log(el);
         if ( ! el instanceof HTMLElement)
             return;
