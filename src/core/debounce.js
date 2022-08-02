@@ -1,6 +1,6 @@
-import {KaToolsV1} from "../core/init";
 
-KaToolsV1._debounceInterval = {i: null, time: null};
+
+const _debounceInterval = {i: null, time: null};
 
 /**
  * Debounce a event
@@ -11,10 +11,10 @@ KaToolsV1._debounceInterval = {i: null, time: null};
  * @param max   Trigger event automatically after this time
  * @return {Promise<unknown>}
  */
-KaToolsV1.debounce = async (min, max=null) => {
+export async function ka_debounce (min, max=null) {
     if (max === null)
         max = min;
-    let dbi = KaToolsV1._debounceInterval;
+    let dbi = _debounceInterval;
     return new Promise((resolve) => {
         if (dbi.time < (+new Date()) - max && dbi.i !== null) {
             return resolve();

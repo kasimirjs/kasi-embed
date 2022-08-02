@@ -1,15 +1,14 @@
-import {KaToolsV1} from "../core/init";
 
 /**
  * Define a new CustomElement
  *
- * @param elementName
- * @param controller
- * @param template
+ * @param elementName {string}
+ * @param controller {function($tpl: KaToolsV1.Template, $this: KaToolsV1.CustomElement, $container: KaToolsV1.Container)}
+ * @param template {HTMLTemplateElement|Promise<HTMLTemplateElement>}
  * @param options
  * @returns {Promise<void>}
  */
-KaToolsV1.ce_define = async (elementName, controller, template=null, options={waitEvent: null, shadowDom: false, shadowDomOptions: {mode: 'open'}}) => {
+export async function ka_ce_define(elementName, controller, template=null, options={waitEvent: null, shadowDom: false, shadowDomOptions: {mode: 'open'}}) {
     let opts = {
         waitEvent: null,
         shadowDom: false,

@@ -1,4 +1,4 @@
-import {KaToolsV1} from "../core/init";
+
 
 /**
  * Set the position of the floating (inner) Element to a event or
@@ -7,7 +7,7 @@ import {KaToolsV1} from "../core/init";
  * @param element {HTMLElement}          The Element to apply the position to
  * @param nextTo {PointerEvent|HTMLElement}     The PointerEvent or other Element to
  */
-KaToolsV1.positionElementNextTo = (element, nextTo) => {
+export function ka_position_element_next_to (element, nextTo) {
         let x,y = null;
         let elemRect = element.getBoundingClientRect();
         if (nextTo instanceof Event) {

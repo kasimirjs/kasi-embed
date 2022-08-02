@@ -1,6 +1,5 @@
-import {KaToolsV1} from "../core/init";
 
-KaToolsV1.eval = (stmt, __scope, e, __refs) => {
+export function ka_eval (stmt, __scope, e, __refs) {
     if (stmt.endsWith(";"))
         stmt = stmt.slice(0, -1);
 

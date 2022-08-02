@@ -1,7 +1,9 @@
+import {ka_eval} from "../core/eval";
+import {ka_elwalk} from "../core/elwalk";
+import {ka_apply} from "../core/apply";
 
-import {KaToolsV1} from "../core/init";
 
-KaToolsV1.Template = class {
+export class KaTemplate {
 
     constructor(template) {
         this.template = template;
@@ -49,7 +51,7 @@ KaToolsV1.Template = class {
         if (matches === null) {
             this._error(`Can't parse ka.for='${stmt}'`);
         }
-        let selectVal = KaToolsV1.eval(matches.groups.select, $scope, this.template);
+        let selectVal = ka_eval(matches.groups.select, $scope, this.template);
 
         if (matches.groups.type === "repeat") {
             if (typeof selectVal !== "number")
@@ -81,7 +83,7 @@ KaToolsV1.Template = class {
     _maintain($scope, childs, forIndex=0) {
         for (let child of childs) {
             child._ka_for_index = forIndex;
-            KaToolsV1.elwalk(child, (el) => {
+            ka_elwalk(child, (el) => {
                 //console.log("walk", el);
                 if (el instanceof HTMLTemplateElement) {
                     //console.log("maintain", el);
@@ -94,7 +96,7 @@ KaToolsV1.Template = class {
                     return false;
                 }
 
-                KaToolsV1.apply(el, $scope);
+                ka_apply(el, $scope);
                 if (el instanceof HTMLElement && (el.hasAttribute("ka.stop") || el instanceof KaToolsV1.CustomElement))
                     return false; // Skip Element rendering
             }, true, true);

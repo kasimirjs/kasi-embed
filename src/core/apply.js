@@ -1,6 +1,8 @@
-import {KaToolsV1} from "../core/init";
+import {ka_eval} from "./eval";
+import {ka_str_to_camel_case} from "./str-to-camelcase";
 
-KaToolsV1.apply = (selector, scope, recursive=false) => {
+
+export function ka_apply (selector, scope, recursive=false) {
     if (typeof selector === "string")
         selector = KaToolsV1.querySelector(selector);
 
@@ -34,12 +36,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
             element._ka_on[action] = async(e) => {
                 scope["$event"] = e;
                 if (typeof callbackOrCode === "function") {
-                    return callbackOrCode(... await KaToolsV1.provider.arguments(callbackOrCode, {
-                        ...scope,
-                        "$event": e,
-                        "$this": element,
-                        "$scope": scope
-                    }));
+                    return callbackOrCode(e, element, scope);
                 } else {
                     return KaToolsV1.eval(callbackOrCode, scope, element);
                 }
@@ -62,7 +59,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
 
         let r = null;
         if (typeof attVal !== "undefined" && typeof attVal !== null && attVal !== "")
-            r = KaToolsV1.eval(attVal, scope, selector);
+            r = ka_eval(attVal, scope, selector);
 
         switch (attType) {
             case "ref":
@@ -97,14 +94,14 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                     let val = r;
                     if (typeof val === "number" && ["left", "top", "height", "width", "bottom", "right", "line-height", "font-size"].indexOf(attSelector) !== -1)
                         val = val + "px";
-                    selector.style[KaToolsV1.strToCamelCase(attSelector)] = val;
+                    selector.style[ka_str_to_camel_case(attSelector)] = val;
                     break;
                 }
                 for (let cname in r) {
                     let val = r[cname];
                     if (typeof val === "number" && ["left", "top", "height", "width", "bottom", "right", "line-height", "font-size"].indexOf(cname) !== -1)
                         val = val + "px";
-                    selector.style[KaToolsV1.strToCamelCase(cname)] = val;
+                    selector.style[ka_str_to_camel_case(cname)] = val;
                 }
                 break;
 
@@ -115,8 +112,8 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                     // Bind default values
                     if (selector.hasAttribute("ka.bind.default")) {
                         scope = {$scope: scope, ...scope};
-                        scope = {$scope: scope, ...scope, __curVal: KaToolsV1.eval(selector.getAttribute("ka.bind.default"), scope, selector)}
-                        KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                        scope = {$scope: scope, ...scope, __curVal: ka_eval(selector.getAttribute("ka.bind.default"), scope, selector)}
+                        ka_eval(`${attVal} = __curVal`, scope, selector);
                         r = scope.__curVal;
                     }
                 }
@@ -132,14 +129,14 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                 if (typeof selector._kap_bind === "undefined") {
                     selector.addEventListener("change", (event) => {
 
-                        let arr = KaToolsV1.eval(attVal, scope, selector);
+                        let arr = ka_eval(attVal, scope, selector);
 
                         if (arr.indexOf(selector.value) === -1 && selector.checked)
                             arr.push(selector.value);
                         if (arr.indexOf(selector.value) !== -1 && ! selector.checked)
                             arr = arr.filter((e) => e !== selector.value);
                         scope = {$scope: scope, ...scope, __curVal: arr};
-                        KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                        ka_eval(`${attVal} = __curVal`, scope, selector);
                         if (scope.$on && scope.$on.change)
                             scope.$on.change(event);
                     })
@@ -154,8 +151,8 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                     // Bind default values
                     if (selector.hasAttribute("ka.bind.default")) {
                         scope = {$scope: scope, ...scope};
-                        scope = {$scope: scope, ...scope, __curVal: KaToolsV1.eval(selector.getAttribute("ka.bind.default"), scope, selector)}
-                        KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                        scope = {$scope: scope, ...scope, __curVal: ka_eval(selector.getAttribute("ka.bind.default"), scope, selector)}
+                        ka_eval(`${attVal} = __curVal`, scope, selector);
                         r = scope.__curVal;
                     }
                 }
@@ -191,13 +188,13 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
                             value = selector.value
                         }
                         scope = {$scope: scope, ...scope, __curVal: value}
-                        KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                        ka_eval(`${attVal} = __curVal`, scope, selector);
                         if (scope.$on && scope.$on.change)
                             scope.$on.change(event);
                     })
                     selector.addEventListener("keyup", (event) => {
                         scope = {$scope: scope,...scope, __curVal: selector.value}
-                        KaToolsV1.eval(`${attVal} = __curVal`, scope, selector);
+                        ka_eval(`${attVal} = __curVal`, scope, selector);
                         if (scope.$on && scope.$on.change)
                             scope.$on.change(event);
 
@@ -245,11 +242,11 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
             case "prop":
                 if (attSelector  !== null) {
                     // Set Property directly
-                    selector[KaToolsV1.strToCamelCase(attSelector)] = r;
+                    selector[ka_str_to_camel_case(attSelector)] = r;
                     break;
                 }
                 for (let cname in r) {
-                    selector[KaToolsV1.strToCamelCase(cname)] = r[cname];
+                    selector[ka_str_to_camel_case(cname)] = r[cname];
                 }
                 break;
 
@@ -268,7 +265,7 @@ KaToolsV1.apply = (selector, scope, recursive=false) => {
     }
     if (recursive) {
         for (let e of selector.children) {
-            KaToolsV1.apply(e, scope, recursive);
+            ka_apply(e, scope, recursive);
         }
     }
 }

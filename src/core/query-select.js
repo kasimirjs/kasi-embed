@@ -1,4 +1,3 @@
-import {KaToolsV1} from "../core/init";
 
 /**
  * Query a Element or trigger an Exception
@@ -8,7 +7,7 @@ import {KaToolsV1} from "../core/init";
  * @param exception
  * @return {HTMLElement}
  */
-KaToolsV1.querySelector = (query, parent, exception) => {
+export function ka_query_selector (query, parent, exception) {
     if (typeof exception === "undefined")
         exception = `querySelector '${query}' not found`
     if (typeof parent === "undefined" || parent === null)

@@ -1,15 +1,31 @@
-import {KaToolsV1} from "../core/init";
+
+import {KaMessage} from "./Message";
+
+let kaMessageBusInstance = null;
 
 /**
  * Access this by using Dependency Injection $bus
  *
- * @type {KaToolsV1.EventDispatcher}
+ *
  */
-KaToolsV1.MessageBus = class {
+export class KaMessageBus {
 
+    /**
+     * @private
+     */
     constructor() {
         this.index = 0;
         this.listeners = {};
+    }
+
+    /**
+     *
+     * @return {KaMessageBus}
+     */
+    static getInstance() {
+        if (kaMessageBusInstance === null)
+            kaMessageBusInstance = new KaMessageBus();
+        return kaMessageBusInstance;
     }
 
     /**
@@ -34,7 +50,7 @@ KaToolsV1.MessageBus = class {
 
     /**
      *
-     * @param message {KaToolsV1.Event}
+     * @param message {KaMessageBus}
      */
     async trigger(message) {
         for (let curListenerId in this.listeners) {
@@ -43,7 +59,3 @@ KaToolsV1.MessageBus = class {
         }
     }
 }
-
-KaToolsV1.provider.defineService("$bus", () => new KaToolsV1.MessageBus());
-
-

@@ -5,7 +5,7 @@ import {KaToolsV1} from "../core/init";
  * @param url {string}
  * @return {Promise<HTMLTemplateElement>}
  */
-KaToolsV1.loadHtml = async (url) => {
+export async function loadHtml (url) {
     let e = document.createElement("template");
     let result = await fetch(url);
     if ( ! result.ok) {

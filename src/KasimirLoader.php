@@ -25,7 +25,7 @@ class KasimirLoader
         "app/getArgs.js",
         "app/provider.js",
 
-        "ce/ce_define.js",
+        "ce/ka-ce-define.js",
         "ce/html.js",
         "ce/htmlFile.js",
         "ce/loadHtml.js",

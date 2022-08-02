@@ -1,4 +1,4 @@
-import {KaToolsV1} from "../core/init";
+
 
 /**
  *
@@ -6,7 +6,7 @@ import {KaToolsV1} from "../core/init";
  * @param fn
  * @param recursive
  */
-KaToolsV1.elwalk = (elem, fn, recursive=false, includeFirst=false) => {
+export function ka_elwalk (elem, fn, recursive=false, includeFirst=false) {
     if (Array.isArray(elem))
         elem.children = elem;
     if (typeof elem.children === "undefined")

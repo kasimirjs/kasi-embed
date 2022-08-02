@@ -21,13 +21,12 @@ import "./app/provider.js"
 
 import "./element/widget"
 
-import "./ce/ce_define"
+import "./ce/ka-ce-define"
 import "./ce/html.js"
 import "./ce/htmlFile.js"
 import "./ce/loadHtml.js"
 import "./ce/custom-element.js"
 
-import "./core/autostart.js"
 import "./core/router.js"
 
 import "./default/MessageBus.js"

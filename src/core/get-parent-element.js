@@ -11,7 +11,7 @@ import {KaToolsV1} from "../core/init";
  * @param element {HTMLElement}
  * @return {HTMLElement|null}
  */
-KaToolsV1.getParentElement = (selector, element) => {
+export function ka_get_parent_element (selector, element) {
     if (selector instanceof HTMLElement) {
         if (selector === element) {
             return element;

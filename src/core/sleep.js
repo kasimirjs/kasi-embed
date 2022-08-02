@@ -1,6 +1,5 @@
-import {KaToolsV1} from "../core/init";
 
-KaToolsV1.sleep = (sleepms) => {
+export async function ka_sleep(sleepms) {
     return new Promise((resolve) => {
         window.setTimeout(() => {
             return resolve('done');

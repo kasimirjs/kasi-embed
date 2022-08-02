@@ -1,4 +1,4 @@
-import {KaToolsV1} from "./init";
+
 
 /**
  * Wait for DomContentLoaded or resolve immediate
@@ -9,7 +9,7 @@ import {KaToolsV1} from "./init";
  *
  * @return {Promise<string>}
  */
-KaToolsV1.domReady = async ()=> {
+export async function ka_dom_ready () {
     return new Promise((resolve) => {
         if (document.readyState === "complete" || document.readyState === "loaded" || document.readyState === "interactive")
             return resolve("loaded");

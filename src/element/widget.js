@@ -1,11 +1,10 @@
-import {KaToolsV1} from "../core/init";
+
 
 /**
  * @abstract
  * @class
- * @type {KaToolsV1.Widget}
  */
-KaToolsV1.Widget = class {
+export class KaWidget {
 
     /**
      * Don't call this directly

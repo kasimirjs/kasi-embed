@@ -1,4 +1,3 @@
-import {KaToolsV1} from "../core/init";
 
 /**
  * Create a new Element
@@ -9,7 +8,7 @@ import {KaToolsV1} from "../core/init";
  * @param children {HTMLElement[]}
  * @return HTMLElement
  */
-KaToolsV1.createElement = (tagName, attributes = null,  children = null, appendToElement = null) => {
+export function ka_create_element (tagName, attributes = null,  children = null, appendToElement = null) {
     let e = document.createElement(tagName);
     if (attributes === null)
         attributes = {}

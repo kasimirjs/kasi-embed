@@ -1,4 +1,4 @@
-import {KaToolsV1} from "../core/init";
+
 
 /**
  * Transform any input to CamelCase
@@ -8,6 +8,6 @@ import {KaToolsV1} from "../core/init";
  * @param str {string}
  * @return {string}
  */
-KaToolsV1.strToCamelCase = function (str) {
+export function ka_str_to_camel_case (str) {
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, idx) => idx === 0 ? ltr.toLowerCase() : ltr.toUpperCase()).replace(/[^a-zA-Z0-9]+/g, '');
 }
