@@ -48,7 +48,7 @@ export class KaWidget {
                 shadow.append(t);
                 this.$tpl = new KaToolsV1.Template(t);
             }
-            await this.__init(...await KaToolsV1.provider.arguments(this.__init, {$tpl: this.$tpl}));
+            await this.__init();
             resolve();
         });
 

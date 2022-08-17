@@ -27,6 +27,8 @@ import "./ce/htmlFile.js"
 import "./ce/loadHtml.js"
 import "./ce/custom-element.js"
 
+import "./decorators/inject"
+
 import "./core/router.js"
 
 import "./default/MessageBus.js"
