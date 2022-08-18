@@ -1,6 +1,6 @@
 
 
-const _debounceInterval = {i: null, time: null};
+const _debounceInterval = {i: null as number|null, time: null as number|null};
 
 /**
  * Debounce a event
@@ -11,11 +11,11 @@ const _debounceInterval = {i: null, time: null};
  * @param max   Trigger event automatically after this time
  * @return {Promise<unknown>}
  */
-export async function ka_debounce (min, max=null) {
+export async function ka_debounce (min : number, max : number=null) : Promise<void> {
     if (max === null)
         max = min;
     let dbi = _debounceInterval;
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
         if (dbi.time < (+new Date()) - max && dbi.i !== null) {
             return resolve();
         }
@@ -25,7 +25,7 @@ export async function ka_debounce (min, max=null) {
         dbi.time = (+new Date());
         dbi.i = window.setTimeout(() => {
             dbi.i = null;
-            return resolve('done');
+            return resolve();
 
         }, min);
     });

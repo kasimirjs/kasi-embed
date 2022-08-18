@@ -1,8 +1,8 @@
 import {KaToolsV1} from "./core/init";
-import  "./core/dom-ready"
+import "./core/dom-ready.ts"
 import "./core/query-select.js"
-import "./core/debounce.js"
-import "./core/sleep.js"
+import "./core/debounce.ts"
+import "./core/sleep.ts"
 import "./core/eval.js"
 import "./core/exec-imported-script-tags.js"
 import "./core/str-to-camelcase.js"

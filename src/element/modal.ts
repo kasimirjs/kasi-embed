@@ -1,4 +1,4 @@
-import "./abstract-element";
+import "./AbstractElement";
 import  "../decorators/inject";
 import {Inject} from "../decorators/inject";
 
