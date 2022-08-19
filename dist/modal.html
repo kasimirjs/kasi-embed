@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modal</title>
+    <script src="kasimir.js"></script>
+</head>
+<body>
+    <script>
+
+        console.log("load", window.ka);
+        class TestModal extends ka.modal {
+
+            constructor(props) {
+                super(props);
+
+
+
+            }
+
+            async show() {
+
+                console.log(this);
+                this.render(this);
+
+
+                return super.show();
+            }
+
+            // language=html
+            html = `<div style="">Hello World<button ka.on.click="$scope.resolve()">Click me</button></div>`;
+        }
+
+        (async() => {
+            await (new TestModal()).show()
+        })()
+    </script>
+
+</body>
+</html>

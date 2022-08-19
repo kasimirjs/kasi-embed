@@ -2,13 +2,12 @@ version: 1
 from: "ghcr.io/nfra-project/kickstart-flavor-php:unstable"
 ports: "80:80;4000:4000;4100:4100"
 
-packages: [jekyll, ruby-jekyll-coffeescript, ruby-jekyll-optional-front-matter]
+packages: []
 
 command:
   build:
     - sudo chmod 777 -R /var/www/html
-    - sudo chmod 777 /opt/docs/kasimir.js
-    - composer update
+    - npm install
 
 
 
@@ -18,7 +17,7 @@ command:
   dev:
     - killall jekyll ||  echo "no job"
     - sleep 1
-    - "D:kick jekyll"
+
 
   killall:
     killall jekyll
