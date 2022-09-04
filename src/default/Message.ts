@@ -3,7 +3,7 @@ export interface Message {
 }
 
 export abstract class BasicMessage<T> implements Message {
-    abstract MsgName = T as string;
+    abstract MsgName : string;
 }
 
 

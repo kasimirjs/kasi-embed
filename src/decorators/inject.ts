@@ -1,6 +1,5 @@
 
 import "reflect-metadata";
-import {KaMessageBus} from "../default/MessageBus";
 import {container} from "../app/ka-container";
 
 

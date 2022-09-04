@@ -7,12 +7,16 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
-                exclude: /node_modules/,
+                include: path.resolve(__dirname, 'src'),
+                //exclude: /node_modules/,
             },
         ],
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
+        modules: [
+            "node_modules"
+        ]
     },
     devtool: 'source-map',
     mode: "development",
