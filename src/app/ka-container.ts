@@ -1,18 +1,11 @@
-import {KaToolsV1} from "../core/init";
 
 
-let _ka_container = null;
+
 
 export class KaContainer {
-
-    constructor() {
-        this._services = {};
-    }
+    protected _services : any = {};
 
 
-    static createInstance(instance) {
-        _ka_container = instance;
-    }
 
     /**
      *
@@ -20,7 +13,7 @@ export class KaContainer {
      * @return {KaContainer}
      */
     static getInstance() {
-        return _ka_container;
+        return container;
     }
 
 
@@ -31,7 +24,7 @@ export class KaContainer {
      * @param lateResolving {boolean}   Trigger no warning if the name is not yet resolvable (late resolving)
      * @returns {Promise<unknown>}
      */
-    async get(name, lateResolving=false) {
+    async get(name : string, lateResolving=false) : Promise<any> {
         return new Promise(async (resolve, reject) => {
             let service = this._services[name];
             if (typeof service === "undefined") {
@@ -60,7 +53,7 @@ export class KaContainer {
     }
 
 
-    async _resolve(name) {
+    async _resolve(name : string) {
         let service = this._services[name];
 
         // Resolve only once
@@ -71,11 +64,11 @@ export class KaContainer {
         try {
             service.value = await service.cb();
             service.state = "resolved";
-            service.promises.forEach(prom => prom.resolve(service.value));
+            service.promises.forEach( (prom : any) => prom.resolve(service.value));
         } catch (e) {
             service.value = await service.cb();
             service.state = "rejected";
-            service.promises.forEach(prom => prom.reject(e));
+            service.promises.forEach( (prom : any) => prom.reject(e));
         }
     }
 
@@ -86,7 +79,7 @@ export class KaContainer {
      * @param name {string}
      * @param value {any}
      */
-    defineValue(name, value) {
+    defineValue(name : string, value : any) {
         this.defineService(name, () => value);
     }
 
@@ -97,7 +90,7 @@ export class KaContainer {
      * @param callback {function}
      * @param params {object}
      */
-    defineService(name, callback, params={}) {
+    defineService(name : string, callback : any, params :any ={}) {
         let service = this._services[name];
         if (typeof service === "undefined") {
             this._services[name] = {
@@ -119,3 +112,5 @@ export class KaContainer {
 
     }
 }
+
+export var container = new KaContainer();

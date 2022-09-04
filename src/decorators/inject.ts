@@ -1,15 +1,21 @@
 
 import "reflect-metadata";
 import {KaMessageBus} from "../default/MessageBus";
+import {container} from "../app/ka-container";
 
 
-
+/**
+ * Inject a
+ * @param name
+ */
 export function inject( name : string = null) : any {
 
-
-    return function (target: Object, propertyKey: string | symbol, parameterIndex: number) : any {
-         console.log("inject", target, propertyKey, parameterIndex, name);
-         return Reflect.metadata("inject", name);
+    return async function (target: Object, propertyKey: string | symbol, parameterIndex: number) : Promise<any> {
+         console.log("inject", target, "key", propertyKey, parameterIndex, name);
+         let val = await container.get(propertyKey as string, true);
+         console.log("got value", val);
+         (<any>target)[propertyKey] = val;
+         return target;
     }
 }
 
