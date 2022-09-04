@@ -3,7 +3,7 @@
     "outDir": "./dist/",
     "noImplicitAny": true,
     "module": "es2020",
-    "target": "ES2020",
+    "target": "ES6",
     "jsx": "react",
     "allowJs": true,
     "esModuleInterop": true,
@@ -18,5 +18,8 @@
   },
   "exclude": [
     "./test"
+  ],
+  "files": [
+    "./src/index.js"
   ]
 }
