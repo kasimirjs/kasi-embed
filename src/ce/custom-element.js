@@ -2,6 +2,7 @@ import {KaToolsV1} from "../core/init";
 import {ka_templatify} from "../tpl/templatify";
 import {KaTemplate} from "../tpl/template";
 import {ka_query_selector} from "../core/query-select";
+import {RemoteTemplate} from "./htmlFile";
 
 export class KaCustomElement extends HTMLElement {
 
@@ -48,7 +49,7 @@ export class KaCustomElement extends HTMLElement {
 
         if (this.constructor.__tpl !== null) {
             let origTpl = this.constructor.__tpl;
-            if (origTpl instanceof KaToolsV1.RemoteTemplate)
+            if (origTpl instanceof RemoteTemplate)
                 origTpl = await origTpl.load();
 
             let tpl = ka_templatify(origTpl);
