@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "dist/kasimir.js",
-  "module": "dist/kasimir.js",
+  "main": "src/index.js",
+  "module": "src/index.js",
   "directories": {
     "doc": "docs",
     "lib": "lib"
