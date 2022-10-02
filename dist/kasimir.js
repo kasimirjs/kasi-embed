@@ -1,1143 +1,106 @@
-/******/ (() => { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(self, () => {
+return /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/reflect-metadata/Reflect.js":
-/*!**************************************************!*\
-  !*** ./node_modules/reflect-metadata/Reflect.js ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ "./src/ce/htmlFile.ts":
+/*!****************************!*\
+  !*** ./src/ce/htmlFile.ts ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-/*! *****************************************************************************
-Copyright (C) Microsoft. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
-
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
-
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
-***************************************************************************** */
-var Reflect;
-(function (Reflect) {
-    // Metadata Proposal
-    // https://rbuckton.github.io/reflect-metadata/
-    (function (factory) {
-        var root = typeof __webpack_require__.g === "object" ? __webpack_require__.g :
-            typeof self === "object" ? self :
-                typeof this === "object" ? this :
-                    Function("return this;")();
-        var exporter = makeExporter(Reflect);
-        if (typeof root.Reflect === "undefined") {
-            root.Reflect = Reflect;
-        }
-        else {
-            exporter = makeExporter(root.Reflect, exporter);
-        }
-        factory(exporter);
-        function makeExporter(target, previous) {
-            return function (key, value) {
-                if (typeof target[key] !== "function") {
-                    Object.defineProperty(target, key, { configurable: true, writable: true, value: value });
-                }
-                if (previous)
-                    previous(key, value);
-            };
-        }
-    })(function (exporter) {
-        var hasOwn = Object.prototype.hasOwnProperty;
-        // feature test for Symbol support
-        var supportsSymbol = typeof Symbol === "function";
-        var toPrimitiveSymbol = supportsSymbol && typeof Symbol.toPrimitive !== "undefined" ? Symbol.toPrimitive : "@@toPrimitive";
-        var iteratorSymbol = supportsSymbol && typeof Symbol.iterator !== "undefined" ? Symbol.iterator : "@@iterator";
-        var supportsCreate = typeof Object.create === "function"; // feature test for Object.create support
-        var supportsProto = { __proto__: [] } instanceof Array; // feature test for __proto__ support
-        var downLevel = !supportsCreate && !supportsProto;
-        var HashMap = {
-            // create an object in dictionary mode (a.k.a. "slow" mode in v8)
-            create: supportsCreate
-                ? function () { return MakeDictionary(Object.create(null)); }
-                : supportsProto
-                    ? function () { return MakeDictionary({ __proto__: null }); }
-                    : function () { return MakeDictionary({}); },
-            has: downLevel
-                ? function (map, key) { return hasOwn.call(map, key); }
-                : function (map, key) { return key in map; },
-            get: downLevel
-                ? function (map, key) { return hasOwn.call(map, key) ? map[key] : undefined; }
-                : function (map, key) { return map[key]; },
-        };
-        // Load global or shim versions of Map, Set, and WeakMap
-        var functionPrototype = Object.getPrototypeOf(Function);
-        var usePolyfill = typeof process === "object" && process.env && process.env["REFLECT_METADATA_USE_MAP_POLYFILL"] === "true";
-        var _Map = !usePolyfill && typeof Map === "function" && typeof Map.prototype.entries === "function" ? Map : CreateMapPolyfill();
-        var _Set = !usePolyfill && typeof Set === "function" && typeof Set.prototype.entries === "function" ? Set : CreateSetPolyfill();
-        var _WeakMap = !usePolyfill && typeof WeakMap === "function" ? WeakMap : CreateWeakMapPolyfill();
-        // [[Metadata]] internal slot
-        // https://rbuckton.github.io/reflect-metadata/#ordinary-object-internal-methods-and-internal-slots
-        var Metadata = new _WeakMap();
-        /**
-         * Applies a set of decorators to a property of a target object.
-         * @param decorators An array of decorators.
-         * @param target The target object.
-         * @param propertyKey (Optional) The property key to decorate.
-         * @param attributes (Optional) The property descriptor for the target key.
-         * @remarks Decorators are applied in reverse order.
-         * @example
-         *
-         *     class Example {
-         *         // property declarations are not part of ES6, though they are valid in TypeScript:
-         *         // static staticProperty;
-         *         // property;
-         *
-         *         constructor(p) { }
-         *         static staticMethod(p) { }
-         *         method(p) { }
-         *     }
-         *
-         *     // constructor
-         *     Example = Reflect.decorate(decoratorsArray, Example);
-         *
-         *     // property (on constructor)
-         *     Reflect.decorate(decoratorsArray, Example, "staticProperty");
-         *
-         *     // property (on prototype)
-         *     Reflect.decorate(decoratorsArray, Example.prototype, "property");
-         *
-         *     // method (on constructor)
-         *     Object.defineProperty(Example, "staticMethod",
-         *         Reflect.decorate(decoratorsArray, Example, "staticMethod",
-         *             Object.getOwnPropertyDescriptor(Example, "staticMethod")));
-         *
-         *     // method (on prototype)
-         *     Object.defineProperty(Example.prototype, "method",
-         *         Reflect.decorate(decoratorsArray, Example.prototype, "method",
-         *             Object.getOwnPropertyDescriptor(Example.prototype, "method")));
-         *
-         */
-        function decorate(decorators, target, propertyKey, attributes) {
-            if (!IsUndefined(propertyKey)) {
-                if (!IsArray(decorators))
-                    throw new TypeError();
-                if (!IsObject(target))
-                    throw new TypeError();
-                if (!IsObject(attributes) && !IsUndefined(attributes) && !IsNull(attributes))
-                    throw new TypeError();
-                if (IsNull(attributes))
-                    attributes = undefined;
-                propertyKey = ToPropertyKey(propertyKey);
-                return DecorateProperty(decorators, target, propertyKey, attributes);
-            }
-            else {
-                if (!IsArray(decorators))
-                    throw new TypeError();
-                if (!IsConstructor(target))
-                    throw new TypeError();
-                return DecorateConstructor(decorators, target);
-            }
-        }
-        exporter("decorate", decorate);
-        // 4.1.2 Reflect.metadata(metadataKey, metadataValue)
-        // https://rbuckton.github.io/reflect-metadata/#reflect.metadata
-        /**
-         * A default metadata decorator factory that can be used on a class, class member, or parameter.
-         * @param metadataKey The key for the metadata entry.
-         * @param metadataValue The value for the metadata entry.
-         * @returns A decorator function.
-         * @remarks
-         * If `metadataKey` is already defined for the target and target key, the
-         * metadataValue for that key will be overwritten.
-         * @example
-         *
-         *     // constructor
-         *     @Reflect.metadata(key, value)
-         *     class Example {
-         *     }
-         *
-         *     // property (on constructor, TypeScript only)
-         *     class Example {
-         *         @Reflect.metadata(key, value)
-         *         static staticProperty;
-         *     }
-         *
-         *     // property (on prototype, TypeScript only)
-         *     class Example {
-         *         @Reflect.metadata(key, value)
-         *         property;
-         *     }
-         *
-         *     // method (on constructor)
-         *     class Example {
-         *         @Reflect.metadata(key, value)
-         *         static staticMethod() { }
-         *     }
-         *
-         *     // method (on prototype)
-         *     class Example {
-         *         @Reflect.metadata(key, value)
-         *         method() { }
-         *     }
-         *
-         */
-        function metadata(metadataKey, metadataValue) {
-            function decorator(target, propertyKey) {
-                if (!IsObject(target))
-                    throw new TypeError();
-                if (!IsUndefined(propertyKey) && !IsPropertyKey(propertyKey))
-                    throw new TypeError();
-                OrdinaryDefineOwnMetadata(metadataKey, metadataValue, target, propertyKey);
-            }
-            return decorator;
-        }
-        exporter("metadata", metadata);
-        /**
-         * Define a unique metadata entry on the target.
-         * @param metadataKey A key used to store and retrieve metadata.
-         * @param metadataValue A value that contains attached metadata.
-         * @param target The target object on which to define metadata.
-         * @param propertyKey (Optional) The property key for the target.
-         * @example
-         *
-         *     class Example {
-         *         // property declarations are not part of ES6, though they are valid in TypeScript:
-         *         // static staticProperty;
-         *         // property;
-         *
-         *         constructor(p) { }
-         *         static staticMethod(p) { }
-         *         method(p) { }
-         *     }
-         *
-         *     // constructor
-         *     Reflect.defineMetadata("custom:annotation", options, Example);
-         *
-         *     // property (on constructor)
-         *     Reflect.defineMetadata("custom:annotation", options, Example, "staticProperty");
-         *
-         *     // property (on prototype)
-         *     Reflect.defineMetadata("custom:annotation", options, Example.prototype, "property");
-         *
-         *     // method (on constructor)
-         *     Reflect.defineMetadata("custom:annotation", options, Example, "staticMethod");
-         *
-         *     // method (on prototype)
-         *     Reflect.defineMetadata("custom:annotation", options, Example.prototype, "method");
-         *
-         *     // decorator factory as metadata-producing annotation.
-         *     function MyAnnotation(options): Decorator {
-         *         return (target, key?) => Reflect.defineMetadata("custom:annotation", options, target, key);
-         *     }
-         *
-         */
-        function defineMetadata(metadataKey, metadataValue, target, propertyKey) {
-            if (!IsObject(target))
-                throw new TypeError();
-            if (!IsUndefined(propertyKey))
-                propertyKey = ToPropertyKey(propertyKey);
-            return OrdinaryDefineOwnMetadata(metadataKey, metadataValue, target, propertyKey);
-        }
-        exporter("defineMetadata", defineMetadata);
-        /**
-         * Gets a value indicating whether the target object or its prototype chain has the provided metadata key defined.
-         * @param metadataKey A key used to store and retrieve metadata.
-         * @param target The target object on which the metadata is defined.
-         * @param propertyKey (Optional) The property key for the target.
-         * @returns `true` if the metadata key was defined on the target object or its prototype chain; otherwise, `false`.
-         * @example
-         *
-         *     class Example {
-         *         // property declarations are not part of ES6, though they are valid in TypeScript:
-         *         // static staticProperty;
-         *         // property;
-         *
-         *         constructor(p) { }
-         *         static staticMethod(p) { }
-         *         method(p) { }
-         *     }
-         *
-         *     // constructor
-         *     result = Reflect.hasMetadata("custom:annotation", Example);
-         *
-         *     // property (on constructor)
-         *     result = Reflect.hasMetadata("custom:annotation", Example, "staticProperty");
-         *
-         *     // property (on prototype)
-         *     result = Reflect.hasMetadata("custom:annotation", Example.prototype, "property");
-         *
-         *     // method (on constructor)
-         *     result = Reflect.hasMetadata("custom:annotation", Example, "staticMethod");
-         *
-         *     // method (on prototype)
-         *     result = Reflect.hasMetadata("custom:annotation", Example.prototype, "method");
-         *
-         */
-        function hasMetadata(metadataKey, target, propertyKey) {
-            if (!IsObject(target))
-                throw new TypeError();
-            if (!IsUndefined(propertyKey))
-                propertyKey = ToPropertyKey(propertyKey);
-            return OrdinaryHasMetadata(metadataKey, target, propertyKey);
-        }
-        exporter("hasMetadata", hasMetadata);
-        /**
-         * Gets a value indicating whether the target object has the provided metadata key defined.
-         * @param metadataKey A key used to store and retrieve metadata.
-         * @param target The target object on which the metadata is defined.
-         * @param propertyKey (Optional) The property key for the target.
-         * @returns `true` if the metadata key was defined on the target object; otherwise, `false`.
-         * @example
-         *
-         *     class Example {
-         *         // property declarations are not part of ES6, though they are valid in TypeScript:
-         *         // static staticProperty;
-         *         // property;
-         *
-         *         constructor(p) { }
-         *         static staticMethod(p) { }
-         *         method(p) { }
-         *     }
-         *
-         *     // constructor
-         *     result = Reflect.hasOwnMetadata("custom:annotation", Example);
-         *
-         *     // property (on constructor)
-         *     result = Reflect.hasOwnMetadata("custom:annotation", Example, "staticProperty");
-         *
-         *     // property (on prototype)
-         *     result = Reflect.hasOwnMetadata("custom:annotation", Example.prototype, "property");
-         *
-         *     // method (on constructor)
-         *     result = Reflect.hasOwnMetadata("custom:annotation", Example, "staticMethod");
-         *
-         *     // method (on prototype)
-         *     result = Reflect.hasOwnMetadata("custom:annotation", Example.prototype, "method");
-         *
-         */
-        function hasOwnMetadata(metadataKey, target, propertyKey) {
-            if (!IsObject(target))
-                throw new TypeError();
-            if (!IsUndefined(propertyKey))
-                propertyKey = ToPropertyKey(propertyKey);
-            return OrdinaryHasOwnMetadata(metadataKey, target, propertyKey);
-        }
-        exporter("hasOwnMetadata", hasOwnMetadata);
-        /**
-         * Gets the metadata value for the provided metadata key on the target object or its prototype chain.
-         * @param metadataKey A key used to store and retrieve metadata.
-         * @param target The target object on which the metadata is defined.
-         * @param propertyKey (Optional) The property key for the target.
-         * @returns The metadata value for the metadata key if found; otherwise, `undefined`.
-         * @example
-         *
-         *     class Example {
-         *         // property declarations are not part of ES6, though they are valid in TypeScript:
-         *         // static staticProperty;
-         *         // property;
-         *
-         *         constructor(p) { }
-         *         static staticMethod(p) { }
-         *         method(p) { }
-         *     }
-         *
-         *     // constructor
-         *     result = Reflect.getMetadata("custom:annotation", Example);
-         *
-         *     // property (on constructor)
-         *     result = Reflect.getMetadata("custom:annotation", Example, "staticProperty");
-         *
-         *     // property (on prototype)
-         *     result = Reflect.getMetadata("custom:annotation", Example.prototype, "property");
-         *
-         *     // method (on constructor)
-         *     result = Reflect.getMetadata("custom:annotation", Example, "staticMethod");
-         *
-         *     // method (on prototype)
-         *     result = Reflect.getMetadata("custom:annotation", Example.prototype, "method");
-         *
-         */
-        function getMetadata(metadataKey, target, propertyKey) {
-            if (!IsObject(target))
-                throw new TypeError();
-            if (!IsUndefined(propertyKey))
-                propertyKey = ToPropertyKey(propertyKey);
-            return OrdinaryGetMetadata(metadataKey, target, propertyKey);
-        }
-        exporter("getMetadata", getMetadata);
-        /**
-         * Gets the metadata value for the provided metadata key on the target object.
-         * @param metadataKey A key used to store and retrieve metadata.
-         * @param target The target object on which the metadata is defined.
-         * @param propertyKey (Optional) The property key for the target.
-         * @returns The metadata value for the metadata key if found; otherwise, `undefined`.
-         * @example
-         *
-         *     class Example {
-         *         // property declarations are not part of ES6, though they are valid in TypeScript:
-         *         // static staticProperty;
-         *         // property;
-         *
-         *         constructor(p) { }
-         *         static staticMethod(p) { }
-         *         method(p) { }
-         *     }
-         *
-         *     // constructor
-         *     result = Reflect.getOwnMetadata("custom:annotation", Example);
-         *
-         *     // property (on constructor)
-         *     result = Reflect.getOwnMetadata("custom:annotation", Example, "staticProperty");
-         *
-         *     // property (on prototype)
-         *     result = Reflect.getOwnMetadata("custom:annotation", Example.prototype, "property");
-         *
-         *     // method (on constructor)
-         *     result = Reflect.getOwnMetadata("custom:annotation", Example, "staticMethod");
-         *
-         *     // method (on prototype)
-         *     result = Reflect.getOwnMetadata("custom:annotation", Example.prototype, "method");
-         *
-         */
-        function getOwnMetadata(metadataKey, target, propertyKey) {
-            if (!IsObject(target))
-                throw new TypeError();
-            if (!IsUndefined(propertyKey))
-                propertyKey = ToPropertyKey(propertyKey);
-            return OrdinaryGetOwnMetadata(metadataKey, target, propertyKey);
-        }
-        exporter("getOwnMetadata", getOwnMetadata);
-        /**
-         * Gets the metadata keys defined on the target object or its prototype chain.
-         * @param target The target object on which the metadata is defined.
-         * @param propertyKey (Optional) The property key for the target.
-         * @returns An array of unique metadata keys.
-         * @example
-         *
-         *     class Example {
-         *         // property declarations are not part of ES6, though they are valid in TypeScript:
-         *         // static staticProperty;
-         *         // property;
-         *
-         *         constructor(p) { }
-         *         static staticMethod(p) { }
-         *         method(p) { }
-         *     }
-         *
-         *     // constructor
-         *     result = Reflect.getMetadataKeys(Example);
-         *
-         *     // property (on constructor)
-         *     result = Reflect.getMetadataKeys(Example, "staticProperty");
-         *
-         *     // property (on prototype)
-         *     result = Reflect.getMetadataKeys(Example.prototype, "property");
-         *
-         *     // method (on constructor)
-         *     result = Reflect.getMetadataKeys(Example, "staticMethod");
-         *
-         *     // method (on prototype)
-         *     result = Reflect.getMetadataKeys(Example.prototype, "method");
-         *
-         */
-        function getMetadataKeys(target, propertyKey) {
-            if (!IsObject(target))
-                throw new TypeError();
-            if (!IsUndefined(propertyKey))
-                propertyKey = ToPropertyKey(propertyKey);
-            return OrdinaryMetadataKeys(target, propertyKey);
-        }
-        exporter("getMetadataKeys", getMetadataKeys);
-        /**
-         * Gets the unique metadata keys defined on the target object.
-         * @param target The target object on which the metadata is defined.
-         * @param propertyKey (Optional) The property key for the target.
-         * @returns An array of unique metadata keys.
-         * @example
-         *
-         *     class Example {
-         *         // property declarations are not part of ES6, though they are valid in TypeScript:
-         *         // static staticProperty;
-         *         // property;
-         *
-         *         constructor(p) { }
-         *         static staticMethod(p) { }
-         *         method(p) { }
-         *     }
-         *
-         *     // constructor
-         *     result = Reflect.getOwnMetadataKeys(Example);
-         *
-         *     // property (on constructor)
-         *     result = Reflect.getOwnMetadataKeys(Example, "staticProperty");
-         *
-         *     // property (on prototype)
-         *     result = Reflect.getOwnMetadataKeys(Example.prototype, "property");
-         *
-         *     // method (on constructor)
-         *     result = Reflect.getOwnMetadataKeys(Example, "staticMethod");
-         *
-         *     // method (on prototype)
-         *     result = Reflect.getOwnMetadataKeys(Example.prototype, "method");
-         *
-         */
-        function getOwnMetadataKeys(target, propertyKey) {
-            if (!IsObject(target))
-                throw new TypeError();
-            if (!IsUndefined(propertyKey))
-                propertyKey = ToPropertyKey(propertyKey);
-            return OrdinaryOwnMetadataKeys(target, propertyKey);
-        }
-        exporter("getOwnMetadataKeys", getOwnMetadataKeys);
-        /**
-         * Deletes the metadata entry from the target object with the provided key.
-         * @param metadataKey A key used to store and retrieve metadata.
-         * @param target The target object on which the metadata is defined.
-         * @param propertyKey (Optional) The property key for the target.
-         * @returns `true` if the metadata entry was found and deleted; otherwise, false.
-         * @example
-         *
-         *     class Example {
-         *         // property declarations are not part of ES6, though they are valid in TypeScript:
-         *         // static staticProperty;
-         *         // property;
-         *
-         *         constructor(p) { }
-         *         static staticMethod(p) { }
-         *         method(p) { }
-         *     }
-         *
-         *     // constructor
-         *     result = Reflect.deleteMetadata("custom:annotation", Example);
-         *
-         *     // property (on constructor)
-         *     result = Reflect.deleteMetadata("custom:annotation", Example, "staticProperty");
-         *
-         *     // property (on prototype)
-         *     result = Reflect.deleteMetadata("custom:annotation", Example.prototype, "property");
-         *
-         *     // method (on constructor)
-         *     result = Reflect.deleteMetadata("custom:annotation", Example, "staticMethod");
-         *
-         *     // method (on prototype)
-         *     result = Reflect.deleteMetadata("custom:annotation", Example.prototype, "method");
-         *
-         */
-        function deleteMetadata(metadataKey, target, propertyKey) {
-            if (!IsObject(target))
-                throw new TypeError();
-            if (!IsUndefined(propertyKey))
-                propertyKey = ToPropertyKey(propertyKey);
-            var metadataMap = GetOrCreateMetadataMap(target, propertyKey, /*Create*/ false);
-            if (IsUndefined(metadataMap))
-                return false;
-            if (!metadataMap.delete(metadataKey))
-                return false;
-            if (metadataMap.size > 0)
-                return true;
-            var targetMetadata = Metadata.get(target);
-            targetMetadata.delete(propertyKey);
-            if (targetMetadata.size > 0)
-                return true;
-            Metadata.delete(target);
-            return true;
-        }
-        exporter("deleteMetadata", deleteMetadata);
-        function DecorateConstructor(decorators, target) {
-            for (var i = decorators.length - 1; i >= 0; --i) {
-                var decorator = decorators[i];
-                var decorated = decorator(target);
-                if (!IsUndefined(decorated) && !IsNull(decorated)) {
-                    if (!IsConstructor(decorated))
-                        throw new TypeError();
-                    target = decorated;
-                }
-            }
-            return target;
-        }
-        function DecorateProperty(decorators, target, propertyKey, descriptor) {
-            for (var i = decorators.length - 1; i >= 0; --i) {
-                var decorator = decorators[i];
-                var decorated = decorator(target, propertyKey, descriptor);
-                if (!IsUndefined(decorated) && !IsNull(decorated)) {
-                    if (!IsObject(decorated))
-                        throw new TypeError();
-                    descriptor = decorated;
-                }
-            }
-            return descriptor;
-        }
-        function GetOrCreateMetadataMap(O, P, Create) {
-            var targetMetadata = Metadata.get(O);
-            if (IsUndefined(targetMetadata)) {
-                if (!Create)
-                    return undefined;
-                targetMetadata = new _Map();
-                Metadata.set(O, targetMetadata);
-            }
-            var metadataMap = targetMetadata.get(P);
-            if (IsUndefined(metadataMap)) {
-                if (!Create)
-                    return undefined;
-                metadataMap = new _Map();
-                targetMetadata.set(P, metadataMap);
-            }
-            return metadataMap;
-        }
-        // 3.1.1.1 OrdinaryHasMetadata(MetadataKey, O, P)
-        // https://rbuckton.github.io/reflect-metadata/#ordinaryhasmetadata
-        function OrdinaryHasMetadata(MetadataKey, O, P) {
-            var hasOwn = OrdinaryHasOwnMetadata(MetadataKey, O, P);
-            if (hasOwn)
-                return true;
-            var parent = OrdinaryGetPrototypeOf(O);
-            if (!IsNull(parent))
-                return OrdinaryHasMetadata(MetadataKey, parent, P);
-            return false;
-        }
-        // 3.1.2.1 OrdinaryHasOwnMetadata(MetadataKey, O, P)
-        // https://rbuckton.github.io/reflect-metadata/#ordinaryhasownmetadata
-        function OrdinaryHasOwnMetadata(MetadataKey, O, P) {
-            var metadataMap = GetOrCreateMetadataMap(O, P, /*Create*/ false);
-            if (IsUndefined(metadataMap))
-                return false;
-            return ToBoolean(metadataMap.has(MetadataKey));
-        }
-        // 3.1.3.1 OrdinaryGetMetadata(MetadataKey, O, P)
-        // https://rbuckton.github.io/reflect-metadata/#ordinarygetmetadata
-        function OrdinaryGetMetadata(MetadataKey, O, P) {
-            var hasOwn = OrdinaryHasOwnMetadata(MetadataKey, O, P);
-            if (hasOwn)
-                return OrdinaryGetOwnMetadata(MetadataKey, O, P);
-            var parent = OrdinaryGetPrototypeOf(O);
-            if (!IsNull(parent))
-                return OrdinaryGetMetadata(MetadataKey, parent, P);
-            return undefined;
-        }
-        // 3.1.4.1 OrdinaryGetOwnMetadata(MetadataKey, O, P)
-        // https://rbuckton.github.io/reflect-metadata/#ordinarygetownmetadata
-        function OrdinaryGetOwnMetadata(MetadataKey, O, P) {
-            var metadataMap = GetOrCreateMetadataMap(O, P, /*Create*/ false);
-            if (IsUndefined(metadataMap))
-                return undefined;
-            return metadataMap.get(MetadataKey);
-        }
-        // 3.1.5.1 OrdinaryDefineOwnMetadata(MetadataKey, MetadataValue, O, P)
-        // https://rbuckton.github.io/reflect-metadata/#ordinarydefineownmetadata
-        function OrdinaryDefineOwnMetadata(MetadataKey, MetadataValue, O, P) {
-            var metadataMap = GetOrCreateMetadataMap(O, P, /*Create*/ true);
-            metadataMap.set(MetadataKey, MetadataValue);
-        }
-        // 3.1.6.1 OrdinaryMetadataKeys(O, P)
-        // https://rbuckton.github.io/reflect-metadata/#ordinarymetadatakeys
-        function OrdinaryMetadataKeys(O, P) {
-            var ownKeys = OrdinaryOwnMetadataKeys(O, P);
-            var parent = OrdinaryGetPrototypeOf(O);
-            if (parent === null)
-                return ownKeys;
-            var parentKeys = OrdinaryMetadataKeys(parent, P);
-            if (parentKeys.length <= 0)
-                return ownKeys;
-            if (ownKeys.length <= 0)
-                return parentKeys;
-            var set = new _Set();
-            var keys = [];
-            for (var _i = 0, ownKeys_1 = ownKeys; _i < ownKeys_1.length; _i++) {
-                var key = ownKeys_1[_i];
-                var hasKey = set.has(key);
-                if (!hasKey) {
-                    set.add(key);
-                    keys.push(key);
-                }
-            }
-            for (var _a = 0, parentKeys_1 = parentKeys; _a < parentKeys_1.length; _a++) {
-                var key = parentKeys_1[_a];
-                var hasKey = set.has(key);
-                if (!hasKey) {
-                    set.add(key);
-                    keys.push(key);
-                }
-            }
-            return keys;
-        }
-        // 3.1.7.1 OrdinaryOwnMetadataKeys(O, P)
-        // https://rbuckton.github.io/reflect-metadata/#ordinaryownmetadatakeys
-        function OrdinaryOwnMetadataKeys(O, P) {
-            var keys = [];
-            var metadataMap = GetOrCreateMetadataMap(O, P, /*Create*/ false);
-            if (IsUndefined(metadataMap))
-                return keys;
-            var keysObj = metadataMap.keys();
-            var iterator = GetIterator(keysObj);
-            var k = 0;
-            while (true) {
-                var next = IteratorStep(iterator);
-                if (!next) {
-                    keys.length = k;
-                    return keys;
-                }
-                var nextValue = IteratorValue(next);
-                try {
-                    keys[k] = nextValue;
-                }
-                catch (e) {
-                    try {
-                        IteratorClose(iterator);
-                    }
-                    finally {
-                        throw e;
-                    }
-                }
-                k++;
-            }
-        }
-        // 6 ECMAScript Data Typ0es and Values
-        // https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values
-        function Type(x) {
-            if (x === null)
-                return 1 /* Null */;
-            switch (typeof x) {
-                case "undefined": return 0 /* Undefined */;
-                case "boolean": return 2 /* Boolean */;
-                case "string": return 3 /* String */;
-                case "symbol": return 4 /* Symbol */;
-                case "number": return 5 /* Number */;
-                case "object": return x === null ? 1 /* Null */ : 6 /* Object */;
-                default: return 6 /* Object */;
-            }
-        }
-        // 6.1.1 The Undefined Type
-        // https://tc39.github.io/ecma262/#sec-ecmascript-language-types-undefined-type
-        function IsUndefined(x) {
-            return x === undefined;
-        }
-        // 6.1.2 The Null Type
-        // https://tc39.github.io/ecma262/#sec-ecmascript-language-types-null-type
-        function IsNull(x) {
-            return x === null;
-        }
-        // 6.1.5 The Symbol Type
-        // https://tc39.github.io/ecma262/#sec-ecmascript-language-types-symbol-type
-        function IsSymbol(x) {
-            return typeof x === "symbol";
-        }
-        // 6.1.7 The Object Type
-        // https://tc39.github.io/ecma262/#sec-object-type
-        function IsObject(x) {
-            return typeof x === "object" ? x !== null : typeof x === "function";
-        }
-        // 7.1 Type Conversion
-        // https://tc39.github.io/ecma262/#sec-type-conversion
-        // 7.1.1 ToPrimitive(input [, PreferredType])
-        // https://tc39.github.io/ecma262/#sec-toprimitive
-        function ToPrimitive(input, PreferredType) {
-            switch (Type(input)) {
-                case 0 /* Undefined */: return input;
-                case 1 /* Null */: return input;
-                case 2 /* Boolean */: return input;
-                case 3 /* String */: return input;
-                case 4 /* Symbol */: return input;
-                case 5 /* Number */: return input;
-            }
-            var hint = PreferredType === 3 /* String */ ? "string" : PreferredType === 5 /* Number */ ? "number" : "default";
-            var exoticToPrim = GetMethod(input, toPrimitiveSymbol);
-            if (exoticToPrim !== undefined) {
-                var result = exoticToPrim.call(input, hint);
-                if (IsObject(result))
-                    throw new TypeError();
-                return result;
-            }
-            return OrdinaryToPrimitive(input, hint === "default" ? "number" : hint);
-        }
-        // 7.1.1.1 OrdinaryToPrimitive(O, hint)
-        // https://tc39.github.io/ecma262/#sec-ordinarytoprimitive
-        function OrdinaryToPrimitive(O, hint) {
-            if (hint === "string") {
-                var toString_1 = O.toString;
-                if (IsCallable(toString_1)) {
-                    var result = toString_1.call(O);
-                    if (!IsObject(result))
-                        return result;
-                }
-                var valueOf = O.valueOf;
-                if (IsCallable(valueOf)) {
-                    var result = valueOf.call(O);
-                    if (!IsObject(result))
-                        return result;
-                }
-            }
-            else {
-                var valueOf = O.valueOf;
-                if (IsCallable(valueOf)) {
-                    var result = valueOf.call(O);
-                    if (!IsObject(result))
-                        return result;
-                }
-                var toString_2 = O.toString;
-                if (IsCallable(toString_2)) {
-                    var result = toString_2.call(O);
-                    if (!IsObject(result))
-                        return result;
-                }
-            }
-            throw new TypeError();
-        }
-        // 7.1.2 ToBoolean(argument)
-        // https://tc39.github.io/ecma262/2016/#sec-toboolean
-        function ToBoolean(argument) {
-            return !!argument;
-        }
-        // 7.1.12 ToString(argument)
-        // https://tc39.github.io/ecma262/#sec-tostring
-        function ToString(argument) {
-            return "" + argument;
-        }
-        // 7.1.14 ToPropertyKey(argument)
-        // https://tc39.github.io/ecma262/#sec-topropertykey
-        function ToPropertyKey(argument) {
-            var key = ToPrimitive(argument, 3 /* String */);
-            if (IsSymbol(key))
-                return key;
-            return ToString(key);
-        }
-        // 7.2 Testing and Comparison Operations
-        // https://tc39.github.io/ecma262/#sec-testing-and-comparison-operations
-        // 7.2.2 IsArray(argument)
-        // https://tc39.github.io/ecma262/#sec-isarray
-        function IsArray(argument) {
-            return Array.isArray
-                ? Array.isArray(argument)
-                : argument instanceof Object
-                    ? argument instanceof Array
-                    : Object.prototype.toString.call(argument) === "[object Array]";
-        }
-        // 7.2.3 IsCallable(argument)
-        // https://tc39.github.io/ecma262/#sec-iscallable
-        function IsCallable(argument) {
-            // NOTE: This is an approximation as we cannot check for [[Call]] internal method.
-            return typeof argument === "function";
-        }
-        // 7.2.4 IsConstructor(argument)
-        // https://tc39.github.io/ecma262/#sec-isconstructor
-        function IsConstructor(argument) {
-            // NOTE: This is an approximation as we cannot check for [[Construct]] internal method.
-            return typeof argument === "function";
-        }
-        // 7.2.7 IsPropertyKey(argument)
-        // https://tc39.github.io/ecma262/#sec-ispropertykey
-        function IsPropertyKey(argument) {
-            switch (Type(argument)) {
-                case 3 /* String */: return true;
-                case 4 /* Symbol */: return true;
-                default: return false;
-            }
-        }
-        // 7.3 Operations on Objects
-        // https://tc39.github.io/ecma262/#sec-operations-on-objects
-        // 7.3.9 GetMethod(V, P)
-        // https://tc39.github.io/ecma262/#sec-getmethod
-        function GetMethod(V, P) {
-            var func = V[P];
-            if (func === undefined || func === null)
-                return undefined;
-            if (!IsCallable(func))
-                throw new TypeError();
-            return func;
-        }
-        // 7.4 Operations on Iterator Objects
-        // https://tc39.github.io/ecma262/#sec-operations-on-iterator-objects
-        function GetIterator(obj) {
-            var method = GetMethod(obj, iteratorSymbol);
-            if (!IsCallable(method))
-                throw new TypeError(); // from Call
-            var iterator = method.call(obj);
-            if (!IsObject(iterator))
-                throw new TypeError();
-            return iterator;
-        }
-        // 7.4.4 IteratorValue(iterResult)
-        // https://tc39.github.io/ecma262/2016/#sec-iteratorvalue
-        function IteratorValue(iterResult) {
-            return iterResult.value;
-        }
-        // 7.4.5 IteratorStep(iterator)
-        // https://tc39.github.io/ecma262/#sec-iteratorstep
-        function IteratorStep(iterator) {
-            var result = iterator.next();
-            return result.done ? false : result;
-        }
-        // 7.4.6 IteratorClose(iterator, completion)
-        // https://tc39.github.io/ecma262/#sec-iteratorclose
-        function IteratorClose(iterator) {
-            var f = iterator["return"];
-            if (f)
-                f.call(iterator);
-        }
-        // 9.1 Ordinary Object Internal Methods and Internal Slots
-        // https://tc39.github.io/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots
-        // 9.1.1.1 OrdinaryGetPrototypeOf(O)
-        // https://tc39.github.io/ecma262/#sec-ordinarygetprototypeof
-        function OrdinaryGetPrototypeOf(O) {
-            var proto = Object.getPrototypeOf(O);
-            if (typeof O !== "function" || O === functionPrototype)
-                return proto;
-            // TypeScript doesn't set __proto__ in ES5, as it's non-standard.
-            // Try to determine the superclass constructor. Compatible implementations
-            // must either set __proto__ on a subclass constructor to the superclass constructor,
-            // or ensure each class has a valid `constructor` property on its prototype that
-            // points back to the constructor.
-            // If this is not the same as Function.[[Prototype]], then this is definately inherited.
-            // This is the case when in ES6 or when using __proto__ in a compatible browser.
-            if (proto !== functionPrototype)
-                return proto;
-            // If the super prototype is Object.prototype, null, or undefined, then we cannot determine the heritage.
-            var prototype = O.prototype;
-            var prototypeProto = prototype && Object.getPrototypeOf(prototype);
-            if (prototypeProto == null || prototypeProto === Object.prototype)
-                return proto;
-            // If the constructor was not a function, then we cannot determine the heritage.
-            var constructor = prototypeProto.constructor;
-            if (typeof constructor !== "function")
-                return proto;
-            // If we have some kind of self-reference, then we cannot determine the heritage.
-            if (constructor === O)
-                return proto;
-            // we have a pretty good guess at the heritage.
-            return constructor;
-        }
-        // naive Map shim
-        function CreateMapPolyfill() {
-            var cacheSentinel = {};
-            var arraySentinel = [];
-            var MapIterator = /** @class */ (function () {
-                function MapIterator(keys, values, selector) {
-                    this._index = 0;
-                    this._keys = keys;
-                    this._values = values;
-                    this._selector = selector;
-                }
-                MapIterator.prototype["@@iterator"] = function () { return this; };
-                MapIterator.prototype[iteratorSymbol] = function () { return this; };
-                MapIterator.prototype.next = function () {
-                    var index = this._index;
-                    if (index >= 0 && index < this._keys.length) {
-                        var result = this._selector(this._keys[index], this._values[index]);
-                        if (index + 1 >= this._keys.length) {
-                            this._index = -1;
-                            this._keys = arraySentinel;
-                            this._values = arraySentinel;
-                        }
-                        else {
-                            this._index++;
-                        }
-                        return { value: result, done: false };
-                    }
-                    return { value: undefined, done: true };
-                };
-                MapIterator.prototype.throw = function (error) {
-                    if (this._index >= 0) {
-                        this._index = -1;
-                        this._keys = arraySentinel;
-                        this._values = arraySentinel;
-                    }
-                    throw error;
-                };
-                MapIterator.prototype.return = function (value) {
-                    if (this._index >= 0) {
-                        this._index = -1;
-                        this._keys = arraySentinel;
-                        this._values = arraySentinel;
-                    }
-                    return { value: value, done: true };
-                };
-                return MapIterator;
-            }());
-            return /** @class */ (function () {
-                function Map() {
-                    this._keys = [];
-                    this._values = [];
-                    this._cacheKey = cacheSentinel;
-                    this._cacheIndex = -2;
-                }
-                Object.defineProperty(Map.prototype, "size", {
-                    get: function () { return this._keys.length; },
-                    enumerable: true,
-                    configurable: true
-                });
-                Map.prototype.has = function (key) { return this._find(key, /*insert*/ false) >= 0; };
-                Map.prototype.get = function (key) {
-                    var index = this._find(key, /*insert*/ false);
-                    return index >= 0 ? this._values[index] : undefined;
-                };
-                Map.prototype.set = function (key, value) {
-                    var index = this._find(key, /*insert*/ true);
-                    this._values[index] = value;
-                    return this;
-                };
-                Map.prototype.delete = function (key) {
-                    var index = this._find(key, /*insert*/ false);
-                    if (index >= 0) {
-                        var size = this._keys.length;
-                        for (var i = index + 1; i < size; i++) {
-                            this._keys[i - 1] = this._keys[i];
-                            this._values[i - 1] = this._values[i];
-                        }
-                        this._keys.length--;
-                        this._values.length--;
-                        if (key === this._cacheKey) {
-                            this._cacheKey = cacheSentinel;
-                            this._cacheIndex = -2;
-                        }
-                        return true;
-                    }
-                    return false;
-                };
-                Map.prototype.clear = function () {
-                    this._keys.length = 0;
-                    this._values.length = 0;
-                    this._cacheKey = cacheSentinel;
-                    this._cacheIndex = -2;
-                };
-                Map.prototype.keys = function () { return new MapIterator(this._keys, this._values, getKey); };
-                Map.prototype.values = function () { return new MapIterator(this._keys, this._values, getValue); };
-                Map.prototype.entries = function () { return new MapIterator(this._keys, this._values, getEntry); };
-                Map.prototype["@@iterator"] = function () { return this.entries(); };
-                Map.prototype[iteratorSymbol] = function () { return this.entries(); };
-                Map.prototype._find = function (key, insert) {
-                    if (this._cacheKey !== key) {
-                        this._cacheIndex = this._keys.indexOf(this._cacheKey = key);
-                    }
-                    if (this._cacheIndex < 0 && insert) {
-                        this._cacheIndex = this._keys.length;
-                        this._keys.push(key);
-                        this._values.push(undefined);
-                    }
-                    return this._cacheIndex;
-                };
-                return Map;
-            }());
-            function getKey(key, _) {
-                return key;
-            }
-            function getValue(_, value) {
-                return value;
-            }
-            function getEntry(key, value) {
-                return [key, value];
-            }
-        }
-        // naive Set shim
-        function CreateSetPolyfill() {
-            return /** @class */ (function () {
-                function Set() {
-                    this._map = new _Map();
-                }
-                Object.defineProperty(Set.prototype, "size", {
-                    get: function () { return this._map.size; },
-                    enumerable: true,
-                    configurable: true
-                });
-                Set.prototype.has = function (value) { return this._map.has(value); };
-                Set.prototype.add = function (value) { return this._map.set(value, value), this; };
-                Set.prototype.delete = function (value) { return this._map.delete(value); };
-                Set.prototype.clear = function () { this._map.clear(); };
-                Set.prototype.keys = function () { return this._map.keys(); };
-                Set.prototype.values = function () { return this._map.values(); };
-                Set.prototype.entries = function () { return this._map.entries(); };
-                Set.prototype["@@iterator"] = function () { return this.keys(); };
-                Set.prototype[iteratorSymbol] = function () { return this.keys(); };
-                return Set;
-            }());
-        }
-        // naive WeakMap shim
-        function CreateWeakMapPolyfill() {
-            var UUID_SIZE = 16;
-            var keys = HashMap.create();
-            var rootKey = CreateUniqueKey();
-            return /** @class */ (function () {
-                function WeakMap() {
-                    this._key = CreateUniqueKey();
-                }
-                WeakMap.prototype.has = function (target) {
-                    var table = GetOrCreateWeakMapTable(target, /*create*/ false);
-                    return table !== undefined ? HashMap.has(table, this._key) : false;
-                };
-                WeakMap.prototype.get = function (target) {
-                    var table = GetOrCreateWeakMapTable(target, /*create*/ false);
-                    return table !== undefined ? HashMap.get(table, this._key) : undefined;
-                };
-                WeakMap.prototype.set = function (target, value) {
-                    var table = GetOrCreateWeakMapTable(target, /*create*/ true);
-                    table[this._key] = value;
-                    return this;
-                };
-                WeakMap.prototype.delete = function (target) {
-                    var table = GetOrCreateWeakMapTable(target, /*create*/ false);
-                    return table !== undefined ? delete table[this._key] : false;
-                };
-                WeakMap.prototype.clear = function () {
-                    // NOTE: not a real clear, just makes the previous data unreachable
-                    this._key = CreateUniqueKey();
-                };
-                return WeakMap;
-            }());
-            function CreateUniqueKey() {
-                var key;
-                do
-                    key = "@@WeakMap@@" + CreateUUID();
-                while (HashMap.has(keys, key));
-                keys[key] = true;
-                return key;
-            }
-            function GetOrCreateWeakMapTable(target, create) {
-                if (!hasOwn.call(target, rootKey)) {
-                    if (!create)
-                        return undefined;
-                    Object.defineProperty(target, rootKey, { value: HashMap.create() });
-                }
-                return target[rootKey];
-            }
-            function FillRandomBytes(buffer, size) {
-                for (var i = 0; i < size; ++i)
-                    buffer[i] = Math.random() * 0xff | 0;
-                return buffer;
-            }
-            function GenRandomBytes(size) {
-                if (typeof Uint8Array === "function") {
-                    if (typeof crypto !== "undefined")
-                        return crypto.getRandomValues(new Uint8Array(size));
-                    if (typeof msCrypto !== "undefined")
-                        return msCrypto.getRandomValues(new Uint8Array(size));
-                    return FillRandomBytes(new Uint8Array(size), size);
-                }
-                return FillRandomBytes(new Array(size), size);
-            }
-            function CreateUUID() {
-                var data = GenRandomBytes(UUID_SIZE);
-                // mark as random - RFC 4122 § 4.4
-                data[6] = data[6] & 0x4f | 0x40;
-                data[8] = data[8] & 0xbf | 0x80;
-                var result = "";
-                for (var offset = 0; offset < UUID_SIZE; ++offset) {
-                    var byte = data[offset];
-                    if (offset === 4 || offset === 6 || offset === 8)
-                        result += "-";
-                    if (byte < 16)
-                        result += "0";
-                    result += byte.toString(16).toLowerCase();
-                }
-                return result;
-            }
-        }
-        // uses a heuristic used by v8 and chakra to force an object into dictionary mode.
-        function MakeDictionary(obj) {
-            obj.__ = undefined;
-            delete obj.__;
-            return obj;
-        }
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "RemoteTemplate": () => (/* binding */ RemoteTemplate)
+/* harmony export */ });
+/* harmony import */ var _loadHtml__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./loadHtml */ "./src/ce/loadHtml.ts");
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-})(Reflect || (Reflect = {}));
+};
+
+class RemoteTemplate {
+    constructor(url) {
+        this.url = url;
+        this.tpl = null;
+    }
+    /**
+     *
+     * @return {Promise<HTMLTemplateElement>}
+     */
+    load() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.tpl === null)
+                this.tpl = yield (0,_loadHtml__WEBPACK_IMPORTED_MODULE_0__.ka_load_html)(this.url);
+            return this.tpl;
+        });
+    }
+}
+/**
+ * Load the Template on usage from remote location
+ *
+ *
+ * @param url {string}
+ * @return {RemoteTemplate}
+ */
+function htmlUrl(url) {
+    return new RemoteTemplate(url);
+}
+
+
+/***/ }),
+
+/***/ "./src/ce/loadHtml.ts":
+/*!****************************!*\
+  !*** ./src/ce/loadHtml.ts ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ka_load_html": () => (/* binding */ ka_load_html)
+/* harmony export */ });
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+/**
+ *
+ * @param url {string}
+ * @return {Promise<HTMLTemplateElement>}
+ */
+function ka_load_html(url) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let e = document.createElement("template");
+        let result = yield fetch(url);
+        if (!result.ok) {
+            console.error(`[loadHtml] failed to load '${url}'`);
+            throw `[loadHtml] failed to load '${url}'`;
+        }
+        let body = yield result.text();
+        e.innerHTML = body;
+        return e;
+    });
+}
 
 
 /***/ }),
@@ -1148,7 +111,6 @@ var Reflect;
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ka_create_element": () => (/* binding */ ka_create_element)
@@ -1182,106 +144,964 @@ function ka_create_element(tagName, attributes = null, children = null, appendTo
 
 /***/ }),
 
-/***/ "./src/decorators/inject.ts":
-/*!**********************************!*\
-  !*** ./src/decorators/inject.ts ***!
-  \**********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "di_instanciate": () => (/* binding */ di_instanciate),
-/* harmony export */   "inject": () => (/* binding */ inject)
-/* harmony export */ });
-/* harmony import */ var reflect_metadata__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! reflect-metadata */ "./node_modules/reflect-metadata/Reflect.js");
-/* harmony import */ var reflect_metadata__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(reflect_metadata__WEBPACK_IMPORTED_MODULE_0__);
-var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-
-function inject(name = null) {
-    return function (target, propertyKey, parameterIndex) {
-        console.log("inject", target, propertyKey, parameterIndex, name);
-        return Reflect.metadata("inject", name);
-    };
-}
-/**
- * Instanciate a new Object and inject all Properties
- *
- * @param type
- * @param map
- */
-function di_instanciate(type, map = {}) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let params = Reflect.getMetadataKeys(type);
-        console.log("instanciat", params, Object.getOwnPropertyDescriptors(type.constructor));
-        let o = new type();
-        Object.keys(o).forEach(k => console.log("instanciate", Reflect.getMetadata("inject", o, k)));
-        return o;
-    });
-}
-
-
-/***/ }),
-
-/***/ "./src/element/AbstractElement.ts":
-/*!****************************************!*\
-  !*** ./src/element/AbstractElement.ts ***!
-  \****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-
-
-
-/***/ }),
-
 /***/ "./src/element/KaModal.ts":
 /*!********************************!*\
   !*** ./src/element/KaModal.ts ***!
   \********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "KaModal": () => (/* binding */ KaModal)
 /* harmony export */ });
-/* harmony import */ var _AbstractElement__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractElement */ "./src/element/AbstractElement.ts");
-/* harmony import */ var _decorators_inject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../decorators/inject */ "./src/decorators/inject.ts");
-/* harmony import */ var _core_create_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/create-element */ "./src/core/create-element.ts");
+/* harmony import */ var _tpl_template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../tpl/template */ "./src/tpl/template.js");
+/* harmony import */ var _core_create_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/create-element */ "./src/core/create-element.ts");
+/* harmony import */ var _ce_html__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../ce/html */ "./src/ce/html.js");
+/* harmony import */ var _tpl_templatify__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../tpl/templatify */ "./src/tpl/templatify.js");
+var __classPrivateFieldGet = (undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
 var __classPrivateFieldSet = (undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
-var __classPrivateFieldGet = (undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _KaModal_element;
+var _KaModal_element, _KaModal_backdrop, _KaModal_main, _KaModal_configDefaults, _KaModal_promise;
+
 
 
 
 class KaModal {
-    constructor(tagName = "ka-modal", shadowRootInit = null) {
+    constructor(tagName = "ka-modal", shadowRootInit = null, modalConfig = {}) {
         _KaModal_element.set(this, void 0);
-        __classPrivateFieldSet(this, _KaModal_element, (0,_core_create_element__WEBPACK_IMPORTED_MODULE_2__.ka_create_element)(tagName, {}), "f");
-        (0,_core_create_element__WEBPACK_IMPORTED_MODULE_2__.ka_create_element)("div", { style: "position: fixed; top:0;bottom:0;left:0;right:0;background-color: #ccc" }, null, __classPrivateFieldGet(this, _KaModal_element, "f"));
-        document.appendChild(__classPrivateFieldGet(this, _KaModal_element, "f"));
+        _KaModal_backdrop.set(this, void 0);
+        _KaModal_main.set(this, void 0);
+        this.$tpl = null;
+        _KaModal_configDefaults.set(this, {
+            parentElement: document.body,
+            zIndex: 9999,
+            styleBase: "position:fixed; top:0; bottom:0; left:0; right:0;",
+            styleBackdrop: "background-color: #999;opacity:0.5;",
+            maxWidth: 800,
+        });
+        _KaModal_promise.set(this, {
+            promise: null,
+            reject: null,
+            resolve: null,
+        });
+        let config = __classPrivateFieldGet(this, _KaModal_configDefaults, "f");
+        config = Object.assign(Object.assign({}, config), modalConfig);
+        __classPrivateFieldSet(this, _KaModal_element, (0,_core_create_element__WEBPACK_IMPORTED_MODULE_1__.ka_create_element)(tagName, { hidden: "hidden" }, null, config.parentElement), "f");
+        __classPrivateFieldSet(this, _KaModal_backdrop, (0,_core_create_element__WEBPACK_IMPORTED_MODULE_1__.ka_create_element)("div", { style: `${config.styleBase};${config.styleBackdrop};z-index:${config.zIndex};` }, null, __classPrivateFieldGet(this, _KaModal_element, "f")), "f");
+        let master = (0,_core_create_element__WEBPACK_IMPORTED_MODULE_1__.ka_create_element)("div", { style: `position:fixed;left:0;right:0;display:flex;justify-content:center;z-index:${config.zIndex + 1};` }, null, __classPrivateFieldGet(this, _KaModal_element, "f"));
+        __classPrivateFieldSet(this, _KaModal_main, (0,_core_create_element__WEBPACK_IMPORTED_MODULE_1__.ka_create_element)("div", { style: `;max-height:100%;max-width:100%;` }, null, master), "f");
+        this.adjustWidth(config);
+        __classPrivateFieldGet(this, _KaModal_promise, "f").promise = new Promise((resolve, reject) => { __classPrivateFieldGet(this, _KaModal_promise, "f").resolve = resolve; __classPrivateFieldGet(this, _KaModal_promise, "f").reject = reject; });
+    }
+    adjustWidth(modalConfig) {
+        let w = window.innerWidth;
+        if (w > modalConfig.maxWidth)
+            w = modalConfig.maxWidth;
+        __classPrivateFieldGet(this, _KaModal_main, "f").style.width = w + "px";
+    }
+    render(scope = null) {
+        if (this.$tpl === null) {
+            let html = this.html;
+            if (typeof html === "string") {
+                html = (0,_ce_html__WEBPACK_IMPORTED_MODULE_2__.ka_html)(html);
+            }
+            let elem = (0,_tpl_templatify__WEBPACK_IMPORTED_MODULE_3__.ka_templatify)(html);
+            __classPrivateFieldGet(this, _KaModal_main, "f").appendChild(elem);
+            this.$tpl = new _tpl_template__WEBPACK_IMPORTED_MODULE_0__.KaTemplate(elem);
+        }
+        console.log("render", this);
+        this.$tpl.render(scope);
+    }
+    resolve(...params) {
+        __classPrivateFieldGet(this, _KaModal_element, "f").remove();
+        __classPrivateFieldGet(this, _KaModal_promise, "f").resolve(...params);
+    }
+    show() {
+        __classPrivateFieldGet(this, _KaModal_element, "f").removeAttribute("hidden");
+        return __classPrivateFieldGet(this, _KaModal_promise, "f").promise;
     }
 }
-_KaModal_element = new WeakMap();
+_KaModal_element = new WeakMap(), _KaModal_backdrop = new WeakMap(), _KaModal_main = new WeakMap(), _KaModal_configDefaults = new WeakMap(), _KaModal_promise = new WeakMap();
+
+
+/***/ }),
+
+/***/ "./src/element/TestModal.ts":
+/*!**********************************!*\
+  !*** ./src/element/TestModal.ts ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "TestModal": () => (/* binding */ TestModal)
+/* harmony export */ });
+/* harmony import */ var _KaModal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./KaModal */ "./src/element/KaModal.ts");
+
+class TestModal extends _KaModal__WEBPACK_IMPORTED_MODULE_0__.KaModal {
+    constructor() {
+        super(...arguments);
+        this.html = `<div>Hello World</div>`;
+    }
+    show() {
+        this.render({});
+        return super.show();
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/ce/custom-element.js":
+/*!**********************************!*\
+  !*** ./src/ce/custom-element.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "KaCustomElement": () => (/* binding */ KaCustomElement)
+/* harmony export */ });
+/* harmony import */ var _core_init__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/init */ "./src/core/init.js");
+/* harmony import */ var _tpl_templatify__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../tpl/templatify */ "./src/tpl/templatify.js");
+/* harmony import */ var _tpl_template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../tpl/template */ "./src/tpl/template.js");
+/* harmony import */ var _core_query_select__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/query-select */ "./src/core/query-select.js");
+/* harmony import */ var _htmlFile__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./htmlFile */ "./src/ce/htmlFile.ts");
+
+
+
+
+
+
+class KaCustomElement extends HTMLElement {
+
+    constructor(props) {
+        super(props);
+
+        /**
+         *
+         * @protected
+         * @var {KaTemplate}
+         */
+        this.__tpl = null;
+
+        this.__isConnected = false;
+    }
+
+    /**
+     * The Template associated with this Element
+     *
+     * @return {KaTemplate}
+     */
+    get $tpl () {
+        return this.__tpl
+    }
+
+    isConnected() {
+        return this.isConnected;
+    }
+
+    /**
+     * @abstract
+     * @return {Promise<void>}
+     */
+    async connected($tpl, $this) {
+        console.warn("connected() method not overridden in", this);
+    }
+
+    async connectedCallback() {
+        let callback = this.constructor.__callback;
+        if (callback === null) {
+        } else {
+            callback.bind(this);
+        }
+
+        if (this.constructor.__tpl !== null) {
+            let origTpl = this.constructor.__tpl;
+            if (origTpl instanceof _htmlFile__WEBPACK_IMPORTED_MODULE_4__.RemoteTemplate)
+                origTpl = await origTpl.load();
+
+            let tpl = (0,_tpl_templatify__WEBPACK_IMPORTED_MODULE_1__.ka_templatify)(origTpl);
+
+            if (this.constructor.__options.shadowDom === true) {
+                let shadowDom = this.attachShadow(this.constructor.__options.shadowDomOptions);
+                shadowDom.appendChild(tpl);
+            } else {
+                this.appendChild(tpl);
+            }
+
+            this.__tpl = new _tpl_template__WEBPACK_IMPORTED_MODULE_2__.KaTemplate(tpl);
+        }
+
+        if (this.constructor.__options.waitEvent !== null) {
+            let wd = this.constructor.__options.waitEvent.split("@");
+            let eventName = wd[0];
+            let target = document;
+            if (wd.length === 2) {
+                target = (0,_core_query_select__WEBPACK_IMPORTED_MODULE_3__.ka_query_selector)(wd[1]);
+            }
+            target.addEventListener(eventName, async (event) => {
+                callback(this.$tpl, this);
+                this.__isConnected = true;
+            })
+            return;
+        }
+
+        if (callback === null) {
+            // Class: Call connected() Method
+            await this.connected(this.$tpl, this);
+            this.__isConnected = true;
+            return
+        }
+
+        // Function
+        callback(this.$tpl, this);
+        this.__isConnected = true;
+    }
+
+};
+
+
+/***/ }),
+
+/***/ "./src/ce/html.js":
+/*!************************!*\
+  !*** ./src/ce/html.js ***!
+  \************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ka_html": () => (/* binding */ ka_html)
+/* harmony export */ });
+
+function ka_html(htmlContent) {
+    let e = document.createElement("template");
+    e.innerHTML = htmlContent;
+    return e;
+}
+
+
+/***/ }),
+
+/***/ "./src/core/apply.js":
+/*!***************************!*\
+  !*** ./src/core/apply.js ***!
+  \***************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ka_apply": () => (/* binding */ ka_apply)
+/* harmony export */ });
+/* harmony import */ var _eval__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./eval */ "./src/core/eval.js");
+/* harmony import */ var _str_to_camelcase__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./str-to-camelcase */ "./src/core/str-to-camelcase.js");
+
+
+
+
+function ka_apply (selector, scope, recursive=false) {
+    if (typeof selector === "string")
+        selector = KaToolsV1.querySelector(selector);
+
+    let attMap = {
+        "textcontent": "textContent",
+        "htmlcontent": "innerHTML",
+        "innerhtml": "innerHTML",
+    }
+
+    for(let attName of selector.getAttributeNames()) {
+        //console.log(attName);
+        if ( ! attName.startsWith("ka.")) {
+            continue;
+        }
+
+        let attVal = selector.getAttribute(attName);
+
+        let attType = attName.split(".")[1];
+        let attSelector = attName.split(".")[2];
+        if (typeof attSelector === "undefined")
+            attSelector = null;
+
+
+        let registerEventHandler = function(element, action, callbackOrCode, scope) {
+            if (typeof element._ka_on === "undefined")
+                element._ka_on = {};
+
+            if (typeof element._ka_on[action] === "undefined")
+                element.addEventListener(action, (e) => element._ka_on[action](e));
+
+            element._ka_on[action] = async(e) => {
+                scope["$event"] = e;
+                if (typeof callbackOrCode === "function") {
+                    return callbackOrCode(e, element, scope);
+                } else {
+                    return (0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(callbackOrCode, scope, element);
+                }
+            };
+        }
+
+        if (attType === "on") {
+            let attScope = {$scope: scope, ...scope}
+            if (attSelector !== null) {
+                registerEventHandler(selector, attSelector, attVal, attScope);
+            } else {
+                let callBackMap = KaToolsV1.eval(attVal, attScope, selector);
+                for(let curAction in callBackMap) {
+                    registerEventHandler(selector, curAction, callBackMap[curAction], attScope);
+                }
+
+            }
+            continue;
+        }
+
+        let r = null;
+        if (typeof attVal !== "undefined" && typeof attVal !== null && attVal !== "")
+            r = (0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(attVal, scope, selector);
+
+        switch (attType) {
+            case "ref":
+                if (typeof scope.$ref === "undefined")
+                    scope.$ref = {};
+                // Allow ref without parameter to use $ref.$last
+                if (r !== null)
+                    scope.$ref[r] = selector;
+                scope.$ref.$last = selector;
+                break;
+
+            case "classlist":
+                if (attSelector  !== null) {
+                    if (r === true) {
+                        selector.classList.add(attSelector)
+                    } else {
+                        selector.classList.remove(attSelector)
+                    }
+                    break;
+                }
+                for (let cname in r) {
+                    if (r[cname] === true) {
+                        selector.classList.add(cname);
+                    } else {
+                        selector.classList.remove(cname);
+                    }
+                }
+                break;
+
+            case "style":
+                if (attSelector  !== null) {
+                    let val = r;
+                    if (typeof val === "number" && ["left", "top", "height", "width", "bottom", "right", "line-height", "font-size"].indexOf(attSelector) !== -1)
+                        val = val + "px";
+                    selector.style[(0,_str_to_camelcase__WEBPACK_IMPORTED_MODULE_1__.ka_str_to_camel_case)(attSelector)] = val;
+                    break;
+                }
+                for (let cname in r) {
+                    let val = r[cname];
+                    if (typeof val === "number" && ["left", "top", "height", "width", "bottom", "right", "line-height", "font-size"].indexOf(cname) !== -1)
+                        val = val + "px";
+                    selector.style[(0,_str_to_camelcase__WEBPACK_IMPORTED_MODULE_1__.ka_str_to_camel_case)(cname)] = val;
+                }
+                break;
+
+            case "bindarray":
+                if (attSelector === "default")
+                    continue;
+                if (typeof r === "undefined") {
+                    // Bind default values
+                    if (selector.hasAttribute("ka.bind.default")) {
+                        scope = {$scope: scope, ...scope};
+                        scope = {$scope: scope, ...scope, __curVal: (0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(selector.getAttribute("ka.bind.default"), scope, selector)}
+                        ;(0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
+                        r = scope.__curVal;
+                    }
+                }
+                if ( ! Array.isArray(r)) {
+                    console.error("kap:bindarr: Not an array!", r, selector);
+                    return;
+                }
+                if (r.indexOf(selector.value) === -1)
+                    selector.checked = false;
+                else
+                    selector.checked = true;
+
+                if (typeof selector._kap_bind === "undefined") {
+                    selector.addEventListener("change", (event) => {
+
+                        let arr = (0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(attVal, scope, selector);
+
+                        if (arr.indexOf(selector.value) === -1 && selector.checked)
+                            arr.push(selector.value);
+                        if (arr.indexOf(selector.value) !== -1 && ! selector.checked)
+                            arr = arr.filter((e) => e !== selector.value);
+                        scope = {$scope: scope, ...scope, __curVal: arr};
+                        (0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
+                        if (scope.$on && scope.$on.change)
+                            scope.$on.change(event);
+                    })
+                    selector._kap_bind = true;
+                }
+                break;
+
+            case "bind":
+                if (attSelector === "default")
+                    continue;
+                if (typeof r === "undefined") {
+                    // Bind default values
+                    if (selector.hasAttribute("ka.bind.default")) {
+                        scope = {$scope: scope, ...scope};
+                        scope = {$scope: scope, ...scope, __curVal: (0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(selector.getAttribute("ka.bind.default"), scope, selector)}
+                        ;(0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
+                        r = scope.__curVal;
+                    }
+                }
+                if (selector.type === "checkbox" || selector.type === "radio") {
+                    if (selector.hasAttribute("value")) {
+                        if (r === selector.getAttribute("value"))
+                            selector.checked = true;
+                        else
+                            selector.checked = false;
+                    } else {
+                        if (r === true)
+                            selector.checked = true;
+                        else
+                            selector.checked = false;
+                    }
+                } else {
+                    selector.value = typeof r !== "undefined" ? r : "";
+                }
+
+                if (typeof selector._kap_bind === "undefined") {
+                    selector.addEventListener("change", (event) => {
+
+                        let value = null;
+                        if (selector.type === "checkbox" || selector.type === "radio") {
+                            if (selector.hasAttribute("value")) {
+                                if (selector.checked === false)
+                                    return;
+                                value = selector.getAttribute("value");
+                            } else {
+                                value = selector.checked
+                            }
+                        } else {
+                            value = selector.value
+                        }
+                        scope = {$scope: scope, ...scope, __curVal: value}
+                        ;(0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
+                        if (scope.$on && scope.$on.change)
+                            scope.$on.change(event);
+                    })
+                    selector.addEventListener("keyup", (event) => {
+                        scope = {$scope: scope,...scope, __curVal: selector.value}
+                        ;(0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
+                        if (scope.$on && scope.$on.change)
+                            scope.$on.change(event);
+
+                    })
+                    selector._kap_bind = true;
+                }
+                break;
+
+            case "options":
+                let value = selector.value;
+                selector.innerHTML = "";
+                for (let option in r) {
+                    if (isNaN(option)) {
+                        selector.appendChild(new Option(r[option], option));
+                    } else {
+                        if (typeof r[option].text !== "undefined") {
+                            selector.appendChild(new Option(r[option].text, r[option].value));
+                        } else {
+                            selector.appendChild(new Option(r[option], r[option]));
+                        }
+                    }
+                }
+                if (value !== null)
+                    selector.value = value;
+                break;
+
+            case "attr":
+                if (attSelector  !== null) {
+                    if (r === null || r === false) {
+                        selector.removeAttribute(attSelector)
+                    } else {
+                        selector.setAttribute(attSelector, r);
+                    }
+                    break;
+                }
+                for (let cname in r) {
+                    if (r[cname] ===null || r[cname] === false) {
+                        selector.removeAttribute(cname);
+                    } else {
+                        selector.setAttribute(cname, r[cname]);
+                    }
+                }
+                break;
+
+            case "prop":
+                if (attSelector  !== null) {
+                    // Set Property directly
+                    selector[(0,_str_to_camelcase__WEBPACK_IMPORTED_MODULE_1__.ka_str_to_camel_case)(attSelector)] = r;
+                    break;
+                }
+                for (let cname in r) {
+                    selector[(0,_str_to_camelcase__WEBPACK_IMPORTED_MODULE_1__.ka_str_to_camel_case)(cname)] = r[cname];
+                }
+                break;
+
+            default:
+                if (typeof attMap[attType] !== "undefined")
+                    attType = attMap[attType];
+                if (typeof selector[attType] === "undefined") {
+                    console.warn("apply(): trying to set undefined property ", attType, "on element", selector);
+                }
+                selector[attType] = r;
+                break;
+        }
+
+
+
+    }
+    if (recursive) {
+        for (let e of selector.children) {
+            ka_apply(e, scope, recursive);
+        }
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/core/elwalk.js":
+/*!****************************!*\
+  !*** ./src/core/elwalk.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ka_elwalk": () => (/* binding */ ka_elwalk)
+/* harmony export */ });
+
+
+/**
+ *
+ * @param {HTMLElement} elem
+ * @param fn
+ * @param recursive
+ */
+function ka_elwalk (elem, fn, recursive=false, includeFirst=false) {
+    if (Array.isArray(elem))
+        elem.children = elem;
+    if (typeof elem.children === "undefined")
+        return;
+    if (includeFirst && elem instanceof HTMLElement) {
+        let ret = fn(elem);
+        if (ret === false)
+            return false;
+    }
+    for(let child of elem.children) {
+        let ret = fn(child);
+        if (ret === false)
+            continue; // No recursiion
+
+        if (recursive && typeof child.children !== "undefined")
+            ka_elwalk(child, fn, recursive);
+
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/core/eval.js":
+/*!**************************!*\
+  !*** ./src/core/eval.js ***!
+  \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ka_eval": () => (/* binding */ ka_eval)
+/* harmony export */ });
+
+function ka_eval (stmt, __scope, e, __refs) {
+    if (stmt.endsWith(";"))
+        stmt = stmt.slice(0, -1);
+
+    const reserved = ["var", "null", "let", "const", "function", "class", "in", "of", "for", "true", "false", "await", "$this"];
+    let r = "var $this = e;";
+    for (let __name in __scope) {
+        if (reserved.indexOf(__name) !== -1)
+            continue;
+        if (__name.indexOf("-") !== -1) {
+            console.error(`Invalid scope key '${__name}': Cannot contain - in scope:`, __scope);
+            throw `eval() failed: Invalid scope key: '${__name}': Cannot contain minus char '-'`;
+        }
+        r += `var ${__name} = __scope['${__name}'];`
+    }
+    // If the scope was cloned, the original will be in $scope. This is important when
+    // Using events [on.click], e.g.
+    if (typeof __scope.$scope === "undefined") {
+        r += "var $scope = __scope;";
+    }
+    try {
+        // console.log(r + '(' + stmt + ')');
+        return eval(r  + '('+stmt+')')
+    } catch (ex) {
+        console.error("cannot eval() stmt: '" + stmt + "': " + ex, " on element ", e, ex, "(context:", __scope, ")");
+        throw "eval('" + stmt + "') failed: " + ex;
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/core/init.js":
+/*!**************************!*\
+  !*** ./src/core/init.js ***!
+  \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "KaToolsV1": () => (/* binding */ KaToolsV1)
+/* harmony export */ });
+
+
+let KaToolsV1 = {};
+
+
+
+/***/ }),
+
+/***/ "./src/core/query-select.js":
+/*!**********************************!*\
+  !*** ./src/core/query-select.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ka_query_selector": () => (/* binding */ ka_query_selector)
+/* harmony export */ });
+
+/**
+ * Query a Element or trigger an Exception
+ *
+ * @param query
+ * @param parent
+ * @param exception
+ * @return {HTMLElement}
+ */
+function ka_query_selector (query, parent, exception) {
+    if (typeof exception === "undefined")
+        exception = `querySelector '${query}' not found`
+    if (typeof parent === "undefined" || parent === null)
+        parent = document;
+    let e = parent.querySelectorAll(query);
+    if (e.length === 0) {
+        console.warn(exception, "on parent: ", parent);
+        throw exception;
+    }
+    return e[0];
+}
+
+
+/***/ }),
+
+/***/ "./src/core/str-to-camelcase.js":
+/*!**************************************!*\
+  !*** ./src/core/str-to-camelcase.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ka_str_to_camel_case": () => (/* binding */ ka_str_to_camel_case)
+/* harmony export */ });
+
+
+/**
+ * Transform any input to CamelCase
+ *
+ * Example: some-class => someClass
+ *
+ * @param str {string}
+ * @return {string}
+ */
+function ka_str_to_camel_case (str) {
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, idx) => idx === 0 ? ltr.toLowerCase() : ltr.toUpperCase()).replace(/[^a-zA-Z0-9]+/g, '');
+}
+
+
+/***/ }),
+
+/***/ "./src/tpl/template.js":
+/*!*****************************!*\
+  !*** ./src/tpl/template.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "KaTemplate": () => (/* binding */ KaTemplate)
+/* harmony export */ });
+/* harmony import */ var _core_eval__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/eval */ "./src/core/eval.js");
+/* harmony import */ var _core_elwalk__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/elwalk */ "./src/core/elwalk.js");
+/* harmony import */ var _core_apply__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/apply */ "./src/core/apply.js");
+/* harmony import */ var _ce_custom_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../ce/custom-element */ "./src/ce/custom-element.js");
+
+
+
+
+
+
+class KaTemplate {
+
+    constructor(template) {
+        this.template = template;
+        if (typeof this.template.__kachilds === "undefined")
+            this.template.__kachilds = [];
+        if (typeof this.template.__kasibling === "undefined")
+            this.template.__kasibling = this.template.nextElementSibling;
+
+        this.__renderCount = 0;
+        this.$scope = {};
+    }
+
+    _error(msg) {
+        console.error(`[ka-template] ${msg} on element`, this.template);
+        throw `[ka-template] ${msg} on element` + this.template;
+    }
+
+    _appendTemplate() {
+        let elements = this.template.content;
+
+        let elList = [];
+        for (let curE of elements.children) {
+            curE = curE.cloneNode(true);
+            curE._ka_maintained_by = this.template.getAttribute("_kaidx");
+            elList.push(curE);
+            this.template.parentNode.insertBefore(curE, this.template.__kasibling);
+        }
+        this.template.__kachilds.push(elList);
+    }
+
+    _removeLastChild() {
+        if (this.template.__kachilds.length === 0)
+            return;
+        let childs = this.template.__kachilds[this.template.__kachilds.length - 1];
+        for (let curE of childs) {
+            this.template.parentElement.removeChild(curE);
+        }
+        this.template.__kachilds.length = this.template.__kachilds.length - 1;
+
+    }
+
+    _renderFor($scope, stmt) {
+        //console.log("kachilds", this.template.__kachilds);
+        let matches = stmt.match(/^(let)?\s*(?<target>.+)\s+(?<type>of|in|repeat)\s+(?<select>.+)$/);
+        if (matches === null) {
+            this._error(`Can't parse ka.for='${stmt}'`);
+        }
+        let selectVal = (0,_core_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(matches.groups.select, $scope, this.template);
+
+        if (matches.groups.type === "repeat") {
+            if (typeof selectVal !== "number")
+                this._error(`Error ka.for='${stmt}': Selected val must be number in repeat loop`);
+            selectVal = new Array(selectVal).fill(null);
+        }
+
+        let eIndex = 0;
+        for (let index in selectVal) {
+            let curScope = {$scope: $scope, ...$scope};
+            curScope[matches.groups.target] = index;
+
+            if (matches.groups.type === "of")
+                curScope[matches.groups.target] = selectVal[index];
+
+            if (this.template.__kachilds.length < eIndex + 1) {
+                //console.log("append", eIndex, this.template.__kachilds.length);
+                this._appendTemplate();
+            }
+            this._maintain(curScope, this.template.__kachilds[eIndex], eIndex);
+            eIndex++;
+        }
+        for(let remIdx = eIndex; remIdx < this.template.__kachilds.length; ) {
+            this._removeLastChild();
+        }
+
+    }
+
+    _maintain($scope, childs, forIndex=0) {
+        for (let child of childs) {
+            child._ka_for_index = forIndex;
+            (0,_core_elwalk__WEBPACK_IMPORTED_MODULE_1__.ka_elwalk)(child, (el) => {
+                //console.log("walk", el);
+                if (el instanceof HTMLTemplateElement) {
+                    //console.log("maintain", el);
+                    let r = new this.constructor(el);
+                    r.render($scope);
+                    return false;
+                }
+
+                if (typeof el._ka_maintained_by !== "undefined" && el._ka_maintained_by !== this.template.getAttribute("_kaidx")) {
+                    return false;
+                }
+
+                (0,_core_apply__WEBPACK_IMPORTED_MODULE_2__.ka_apply)(el, $scope);
+                if (el instanceof HTMLElement && (el.hasAttribute("ka.stop") || el instanceof _ce_custom_element__WEBPACK_IMPORTED_MODULE_3__.KaCustomElement))
+                    return false; // Skip Element rendering
+            }, true, true);
+        }
+    }
+
+
+    _renderIf($scope, stmt) {
+         let selectVal = (0,_core_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(stmt, $scope, this.template);
+        if (selectVal === true) {
+            if (this.template.__kachilds.length === 0)
+                this._appendTemplate();
+
+            this._maintain($scope, this.template.__kachilds[0]);
+        } else {
+            this._removeLastChild();
+        }
+    }
+
+    /**
+     * Remove all rendered element
+     */
+    dispose() {
+        for(;this.template.__kachilds.length > 0;)
+            this._removeLastChild();
+    }
+
+
+    /**
+     * Render / Update the Template
+     *
+     * Once the scope in parameter 1 was set, it will render
+     * without any parameters. Scope is available via property $scope
+     *
+     * @param $scope
+     */
+    render($scope = null) {
+        if ($scope === null)
+            $scope = this.$scope;
+        this.$scope = $scope;
+        this.__renderCount++;
+
+        if (this.template.hasAttribute("ka.for")) {
+            this._renderFor($scope, this.template.getAttribute("ka.for"));
+        } else if (this.template.hasAttribute("ka.if")) {
+            this._renderIf($scope, this.template.getAttribute("ka.if"));
+        } else {
+            if (typeof this.template._ka_active === "undefined") {
+                this._appendTemplate();
+                this.template._ka_active = true;
+            }
+            this._maintain($scope, this.template.__kachilds);
+        }
+    }
+
+    /**
+     * Return true if this template was renderd the first time
+     *
+     * @returns {boolean}
+     */
+    isFirstRender() {
+        return this.__renderCount === 1;
+    }
+
+};
+
+
+/***/ }),
+
+/***/ "./src/tpl/templatify.js":
+/*!*******************************!*\
+  !*** ./src/tpl/templatify.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ka_templatify": () => (/* binding */ ka_templatify)
+/* harmony export */ });
+/* harmony import */ var _core_query_select__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/query-select */ "./src/core/query-select.js");
+/* harmony import */ var _core_elwalk__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/elwalk */ "./src/core/elwalk.js");
+
+
+
+
+window._ka_el_idx = 0;
+/**
+ * Generate a renderable Template from <template> Element
+ *
+ * @param {HTMLElement|string} elem
+ * @return {HTMLTemplateElement}
+ */
+function ka_templatify (elem, returnMode=true) {
+    if (typeof elem === "string")
+        elem = (0,_core_query_select__WEBPACK_IMPORTED_MODULE_0__.ka_query_selector)(elem);
+    if ( ! (elem instanceof Node)) {
+        console.error("[ka-templatify] Parameter 1 is not a html element: ", elem)
+        throw `[ka-templify] Parameter 1 is not a html element: ${elem}`;
+    }
+
+    if (returnMode) {
+        let returnTpl = document.createElement("template");
+        returnTpl.setAttribute("_kaidx", (window._ka_el_idx++).toString())
+        /* @var {HTMLTemplateElement} returnTpl */
+        returnTpl.innerHTML = elem.innerHTML
+            .replace(/\[\[(.*?)\]\]/g, (matches, m1) => `<span ka.textContent="${m1}"></span>`);
+
+        ka_templatify(returnTpl.content, false);
+        return returnTpl;
+    }
+
+    if (elem instanceof HTMLTemplateElement)
+        elem = elem.content;
+
+    let wrapElem = (el, attName, attVal) => {
+        let tpl = document.createElement("template");
+        tpl.setAttribute("_kaidx", (window._ka_el_idx++).toString())
+        let clonedEl = el.cloneNode(true);
+        clonedEl.removeAttribute(attName);
+        tpl.content.append(clonedEl);
+        tpl.setAttribute(attName, attVal);
+        el.replaceWith(tpl);
+        return tpl;
+    }
+
+    ;(0,_core_elwalk__WEBPACK_IMPORTED_MODULE_1__.ka_elwalk)(elem, (el) => {
+        //console.log(el);
+        if ( ! el instanceof HTMLElement)
+            return;
+        let tpl = null;
+        for (let attrName of el.getAttributeNames()) {
+            if (attrName === "ka.for") {
+                tpl = wrapElem(el, "ka.for", el.getAttribute("ka.for"));
+                ka_templatify(tpl, false);
+                break;
+            }
+            if (attrName === "ka.if") {
+                tpl = wrapElem(el, "ka.if", el.getAttribute("ka.if"));
+                ka_templatify(tpl, false);
+                break;
+            }
+        }
+    }, true, false);
+}
 
 
 /***/ })
@@ -1313,18 +1133,6 @@ _KaModal_element = new WeakMap();
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -1335,18 +1143,6 @@ _KaModal_element = new WeakMap();
 /******/ 				}
 /******/ 			}
 /******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/global */
-/******/ 	(() => {
-/******/ 		__webpack_require__.g = (function() {
-/******/ 			if (typeof globalThis === 'object') return globalThis;
-/******/ 			try {
-/******/ 				return this || new Function('return this')();
-/******/ 			} catch (e) {
-/******/ 				if (typeof window === 'object') return window;
-/******/ 			}
-/******/ 		})();
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
@@ -1367,9 +1163,8 @@ _KaModal_element = new WeakMap();
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-"use strict";
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
@@ -1378,15 +1173,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ka": () => (/* binding */ ka)
 /* harmony export */ });
 /* harmony import */ var _element_KaModal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./element/KaModal */ "./src/element/KaModal.ts");
+/* harmony import */ var _element_TestModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./element/TestModal */ "./src/element/TestModal.ts");
+
 
 
 
 const ka = {
-    modal: _element_KaModal__WEBPACK_IMPORTED_MODULE_0__.KaModal
+    modal: _element_KaModal__WEBPACK_IMPORTED_MODULE_0__.KaModal,
+    testModal: _element_TestModal__WEBPACK_IMPORTED_MODULE_1__.TestModal
 };
+
+window.ka = ka;
 
 })();
 
+/******/ 	return __webpack_exports__;
 /******/ })()
 ;
+});
 //# sourceMappingURL=kasimir.js.map
