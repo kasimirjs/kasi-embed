@@ -40,8 +40,6 @@ module.exports = {
         publicPath: "",
         filename: 'kasimir.js',
         path: path.resolve(__dirname, 'dist'),
-        library: {
-            type: "umd"
-        }
+
     },
 };

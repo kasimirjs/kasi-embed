@@ -2,6 +2,7 @@
   "name": "@kasimirjs/embed",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "dist/kasimir.js",
   "module": "dist/kasimir.js",
   "directories": {
@@ -22,11 +23,11 @@
   },
   "homepage": "https://github.com/kasimirjs/kasi-editor#readme",
   "dependencies": {
-    "reflect-metadata": "^0.1.13",
-    "ts-loader": "^9.3.1",
-    "typescript": "^4.8.4"
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "ts-loader": "^9.3.1",
+    "typescript": "^4.8.4",
     "@types/jest": "^29.0.0",
     "jest": "^28.1.3",
     "ts-jest": "^28.0.8",
