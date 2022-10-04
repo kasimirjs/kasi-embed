@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "exports": "./src/index.ts",
+  "exports": "./dist/kasimir.js",
   "main": "src/index.ts",
   "module": "dist/kasimir.js",
   "directories": {
