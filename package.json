@@ -4,12 +4,18 @@
   "description": "",
   "type": "module",
   "exports": "./dist/kasimir.js",
-  "main": "src/index.ts",
-  "module": "dist/kasimir.js",
+  "main": "dist/index.ts",
+  "types": "dist/index.d.ts",
+
   "directories": {
     "doc": "docs",
     "lib": "lib"
   },
+  "files": [
+    "/dist"
+  ],
+
+
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
