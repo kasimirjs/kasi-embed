@@ -1,7 +1,7 @@
-import {ka_eval} from "../core/eval";
-import {ka_elwalk} from "../core/elwalk";
-import {ka_apply} from "../core/apply";
-import {KaCustomElement} from "../ce/custom-element";
+import {ka_eval} from "../core/eval.js";
+import {ka_elwalk} from "../core/elwalk.js";
+import {ka_apply} from "../core/apply.js";
+import {KaCustomElement} from "../ce/custom-element.js";
 
 
 export class KaTemplate {

@@ -1,5 +1,5 @@
-import {ka_query_selector} from "../core/query-select";
-import {ka_elwalk} from "../core/elwalk";
+import {ka_query_selector} from "../core/query-select.js";
+import {ka_elwalk} from "../core/elwalk.js";
 
 
 window._ka_el_idx = 0;

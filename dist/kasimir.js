@@ -1,14 +1,4 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
-})(self, () => {
-return /******/ (() => { // webpackBootstrap
+/******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
@@ -105,155 +95,163 @@ function ka_load_html(url) {
 
 /***/ }),
 
-/***/ "./src/core/create-element.ts":
-/*!************************************!*\
-  !*** ./src/core/create-element.ts ***!
-  \************************************/
+/***/ "./src/core/dom-ready.ts":
+/*!*******************************!*\
+  !*** ./src/core/dom-ready.ts ***!
+  \*******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ka_create_element": () => (/* binding */ ka_create_element)
+/* harmony export */   "ka_dom_ready": () => (/* binding */ ka_dom_ready)
+/* harmony export */ });
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+/**
+ * Wait for DomContentLoaded or resolve immediate
+ *
+ * <example>
+ * await MicxToolsVx.domReady();
+ * </example>
+ *
+ * @return {Promise<string>}
+ */
+function ka_dom_ready() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve) => {
+            if (document.readyState === "complete" || document.readyState === "interactive")
+                return resolve("loaded");
+            document.addEventListener("DOMContentLoaded", () => resolve('DOMContentLoaded'));
+        });
+    });
+}
+
+
+/***/ }),
+
+/***/ "./src/core/sleep.ts":
+/*!***************************!*\
+  !*** ./src/core/sleep.ts ***!
+  \***************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ka_sleep": () => (/* binding */ ka_sleep)
+/* harmony export */ });
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+function ka_sleep(sleepms) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve) => {
+            window.setTimeout(() => {
+                return resolve();
+            }, sleepms);
+        });
+    });
+}
+
+
+/***/ }),
+
+/***/ "./src/decorators/custom-element.ts":
+/*!******************************************!*\
+  !*** ./src/decorators/custom-element.ts ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "customElement": () => (/* binding */ customElement)
 /* harmony export */ });
 /**
- * Create a new Element
+ * Defines a customElement
  *
- * @param tagName {string}      The Tag Name
- * @param attributes {string<string>}   Attributes to set initially
- * @param appendToElement {HTMLElement}
- * @param children {HTMLElement[]}
- * @return HTMLElement
+ * Usage as class decorator @customElement("some-tag")
+ *
+ * @param tagName
  */
-function ka_create_element(tagName, attributes = null, children = null, appendToElement = null) {
-    let e = document.createElement(tagName);
-    if (attributes === null)
-        attributes = {};
-    for (let attName in attributes) {
-        e.setAttribute(attName, attributes[attName]);
-    }
-    if (Array.isArray(children)) {
-        for (let ce of children)
-            e.appendChild(ce);
-    }
-    if (appendToElement !== null) {
-        appendToElement.appendChild(e);
-    }
-    return e;
+function customElement(tagName) {
+    return function (classOrDescriptor) {
+        console.debug("registering custom element", classOrDescriptor, tagName);
+        customElements.define(tagName, classOrDescriptor);
+        return classOrDescriptor;
+    };
 }
 
 
 /***/ }),
 
-/***/ "./src/element/KaModal.ts":
-/*!********************************!*\
-  !*** ./src/element/KaModal.ts ***!
-  \********************************/
+/***/ "./src/element/KaHtmlElement.ts":
+/*!**************************************!*\
+  !*** ./src/element/KaHtmlElement.ts ***!
+  \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "KaModal": () => (/* binding */ KaModal)
+/* harmony export */   "KaHtmlElement": () => (/* binding */ KaHtmlElement)
 /* harmony export */ });
 /* harmony import */ var _tpl_template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../tpl/template */ "./src/tpl/template.js");
-/* harmony import */ var _core_create_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/create-element */ "./src/core/create-element.ts");
+/* harmony import */ var _tpl_templatify__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../tpl/templatify */ "./src/tpl/templatify.js");
 /* harmony import */ var _ce_html__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../ce/html */ "./src/ce/html.js");
-/* harmony import */ var _tpl_templatify__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../tpl/templatify */ "./src/tpl/templatify.js");
-var __classPrivateFieldGet = (undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
-var __classPrivateFieldSet = (undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var _KaModal_element, _KaModal_backdrop, _KaModal_main, _KaModal_configDefaults, _KaModal_promise;
 
 
 
-
-class KaModal {
-    constructor(tagName = "ka-modal", shadowRootInit = null, modalConfig = {}) {
-        _KaModal_element.set(this, void 0);
-        _KaModal_backdrop.set(this, void 0);
-        _KaModal_main.set(this, void 0);
-        this.$tpl = null;
-        _KaModal_configDefaults.set(this, {
-            parentElement: document.body,
-            zIndex: 9999,
-            styleBase: "position:fixed; top:0; bottom:0; left:0; right:0;",
-            styleBackdrop: "background-color: #999;opacity:0.5;",
-            maxWidth: 800,
-        });
-        _KaModal_promise.set(this, {
-            promise: null,
-            reject: null,
-            resolve: null,
-        });
-        let config = __classPrivateFieldGet(this, _KaModal_configDefaults, "f");
-        config = Object.assign(Object.assign({}, config), modalConfig);
-        __classPrivateFieldSet(this, _KaModal_element, (0,_core_create_element__WEBPACK_IMPORTED_MODULE_1__.ka_create_element)(tagName, { hidden: "hidden" }, null, config.parentElement), "f");
-        __classPrivateFieldSet(this, _KaModal_backdrop, (0,_core_create_element__WEBPACK_IMPORTED_MODULE_1__.ka_create_element)("div", { style: `${config.styleBase};${config.styleBackdrop};z-index:${config.zIndex};` }, null, __classPrivateFieldGet(this, _KaModal_element, "f")), "f");
-        let master = (0,_core_create_element__WEBPACK_IMPORTED_MODULE_1__.ka_create_element)("div", { style: `position:fixed;left:0;right:0;display:flex;justify-content:center;z-index:${config.zIndex + 1};` }, null, __classPrivateFieldGet(this, _KaModal_element, "f"));
-        __classPrivateFieldSet(this, _KaModal_main, (0,_core_create_element__WEBPACK_IMPORTED_MODULE_1__.ka_create_element)("div", { style: `;max-height:100%;max-width:100%;` }, null, master), "f");
-        this.adjustWidth(config);
-        __classPrivateFieldGet(this, _KaModal_promise, "f").promise = new Promise((resolve, reject) => { __classPrivateFieldGet(this, _KaModal_promise, "f").resolve = resolve; __classPrivateFieldGet(this, _KaModal_promise, "f").reject = reject; });
+class KaHtmlElement extends HTMLElement {
+    constructor(shadowRootInit = null) {
+        super();
+        this.shadowRootInit = shadowRootInit;
+        this.addEventListener("load", (e) => console.log(e));
     }
-    adjustWidth(modalConfig) {
-        let w = window.innerWidth;
-        if (w > modalConfig.maxWidth)
-            w = modalConfig.maxWidth;
-        __classPrivateFieldGet(this, _KaModal_main, "f").style.width = w + "px";
-    }
-    render(scope = null) {
-        if (this.$tpl === null) {
-            let html = this.html;
-            if (typeof html === "string") {
-                html = (0,_ce_html__WEBPACK_IMPORTED_MODULE_2__.ka_html)(html);
+    connectedCallback() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let htmlTpl;
+            if (typeof this.html === "function") {
+                let fn = this.html;
+                htmlTpl = yield fn(this);
             }
-            let elem = (0,_tpl_templatify__WEBPACK_IMPORTED_MODULE_3__.ka_templatify)(html);
-            __classPrivateFieldGet(this, _KaModal_main, "f").appendChild(elem);
-            this.$tpl = new _tpl_template__WEBPACK_IMPORTED_MODULE_0__.KaTemplate(elem);
-        }
-        console.log("render", this);
-        this.$tpl.render(scope);
+            if (typeof htmlTpl === "string")
+                htmlTpl = (0,_ce_html__WEBPACK_IMPORTED_MODULE_2__.ka_html)(htmlTpl);
+            let attachTo = this;
+            if (this.shadowRootInit !== null) {
+                attachTo = this.attachShadow(this.shadowRootInit);
+            }
+            if (this.html !== null) {
+                let tpl = (0,_tpl_templatify__WEBPACK_IMPORTED_MODULE_1__.ka_templatify)(htmlTpl);
+                this.$tpl = new _tpl_template__WEBPACK_IMPORTED_MODULE_0__.KaTemplate(tpl);
+                attachTo.appendChild(tpl);
+            }
+            this.connected();
+        });
     }
-    resolve(...params) {
-        __classPrivateFieldGet(this, _KaModal_element, "f").remove();
-        __classPrivateFieldGet(this, _KaModal_promise, "f").resolve(...params);
-    }
-    show() {
-        __classPrivateFieldGet(this, _KaModal_element, "f").removeAttribute("hidden");
-        return __classPrivateFieldGet(this, _KaModal_promise, "f").promise;
-    }
-}
-_KaModal_element = new WeakMap(), _KaModal_backdrop = new WeakMap(), _KaModal_main = new WeakMap(), _KaModal_configDefaults = new WeakMap(), _KaModal_promise = new WeakMap();
-
-
-/***/ }),
-
-/***/ "./src/element/TestModal.ts":
-/*!**********************************!*\
-  !*** ./src/element/TestModal.ts ***!
-  \**********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "TestModal": () => (/* binding */ TestModal)
-/* harmony export */ });
-/* harmony import */ var _KaModal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./KaModal */ "./src/element/KaModal.ts");
-
-class TestModal extends _KaModal__WEBPACK_IMPORTED_MODULE_0__.KaModal {
-    constructor() {
-        super(...arguments);
-        this.html = `<div>Hello World</div>`;
-    }
-    show() {
-        this.render({});
-        return super.show();
+    disconnectedCallback() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.disconnected();
+        });
     }
 }
 
@@ -264,18 +262,16 @@ class TestModal extends _KaModal__WEBPACK_IMPORTED_MODULE_0__.KaModal {
 /*!**********************************!*\
   !*** ./src/ce/custom-element.js ***!
   \**********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "KaCustomElement": () => (/* binding */ KaCustomElement)
 /* harmony export */ });
-/* harmony import */ var _core_init__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/init */ "./src/core/init.js");
-/* harmony import */ var _tpl_templatify__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../tpl/templatify */ "./src/tpl/templatify.js");
-/* harmony import */ var _tpl_template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../tpl/template */ "./src/tpl/template.js");
-/* harmony import */ var _core_query_select__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/query-select */ "./src/core/query-select.js");
-/* harmony import */ var _htmlFile__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./htmlFile */ "./src/ce/htmlFile.ts");
-
+/* harmony import */ var _tpl_templatify_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../tpl/templatify.js */ "./src/tpl/templatify.js");
+/* harmony import */ var _tpl_template_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../tpl/template.js */ "./src/tpl/template.js");
+/* harmony import */ var _core_query_select_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/query-select.js */ "./src/core/query-select.js");
+/* harmony import */ var _htmlFile_ts__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./htmlFile.ts */ "./src/ce/htmlFile.ts");
 
 
 
@@ -326,10 +322,10 @@ class KaCustomElement extends HTMLElement {
 
         if (this.constructor.__tpl !== null) {
             let origTpl = this.constructor.__tpl;
-            if (origTpl instanceof _htmlFile__WEBPACK_IMPORTED_MODULE_4__.RemoteTemplate)
+            if (origTpl instanceof _htmlFile_ts__WEBPACK_IMPORTED_MODULE_3__.RemoteTemplate)
                 origTpl = await origTpl.load();
 
-            let tpl = (0,_tpl_templatify__WEBPACK_IMPORTED_MODULE_1__.ka_templatify)(origTpl);
+            let tpl = (0,_tpl_templatify_js__WEBPACK_IMPORTED_MODULE_0__.ka_templatify)(origTpl);
 
             if (this.constructor.__options.shadowDom === true) {
                 let shadowDom = this.attachShadow(this.constructor.__options.shadowDomOptions);
@@ -338,7 +334,7 @@ class KaCustomElement extends HTMLElement {
                 this.appendChild(tpl);
             }
 
-            this.__tpl = new _tpl_template__WEBPACK_IMPORTED_MODULE_2__.KaTemplate(tpl);
+            this.__tpl = new _tpl_template_js__WEBPACK_IMPORTED_MODULE_1__.KaTemplate(tpl);
         }
 
         if (this.constructor.__options.waitEvent !== null) {
@@ -346,7 +342,7 @@ class KaCustomElement extends HTMLElement {
             let eventName = wd[0];
             let target = document;
             if (wd.length === 2) {
-                target = (0,_core_query_select__WEBPACK_IMPORTED_MODULE_3__.ka_query_selector)(wd[1]);
+                target = (0,_core_query_select_js__WEBPACK_IMPORTED_MODULE_2__.ka_query_selector)(wd[1]);
             }
             target.addEventListener(eventName, async (event) => {
                 callback(this.$tpl, this);
@@ -376,7 +372,7 @@ class KaCustomElement extends HTMLElement {
 /*!************************!*\
   !*** ./src/ce/html.js ***!
   \************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -396,14 +392,14 @@ function ka_html(htmlContent) {
 /*!***************************!*\
   !*** ./src/core/apply.js ***!
   \***************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ka_apply": () => (/* binding */ ka_apply)
 /* harmony export */ });
-/* harmony import */ var _eval__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./eval */ "./src/core/eval.js");
-/* harmony import */ var _str_to_camelcase__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./str-to-camelcase */ "./src/core/str-to-camelcase.js");
+/* harmony import */ var _eval_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./eval.js */ "./src/core/eval.js");
+/* harmony import */ var _str_to_camelcase_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./str-to-camelcase.js */ "./src/core/str-to-camelcase.js");
 
 
 
@@ -444,7 +440,7 @@ function ka_apply (selector, scope, recursive=false) {
                 if (typeof callbackOrCode === "function") {
                     return callbackOrCode(e, element, scope);
                 } else {
-                    return (0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(callbackOrCode, scope, element);
+                    return (0,_eval_js__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(callbackOrCode, scope, element);
                 }
             };
         }
@@ -465,7 +461,7 @@ function ka_apply (selector, scope, recursive=false) {
 
         let r = null;
         if (typeof attVal !== "undefined" && typeof attVal !== null && attVal !== "")
-            r = (0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(attVal, scope, selector);
+            r = (0,_eval_js__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(attVal, scope, selector);
 
         switch (attType) {
             case "ref":
@@ -500,14 +496,14 @@ function ka_apply (selector, scope, recursive=false) {
                     let val = r;
                     if (typeof val === "number" && ["left", "top", "height", "width", "bottom", "right", "line-height", "font-size"].indexOf(attSelector) !== -1)
                         val = val + "px";
-                    selector.style[(0,_str_to_camelcase__WEBPACK_IMPORTED_MODULE_1__.ka_str_to_camel_case)(attSelector)] = val;
+                    selector.style[(0,_str_to_camelcase_js__WEBPACK_IMPORTED_MODULE_1__.ka_str_to_camel_case)(attSelector)] = val;
                     break;
                 }
                 for (let cname in r) {
                     let val = r[cname];
                     if (typeof val === "number" && ["left", "top", "height", "width", "bottom", "right", "line-height", "font-size"].indexOf(cname) !== -1)
                         val = val + "px";
-                    selector.style[(0,_str_to_camelcase__WEBPACK_IMPORTED_MODULE_1__.ka_str_to_camel_case)(cname)] = val;
+                    selector.style[(0,_str_to_camelcase_js__WEBPACK_IMPORTED_MODULE_1__.ka_str_to_camel_case)(cname)] = val;
                 }
                 break;
 
@@ -518,8 +514,8 @@ function ka_apply (selector, scope, recursive=false) {
                     // Bind default values
                     if (selector.hasAttribute("ka.bind.default")) {
                         scope = {$scope: scope, ...scope};
-                        scope = {$scope: scope, ...scope, __curVal: (0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(selector.getAttribute("ka.bind.default"), scope, selector)}
-                        ;(0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
+                        scope = {$scope: scope, ...scope, __curVal: (0,_eval_js__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(selector.getAttribute("ka.bind.default"), scope, selector)}
+                        ;(0,_eval_js__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
                         r = scope.__curVal;
                     }
                 }
@@ -535,14 +531,14 @@ function ka_apply (selector, scope, recursive=false) {
                 if (typeof selector._kap_bind === "undefined") {
                     selector.addEventListener("change", (event) => {
 
-                        let arr = (0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(attVal, scope, selector);
+                        let arr = (0,_eval_js__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(attVal, scope, selector);
 
                         if (arr.indexOf(selector.value) === -1 && selector.checked)
                             arr.push(selector.value);
                         if (arr.indexOf(selector.value) !== -1 && ! selector.checked)
                             arr = arr.filter((e) => e !== selector.value);
                         scope = {$scope: scope, ...scope, __curVal: arr};
-                        (0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
+                        (0,_eval_js__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
                         if (scope.$on && scope.$on.change)
                             scope.$on.change(event);
                     })
@@ -557,8 +553,8 @@ function ka_apply (selector, scope, recursive=false) {
                     // Bind default values
                     if (selector.hasAttribute("ka.bind.default")) {
                         scope = {$scope: scope, ...scope};
-                        scope = {$scope: scope, ...scope, __curVal: (0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(selector.getAttribute("ka.bind.default"), scope, selector)}
-                        ;(0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
+                        scope = {$scope: scope, ...scope, __curVal: (0,_eval_js__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(selector.getAttribute("ka.bind.default"), scope, selector)}
+                        ;(0,_eval_js__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
                         r = scope.__curVal;
                     }
                 }
@@ -594,13 +590,13 @@ function ka_apply (selector, scope, recursive=false) {
                             value = selector.value
                         }
                         scope = {$scope: scope, ...scope, __curVal: value}
-                        ;(0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
+                        ;(0,_eval_js__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
                         if (scope.$on && scope.$on.change)
                             scope.$on.change(event);
                     })
                     selector.addEventListener("keyup", (event) => {
                         scope = {$scope: scope,...scope, __curVal: selector.value}
-                        ;(0,_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
+                        ;(0,_eval_js__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(`${attVal} = __curVal`, scope, selector);
                         if (scope.$on && scope.$on.change)
                             scope.$on.change(event);
 
@@ -648,11 +644,11 @@ function ka_apply (selector, scope, recursive=false) {
             case "prop":
                 if (attSelector  !== null) {
                     // Set Property directly
-                    selector[(0,_str_to_camelcase__WEBPACK_IMPORTED_MODULE_1__.ka_str_to_camel_case)(attSelector)] = r;
+                    selector[(0,_str_to_camelcase_js__WEBPACK_IMPORTED_MODULE_1__.ka_str_to_camel_case)(attSelector)] = r;
                     break;
                 }
                 for (let cname in r) {
-                    selector[(0,_str_to_camelcase__WEBPACK_IMPORTED_MODULE_1__.ka_str_to_camel_case)(cname)] = r[cname];
+                    selector[(0,_str_to_camelcase_js__WEBPACK_IMPORTED_MODULE_1__.ka_str_to_camel_case)(cname)] = r[cname];
                 }
                 break;
 
@@ -683,7 +679,7 @@ function ka_apply (selector, scope, recursive=false) {
 /*!****************************!*\
   !*** ./src/core/elwalk.js ***!
   \****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -725,7 +721,7 @@ function ka_elwalk (elem, fn, recursive=false, includeFirst=false) {
 /*!**************************!*\
   !*** ./src/core/eval.js ***!
   \**************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -764,29 +760,11 @@ function ka_eval (stmt, __scope, e, __refs) {
 
 /***/ }),
 
-/***/ "./src/core/init.js":
-/*!**************************!*\
-  !*** ./src/core/init.js ***!
-  \**************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "KaToolsV1": () => (/* binding */ KaToolsV1)
-/* harmony export */ });
-
-
-let KaToolsV1 = {};
-
-
-
-/***/ }),
-
 /***/ "./src/core/query-select.js":
 /*!**********************************!*\
   !*** ./src/core/query-select.js ***!
   \**********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -821,7 +799,7 @@ function ka_query_selector (query, parent, exception) {
 /*!**************************************!*\
   !*** ./src/core/str-to-camelcase.js ***!
   \**************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -848,16 +826,16 @@ function ka_str_to_camel_case (str) {
 /*!*****************************!*\
   !*** ./src/tpl/template.js ***!
   \*****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "KaTemplate": () => (/* binding */ KaTemplate)
 /* harmony export */ });
-/* harmony import */ var _core_eval__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/eval */ "./src/core/eval.js");
-/* harmony import */ var _core_elwalk__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/elwalk */ "./src/core/elwalk.js");
-/* harmony import */ var _core_apply__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/apply */ "./src/core/apply.js");
-/* harmony import */ var _ce_custom_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../ce/custom-element */ "./src/ce/custom-element.js");
+/* harmony import */ var _core_eval_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/eval.js */ "./src/core/eval.js");
+/* harmony import */ var _core_elwalk_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/elwalk.js */ "./src/core/elwalk.js");
+/* harmony import */ var _core_apply_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/apply.js */ "./src/core/apply.js");
+/* harmony import */ var _ce_custom_element_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../ce/custom-element.js */ "./src/ce/custom-element.js");
 
 
 
@@ -912,7 +890,7 @@ class KaTemplate {
         if (matches === null) {
             this._error(`Can't parse ka.for='${stmt}'`);
         }
-        let selectVal = (0,_core_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(matches.groups.select, $scope, this.template);
+        let selectVal = (0,_core_eval_js__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(matches.groups.select, $scope, this.template);
 
         if (matches.groups.type === "repeat") {
             if (typeof selectVal !== "number")
@@ -944,7 +922,7 @@ class KaTemplate {
     _maintain($scope, childs, forIndex=0) {
         for (let child of childs) {
             child._ka_for_index = forIndex;
-            (0,_core_elwalk__WEBPACK_IMPORTED_MODULE_1__.ka_elwalk)(child, (el) => {
+            (0,_core_elwalk_js__WEBPACK_IMPORTED_MODULE_1__.ka_elwalk)(child, (el) => {
                 //console.log("walk", el);
                 if (el instanceof HTMLTemplateElement) {
                     //console.log("maintain", el);
@@ -957,8 +935,8 @@ class KaTemplate {
                     return false;
                 }
 
-                (0,_core_apply__WEBPACK_IMPORTED_MODULE_2__.ka_apply)(el, $scope);
-                if (el instanceof HTMLElement && (el.hasAttribute("ka.stop") || el instanceof _ce_custom_element__WEBPACK_IMPORTED_MODULE_3__.KaCustomElement))
+                (0,_core_apply_js__WEBPACK_IMPORTED_MODULE_2__.ka_apply)(el, $scope);
+                if (el instanceof HTMLElement && (el.hasAttribute("ka.stop") || el instanceof _ce_custom_element_js__WEBPACK_IMPORTED_MODULE_3__.KaCustomElement))
                     return false; // Skip Element rendering
             }, true, true);
         }
@@ -966,7 +944,7 @@ class KaTemplate {
 
 
     _renderIf($scope, stmt) {
-         let selectVal = (0,_core_eval__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(stmt, $scope, this.template);
+         let selectVal = (0,_core_eval_js__WEBPACK_IMPORTED_MODULE_0__.ka_eval)(stmt, $scope, this.template);
         if (selectVal === true) {
             if (this.template.__kachilds.length === 0)
                 this._appendTemplate();
@@ -1031,14 +1009,14 @@ class KaTemplate {
 /*!*******************************!*\
   !*** ./src/tpl/templatify.js ***!
   \*******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ka_templatify": () => (/* binding */ ka_templatify)
 /* harmony export */ });
-/* harmony import */ var _core_query_select__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/query-select */ "./src/core/query-select.js");
-/* harmony import */ var _core_elwalk__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/elwalk */ "./src/core/elwalk.js");
+/* harmony import */ var _core_query_select_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/query-select.js */ "./src/core/query-select.js");
+/* harmony import */ var _core_elwalk_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/elwalk.js */ "./src/core/elwalk.js");
 
 
 
@@ -1052,7 +1030,7 @@ window._ka_el_idx = 0;
  */
 function ka_templatify (elem, returnMode=true) {
     if (typeof elem === "string")
-        elem = (0,_core_query_select__WEBPACK_IMPORTED_MODULE_0__.ka_query_selector)(elem);
+        elem = (0,_core_query_select_js__WEBPACK_IMPORTED_MODULE_0__.ka_query_selector)(elem);
     if ( ! (elem instanceof Node)) {
         console.error("[ka-templatify] Parameter 1 is not a html element: ", elem)
         throw `[ka-templify] Parameter 1 is not a html element: ${elem}`;
@@ -1083,7 +1061,7 @@ function ka_templatify (elem, returnMode=true) {
         return tpl;
     }
 
-    ;(0,_core_elwalk__WEBPACK_IMPORTED_MODULE_1__.ka_elwalk)(elem, (el) => {
+    ;(0,_core_elwalk_js__WEBPACK_IMPORTED_MODULE_1__.ka_elwalk)(elem, (el) => {
         //console.log(el);
         if ( ! el instanceof HTMLElement)
             return;
@@ -1166,29 +1144,26 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 /*!**********************!*\
-  !*** ./src/index.js ***!
+  !*** ./src/index.ts ***!
   \**********************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ka": () => (/* binding */ ka)
+/* harmony export */   "KaHtmlElement": () => (/* reexport safe */ _element_KaHtmlElement__WEBPACK_IMPORTED_MODULE_3__.KaHtmlElement),
+/* harmony export */   "customElement": () => (/* reexport safe */ _decorators_custom_element__WEBPACK_IMPORTED_MODULE_2__.customElement),
+/* harmony export */   "ka_dom_ready": () => (/* reexport safe */ _core_dom_ready__WEBPACK_IMPORTED_MODULE_1__.ka_dom_ready),
+/* harmony export */   "ka_sleep": () => (/* reexport safe */ _core_sleep__WEBPACK_IMPORTED_MODULE_0__.ka_sleep)
 /* harmony export */ });
-/* harmony import */ var _element_KaModal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./element/KaModal */ "./src/element/KaModal.ts");
-/* harmony import */ var _element_TestModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./element/TestModal */ "./src/element/TestModal.ts");
+/* harmony import */ var _core_sleep__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./core/sleep */ "./src/core/sleep.ts");
+/* harmony import */ var _core_dom_ready__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./core/dom-ready */ "./src/core/dom-ready.ts");
+/* harmony import */ var _decorators_custom_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./decorators/custom-element */ "./src/decorators/custom-element.ts");
+/* harmony import */ var _element_KaHtmlElement__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./element/KaHtmlElement */ "./src/element/KaHtmlElement.ts");
 
 
 
 
-const ka = {
-    modal: _element_KaModal__WEBPACK_IMPORTED_MODULE_0__.KaModal,
-    testModal: _element_TestModal__WEBPACK_IMPORTED_MODULE_1__.TestModal
-};
-
-window.ka = ka;
 
 })();
 
-/******/ 	return __webpack_exports__;
 /******/ })()
 ;
-});
 //# sourceMappingURL=kasimir.js.map

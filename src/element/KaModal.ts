@@ -1,7 +1,7 @@
 import {KaTemplate} from "../tpl/template";
 import {ka_create_element} from "../core/create-element";
-import {ka_html} from "../ce/html";
-import {ka_templatify} from "../tpl/templatify";
+import {ka_html} from "../ce/html.js";
+import {ka_templatify} from "../tpl/templatify.js";
 
 export interface KaModalConfig {
     parentElement?: HTMLElement,

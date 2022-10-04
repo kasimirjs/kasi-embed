@@ -1,5 +1,5 @@
-import {ka_eval} from "./eval";
-import {ka_str_to_camel_case} from "./str-to-camelcase";
+import {ka_eval} from "./eval.js";
+import {ka_str_to_camel_case} from "./str-to-camelcase.js";
 
 
 export function ka_apply (selector, scope, recursive=false) {

@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/index.js',
+    entry: './src/index.ts',
     module: {
         rules: [
             {
@@ -15,15 +15,13 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
         modules: [
+
             "node_modules"
         ]
     },
     devtool: 'source-map',
     mode: "development",
-    watch: true,
-    watchOptions: {
-        followSymlinks: true
-    },
+
 
     plugins: [
     ],
