@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ka_is_constructor = void 0;
 /**
  * Returns true if fn in parameter 1 is a contructor
  *
@@ -8,7 +5,6 @@ exports.ka_is_constructor = void 0;
  * @param fn
  * @returns {boolean}
  */
-function ka_is_constructor(fn) {
+export function ka_is_constructor(fn) {
     return fn.toString().startsWith("class");
 }
-exports.ka_is_constructor = ka_is_constructor;

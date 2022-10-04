@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,9 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ka_sleep = void 0;
-function ka_sleep(sleepms) {
+export function ka_sleep(sleepms) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve) => {
             window.setTimeout(() => {
@@ -19,4 +16,3 @@ function ka_sleep(sleepms) {
         });
     });
 }
-exports.ka_sleep = ka_sleep;

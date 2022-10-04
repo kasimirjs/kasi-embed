@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ka_get_parent_element = void 0;
 /**
  * Find and return the parent Element of element in parameter 2
  * matching the selector or element in parameter 1
@@ -11,7 +8,7 @@ exports.ka_get_parent_element = void 0;
  * @param element {HTMLElement}
  * @return {HTMLElement|null}
  */
-function ka_get_parent_element(selector, element) {
+export function ka_get_parent_element(selector, element) {
     if (element === null)
         return null;
     if (selector instanceof HTMLElement) {
@@ -27,4 +24,3 @@ function ka_get_parent_element(selector, element) {
         return null;
     return ka_get_parent_element(selector, element.parentElement);
 }
-exports.ka_get_parent_element = ka_get_parent_element;

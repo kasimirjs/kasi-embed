@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const init_1 = require("../core/init");
+import { KaToolsV1 } from "../core/init";
 /**
  * Return array of arguments of the function
  *
@@ -13,7 +11,7 @@ const init_1 = require("../core/init");
  * @param func
  * @returns {string[]}
  */
-init_1.KaToolsV1.getArgs = (func) => {
+KaToolsV1.getArgs = (func) => {
     return (func + '')
         .replace(/[/][/].*$/mg, '') // strip single-line comments
         .replace(/^(.*?)=>.*$/s, (m, m1) => m1)

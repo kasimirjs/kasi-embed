@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,8 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ka_dom_ready = void 0;
 /**
  * Wait for DomContentLoaded or resolve immediate
  *
@@ -19,7 +16,7 @@ exports.ka_dom_ready = void 0;
  *
  * @return {Promise<string>}
  */
-function ka_dom_ready() {
+export function ka_dom_ready() {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve) => {
             if (document.readyState === "complete" || document.readyState === "interactive")
@@ -28,4 +25,3 @@ function ka_dom_ready() {
         });
     });
 }
-exports.ka_dom_ready = ka_dom_ready;

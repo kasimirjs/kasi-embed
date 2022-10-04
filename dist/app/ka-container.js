@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,9 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.container = exports.KaContainer = void 0;
-class KaContainer {
+export class KaContainer {
     constructor() {
         this._services = {};
     }
@@ -20,7 +17,7 @@ class KaContainer {
      * @return {KaContainer}
      */
     static getInstance() {
-        return exports.container;
+        return container;
     }
     /**
      * Get / wait for a value
@@ -111,5 +108,4 @@ class KaContainer {
         }
     }
 }
-exports.KaContainer = KaContainer;
-exports.container = new KaContainer();
+export var container = new KaContainer();
