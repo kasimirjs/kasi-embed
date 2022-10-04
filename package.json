@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/index.ts",
   "types": "dist/index.d.ts",
-  "exports": "./dist/index.ts",
+  "exports": "./dist/index.js",
 
   "directories": {
     "doc": "docs",
