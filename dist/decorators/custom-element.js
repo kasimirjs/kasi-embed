@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.customElement = void 0;
 /**
  * Defines a customElement
  *
@@ -5,10 +8,11 @@
  *
  * @param tagName
  */
-export function customElement(tagName) {
+function customElement(tagName) {
     return function (classOrDescriptor) {
         console.debug("registering custom element", classOrDescriptor, tagName);
         customElements.define(tagName, classOrDescriptor);
         return classOrDescriptor;
     };
 }
+exports.customElement = customElement;

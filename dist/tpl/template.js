@@ -1,8 +1,11 @@
-import { ka_eval } from "../core/eval.js";
-import { ka_elwalk } from "../core/elwalk.js";
-import { ka_apply } from "../core/apply.js";
-import { KaCustomElement } from "../ce/custom-element.js";
-export class KaTemplate {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.KaTemplate = void 0;
+const eval_js_1 = require("../core/eval.js");
+const elwalk_js_1 = require("../core/elwalk.js");
+const apply_js_1 = require("../core/apply.js");
+const custom_element_js_1 = require("../ce/custom-element.js");
+class KaTemplate {
     constructor(template) {
         this.template = template;
         if (typeof this.template.__kachilds === "undefined")
@@ -42,7 +45,7 @@ export class KaTemplate {
         if (matches === null) {
             this._error(`Can't parse ka.for='${stmt}'`);
         }
-        let selectVal = ka_eval(matches.groups.select, $scope, this.template);
+        let selectVal = (0, eval_js_1.ka_eval)(matches.groups.select, $scope, this.template);
         if (matches.groups.type === "repeat") {
             if (typeof selectVal !== "number")
                 this._error(`Error ka.for='${stmt}': Selected val must be number in repeat loop`);
@@ -68,7 +71,7 @@ export class KaTemplate {
     _maintain($scope, childs, forIndex = 0) {
         for (let child of childs) {
             child._ka_for_index = forIndex;
-            ka_elwalk(child, (el) => {
+            (0, elwalk_js_1.ka_elwalk)(child, (el) => {
                 //console.log("walk", el);
                 if (el instanceof HTMLTemplateElement) {
                     //console.log("maintain", el);
@@ -79,14 +82,14 @@ export class KaTemplate {
                 if (typeof el._ka_maintained_by !== "undefined" && el._ka_maintained_by !== this.template.getAttribute("_kaidx")) {
                     return false;
                 }
-                ka_apply(el, $scope);
-                if (el instanceof HTMLElement && (el.hasAttribute("ka.stop") || el instanceof KaCustomElement))
+                (0, apply_js_1.ka_apply)(el, $scope);
+                if (el instanceof HTMLElement && (el.hasAttribute("ka.stop") || el instanceof custom_element_js_1.KaCustomElement))
                     return false; // Skip Element rendering
             }, true, true);
         }
     }
     _renderIf($scope, stmt) {
-        let selectVal = ka_eval(stmt, $scope, this.template);
+        let selectVal = (0, eval_js_1.ka_eval)(stmt, $scope, this.template);
         if (selectVal === true) {
             if (this.template.__kachilds.length === 0)
                 this._appendTemplate();
@@ -139,4 +142,5 @@ export class KaTemplate {
         return this.__renderCount === 1;
     }
 }
+exports.KaTemplate = KaTemplate;
 ;

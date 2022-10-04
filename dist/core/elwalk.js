@@ -1,10 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ka_elwalk = void 0;
 /**
  *
  * @param {HTMLElement} elem
  * @param fn
  * @param recursive
  */
-export function ka_elwalk(elem, fn, recursive = false, includeFirst = false) {
+function ka_elwalk(elem, fn, recursive = false, includeFirst = false) {
     if (Array.isArray(elem))
         elem.children = elem;
     if (typeof elem.children === "undefined")
@@ -22,3 +25,4 @@ export function ka_elwalk(elem, fn, recursive = false, includeFirst = false) {
             ka_elwalk(child, fn, recursive);
     }
 }
+exports.ka_elwalk = ka_elwalk;

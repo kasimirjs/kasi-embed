@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ka_position_element_next_to = void 0;
 /**
  * Set the position of the floating (inner) Element to a event or
  * a target Element
@@ -5,7 +8,7 @@
  * @param element {HTMLElement}          The Element to apply the position to
  * @param nextTo {PointerEvent|HTMLElement}     The PointerEvent or other Element to
  */
-export function ka_position_element_next_to(element, nextTo) {
+function ka_position_element_next_to(element, nextTo) {
     let x, y = null;
     let elemRect = element.getBoundingClientRect();
     if (nextTo instanceof Event) {
@@ -33,3 +36,4 @@ export function ka_position_element_next_to(element, nextTo) {
     element.style.top = y + "px";
     element.style.left = x + "px";
 }
+exports.ka_position_element_next_to = ka_position_element_next_to;

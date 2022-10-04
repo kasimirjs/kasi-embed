@@ -1,4 +1,7 @@
-export function ka_eval(stmt, __scope, e, __refs) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ka_eval = void 0;
+function ka_eval(stmt, __scope, e, __refs) {
     if (stmt.endsWith(";"))
         stmt = stmt.slice(0, -1);
     const reserved = ["var", "null", "let", "const", "function", "class", "in", "of", "for", "true", "false", "await", "$this"];
@@ -26,3 +29,4 @@ export function ka_eval(stmt, __scope, e, __refs) {
         throw "eval('" + stmt + "') failed: " + ex;
     }
 }
+exports.ka_eval = ka_eval;
