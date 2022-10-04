@@ -95,6 +95,45 @@ function ka_load_html(url) {
 
 /***/ }),
 
+/***/ "./src/core/create-element.ts":
+/*!************************************!*\
+  !*** ./src/core/create-element.ts ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ka_create_element": () => (/* binding */ ka_create_element)
+/* harmony export */ });
+/**
+ * Create a new Element
+ *
+ * @param tagName {string}      The Tag Name
+ * @param attributes {string<string>}   Attributes to set initially
+ * @param appendToElement {HTMLElement}
+ * @param children {HTMLElement[]}
+ * @return HTMLElement
+ */
+function ka_create_element(tagName, attributes = null, children = null, appendToElement = null) {
+    let e = document.createElement(tagName);
+    if (attributes === null)
+        attributes = {};
+    for (let attName in attributes) {
+        e.setAttribute(attName, attributes[attName]);
+    }
+    if (Array.isArray(children)) {
+        for (let ce of children)
+            e.appendChild(ce);
+    }
+    if (appendToElement !== null) {
+        appendToElement.appendChild(e);
+    }
+    return e;
+}
+
+
+/***/ }),
+
 /***/ "./src/core/dom-ready.ts":
 /*!*******************************!*\
   !*** ./src/core/dom-ready.ts ***!
@@ -1148,15 +1187,18 @@ var __webpack_exports__ = {};
   \**********************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "KaHtmlElement": () => (/* reexport safe */ _element_KaHtmlElement__WEBPACK_IMPORTED_MODULE_3__.KaHtmlElement),
-/* harmony export */   "customElement": () => (/* reexport safe */ _decorators_custom_element__WEBPACK_IMPORTED_MODULE_2__.customElement),
-/* harmony export */   "ka_dom_ready": () => (/* reexport safe */ _core_dom_ready__WEBPACK_IMPORTED_MODULE_1__.ka_dom_ready),
+/* harmony export */   "KaHtmlElement": () => (/* reexport safe */ _element_KaHtmlElement__WEBPACK_IMPORTED_MODULE_4__.KaHtmlElement),
+/* harmony export */   "customElement": () => (/* reexport safe */ _decorators_custom_element__WEBPACK_IMPORTED_MODULE_3__.customElement),
+/* harmony export */   "ka_create_element": () => (/* reexport safe */ _core_create_element__WEBPACK_IMPORTED_MODULE_1__.ka_create_element),
+/* harmony export */   "ka_dom_ready": () => (/* reexport safe */ _core_dom_ready__WEBPACK_IMPORTED_MODULE_2__.ka_dom_ready),
 /* harmony export */   "ka_sleep": () => (/* reexport safe */ _core_sleep__WEBPACK_IMPORTED_MODULE_0__.ka_sleep)
 /* harmony export */ });
 /* harmony import */ var _core_sleep__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./core/sleep */ "./src/core/sleep.ts");
-/* harmony import */ var _core_dom_ready__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./core/dom-ready */ "./src/core/dom-ready.ts");
-/* harmony import */ var _decorators_custom_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./decorators/custom-element */ "./src/decorators/custom-element.ts");
-/* harmony import */ var _element_KaHtmlElement__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./element/KaHtmlElement */ "./src/element/KaHtmlElement.ts");
+/* harmony import */ var _core_create_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./core/create-element */ "./src/core/create-element.ts");
+/* harmony import */ var _core_dom_ready__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./core/dom-ready */ "./src/core/dom-ready.ts");
+/* harmony import */ var _decorators_custom_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./decorators/custom-element */ "./src/decorators/custom-element.ts");
+/* harmony import */ var _element_KaHtmlElement__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./element/KaHtmlElement */ "./src/element/KaHtmlElement.ts");
+
 
 
 
