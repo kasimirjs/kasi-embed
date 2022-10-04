@@ -1,5 +1,8 @@
-import { ka_query_selector } from "../core/query-select.js";
-import { ka_elwalk } from "../core/elwalk.js";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ka_templatify = void 0;
+const query_select_js_1 = require("../core/query-select.js");
+const elwalk_js_1 = require("../core/elwalk.js");
 window._ka_el_idx = 0;
 /**
  * Generate a renderable Template from <template> Element
@@ -7,9 +10,9 @@ window._ka_el_idx = 0;
  * @param {HTMLElement|string} elem
  * @return {HTMLTemplateElement}
  */
-export function ka_templatify(elem, returnMode = true) {
+function ka_templatify(elem, returnMode = true) {
     if (typeof elem === "string")
-        elem = ka_query_selector(elem);
+        elem = (0, query_select_js_1.ka_query_selector)(elem);
     if (!(elem instanceof Node)) {
         console.error("[ka-templatify] Parameter 1 is not a html element: ", elem);
         throw `[ka-templify] Parameter 1 is not a html element: ${elem}`;
@@ -35,7 +38,7 @@ export function ka_templatify(elem, returnMode = true) {
         el.replaceWith(tpl);
         return tpl;
     };
-    ka_elwalk(elem, (el) => {
+    (0, elwalk_js_1.ka_elwalk)(elem, (el) => {
         //console.log(el);
         if (!el instanceof HTMLElement)
             return;
@@ -54,3 +57,4 @@ export function ka_templatify(elem, returnMode = true) {
         }
     }, true, false);
 }
+exports.ka_templatify = ka_templatify;

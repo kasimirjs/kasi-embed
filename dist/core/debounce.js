@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,6 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ka_debounce = void 0;
 const _debounceInterval = { i: null, time: null };
 /**
  * Debounce a event
@@ -17,7 +20,7 @@ const _debounceInterval = { i: null, time: null };
  * @param max   Trigger event automatically after this time
  * @return {Promise<unknown>}
  */
-export function ka_debounce(min, max = null) {
+function ka_debounce(min, max = null) {
     return __awaiter(this, void 0, void 0, function* () {
         if (max === null)
             max = min;
@@ -37,3 +40,4 @@ export function ka_debounce(min, max = null) {
         });
     });
 }
+exports.ka_debounce = ka_debounce;

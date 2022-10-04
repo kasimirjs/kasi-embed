@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ka_create_element = void 0;
 /**
  * Create a new Element
  *
@@ -7,7 +10,7 @@
  * @param children {HTMLElement[]}
  * @return HTMLElement
  */
-export function ka_create_element(tagName, attributes = null, children = null, appendToElement = null) {
+function ka_create_element(tagName, attributes = null, children = null, appendToElement = null) {
     let e = document.createElement(tagName);
     if (attributes === null)
         attributes = {};
@@ -23,3 +26,4 @@ export function ka_create_element(tagName, attributes = null, children = null, a
     }
     return e;
 }
+exports.ka_create_element = ka_create_element;

@@ -1,10 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ka_execImportedScriptTags = void 0;
 /**
  * Execute scirpt tag imported from a template or remote location
  *
  * @param node {HTMLElement}
  * @param src {string}      The source filename (for debugging)
  */
-export function ka_execImportedScriptTags(node, src = "undefined file") {
+function ka_execImportedScriptTags(node, src = "undefined file") {
     let chels = node instanceof HTMLTemplateElement ? node.content.childNodes : node.childNodes;
     for (let s of chels) {
         if (s.tagName !== "SCRIPT") {
@@ -29,3 +32,4 @@ export function ka_execImportedScriptTags(node, src = "undefined file") {
         }
     }
 }
+exports.ka_execImportedScriptTags = ka_execImportedScriptTags;

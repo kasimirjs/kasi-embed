@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.autorender = void 0;
 /**
  * Defines a customElement
  *
@@ -5,7 +8,8 @@
  *
  * @param tagName
  */
-export function autorender(tagName) {
+function autorender(tagName) {
     return function (classOrDescriptor) {
     };
 }
+exports.autorender = autorender;

@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,11 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { ka_templatify } from "../tpl/templatify.js";
-import { KaTemplate } from "../tpl/template.js";
-import { ka_query_selector } from "../core/query-select.js";
-import { RemoteTemplate } from "./htmlFile";
-export class KaCustomElement extends HTMLElement {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.KaCustomElement = void 0;
+const templatify_js_1 = require("../tpl/templatify.js");
+const template_js_1 = require("../tpl/template.js");
+const query_select_js_1 = require("../core/query-select.js");
+const htmlFile_1 = require("./htmlFile");
+class KaCustomElement extends HTMLElement {
     constructor(props) {
         super(props);
         /**
@@ -52,9 +55,9 @@ export class KaCustomElement extends HTMLElement {
             }
             if (this.constructor.__tpl !== null) {
                 let origTpl = this.constructor.__tpl;
-                if (origTpl instanceof RemoteTemplate)
+                if (origTpl instanceof htmlFile_1.RemoteTemplate)
                     origTpl = yield origTpl.load();
-                let tpl = ka_templatify(origTpl);
+                let tpl = (0, templatify_js_1.ka_templatify)(origTpl);
                 if (this.constructor.__options.shadowDom === true) {
                     let shadowDom = this.attachShadow(this.constructor.__options.shadowDomOptions);
                     shadowDom.appendChild(tpl);
@@ -62,14 +65,14 @@ export class KaCustomElement extends HTMLElement {
                 else {
                     this.appendChild(tpl);
                 }
-                this.__tpl = new KaTemplate(tpl);
+                this.__tpl = new template_js_1.KaTemplate(tpl);
             }
             if (this.constructor.__options.waitEvent !== null) {
                 let wd = this.constructor.__options.waitEvent.split("@");
                 let eventName = wd[0];
                 let target = document;
                 if (wd.length === 2) {
-                    target = ka_query_selector(wd[1]);
+                    target = (0, query_select_js_1.ka_query_selector)(wd[1]);
                 }
                 target.addEventListener(eventName, (event) => __awaiter(this, void 0, void 0, function* () {
                     callback(this.$tpl, this);
@@ -89,4 +92,5 @@ export class KaCustomElement extends HTMLElement {
         });
     }
 }
+exports.KaCustomElement = KaCustomElement;
 ;

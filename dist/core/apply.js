@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,9 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { ka_eval } from "./eval.js";
-import { ka_str_to_camel_case } from "./str-to-camelcase.js";
-export function ka_apply(selector, scope, recursive = false) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ka_apply = void 0;
+const eval_js_1 = require("./eval.js");
+const str_to_camelcase_js_1 = require("./str-to-camelcase.js");
+function ka_apply(selector, scope, recursive = false) {
     if (typeof selector === "string")
         selector = KaToolsV1.querySelector(selector);
     let attMap = {
@@ -38,7 +41,7 @@ export function ka_apply(selector, scope, recursive = false) {
                     return callbackOrCode(e, element, scope);
                 }
                 else {
-                    return ka_eval(callbackOrCode, scope, element);
+                    return (0, eval_js_1.ka_eval)(callbackOrCode, scope, element);
                 }
             });
         };
@@ -57,7 +60,7 @@ export function ka_apply(selector, scope, recursive = false) {
         }
         let r = null;
         if (typeof attVal !== "undefined" && typeof attVal !== null && attVal !== "")
-            r = ka_eval(attVal, scope, selector);
+            r = (0, eval_js_1.ka_eval)(attVal, scope, selector);
         switch (attType) {
             case "ref":
                 if (typeof scope.$ref === "undefined")
@@ -91,14 +94,14 @@ export function ka_apply(selector, scope, recursive = false) {
                     let val = r;
                     if (typeof val === "number" && ["left", "top", "height", "width", "bottom", "right", "line-height", "font-size"].indexOf(attSelector) !== -1)
                         val = val + "px";
-                    selector.style[ka_str_to_camel_case(attSelector)] = val;
+                    selector.style[(0, str_to_camelcase_js_1.ka_str_to_camel_case)(attSelector)] = val;
                     break;
                 }
                 for (let cname in r) {
                     let val = r[cname];
                     if (typeof val === "number" && ["left", "top", "height", "width", "bottom", "right", "line-height", "font-size"].indexOf(cname) !== -1)
                         val = val + "px";
-                    selector.style[ka_str_to_camel_case(cname)] = val;
+                    selector.style[(0, str_to_camelcase_js_1.ka_str_to_camel_case)(cname)] = val;
                 }
                 break;
             case "bindarray":
@@ -108,8 +111,8 @@ export function ka_apply(selector, scope, recursive = false) {
                     // Bind default values
                     if (selector.hasAttribute("ka.bind.default")) {
                         scope = Object.assign({ $scope: scope }, scope);
-                        scope = Object.assign(Object.assign({ $scope: scope }, scope), { __curVal: ka_eval(selector.getAttribute("ka.bind.default"), scope, selector) });
-                        ka_eval(`${attVal} = __curVal`, scope, selector);
+                        scope = Object.assign(Object.assign({ $scope: scope }, scope), { __curVal: (0, eval_js_1.ka_eval)(selector.getAttribute("ka.bind.default"), scope, selector) });
+                        (0, eval_js_1.ka_eval)(`${attVal} = __curVal`, scope, selector);
                         r = scope.__curVal;
                     }
                 }
@@ -123,13 +126,13 @@ export function ka_apply(selector, scope, recursive = false) {
                     selector.checked = true;
                 if (typeof selector._kap_bind === "undefined") {
                     selector.addEventListener("change", (event) => {
-                        let arr = ka_eval(attVal, scope, selector);
+                        let arr = (0, eval_js_1.ka_eval)(attVal, scope, selector);
                         if (arr.indexOf(selector.value) === -1 && selector.checked)
                             arr.push(selector.value);
                         if (arr.indexOf(selector.value) !== -1 && !selector.checked)
                             arr = arr.filter((e) => e !== selector.value);
                         scope = Object.assign(Object.assign({ $scope: scope }, scope), { __curVal: arr });
-                        ka_eval(`${attVal} = __curVal`, scope, selector);
+                        (0, eval_js_1.ka_eval)(`${attVal} = __curVal`, scope, selector);
                         if (scope.$on && scope.$on.change)
                             scope.$on.change(event);
                     });
@@ -143,8 +146,8 @@ export function ka_apply(selector, scope, recursive = false) {
                     // Bind default values
                     if (selector.hasAttribute("ka.bind.default")) {
                         scope = Object.assign({ $scope: scope }, scope);
-                        scope = Object.assign(Object.assign({ $scope: scope }, scope), { __curVal: ka_eval(selector.getAttribute("ka.bind.default"), scope, selector) });
-                        ka_eval(`${attVal} = __curVal`, scope, selector);
+                        scope = Object.assign(Object.assign({ $scope: scope }, scope), { __curVal: (0, eval_js_1.ka_eval)(selector.getAttribute("ka.bind.default"), scope, selector) });
+                        (0, eval_js_1.ka_eval)(`${attVal} = __curVal`, scope, selector);
                         r = scope.__curVal;
                     }
                 }
@@ -182,13 +185,13 @@ export function ka_apply(selector, scope, recursive = false) {
                             value = selector.value;
                         }
                         scope = Object.assign(Object.assign({ $scope: scope }, scope), { __curVal: value });
-                        ka_eval(`${attVal} = __curVal`, scope, selector);
+                        (0, eval_js_1.ka_eval)(`${attVal} = __curVal`, scope, selector);
                         if (scope.$on && scope.$on.change)
                             scope.$on.change(event);
                     });
                     selector.addEventListener("keyup", (event) => {
                         scope = Object.assign(Object.assign({ $scope: scope }, scope), { __curVal: selector.value });
-                        ka_eval(`${attVal} = __curVal`, scope, selector);
+                        (0, eval_js_1.ka_eval)(`${attVal} = __curVal`, scope, selector);
                         if (scope.$on && scope.$on.change)
                             scope.$on.change(event);
                     });
@@ -236,11 +239,11 @@ export function ka_apply(selector, scope, recursive = false) {
             case "prop":
                 if (attSelector !== null) {
                     // Set Property directly
-                    selector[ka_str_to_camel_case(attSelector)] = r;
+                    selector[(0, str_to_camelcase_js_1.ka_str_to_camel_case)(attSelector)] = r;
                     break;
                 }
                 for (let cname in r) {
-                    selector[ka_str_to_camel_case(cname)] = r[cname];
+                    selector[(0, str_to_camelcase_js_1.ka_str_to_camel_case)(cname)] = r[cname];
                 }
                 break;
             default:
@@ -259,3 +262,4 @@ export function ka_apply(selector, scope, recursive = false) {
         }
     }
 }
+exports.ka_apply = ka_apply;

@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,8 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { KaToolsV1 } from "../core/init";
-KaToolsV1.provider = new class {
+Object.defineProperty(exports, "__esModule", { value: true });
+const init_1 = require("../core/init");
+init_1.KaToolsV1.provider = new class {
     constructor() {
         this._services = {};
     }
@@ -79,7 +81,7 @@ KaToolsV1.provider = new class {
                 throw "Invalid function in parameter 1: " + cb;
             }
             return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-                let args = KaToolsV1.getArgs(cb);
+                let args = init_1.KaToolsV1.getArgs(cb);
                 let retArgs = [];
                 for (let i = 0; i < args.length; i++) {
                     let argName = args[i];
