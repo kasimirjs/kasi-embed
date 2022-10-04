@@ -4,12 +4,12 @@
     "noImplicitAny": true,
     "declaration": true,
     "module": "esnext",
-    "target": "es2015",
+    "target": "es6",
     "allowJs": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "lib": [
       "es2021",
       "dom"
