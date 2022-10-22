@@ -1,1 +1,1 @@
-export function ka_html(htmlContent: any): HTMLTemplateElement;
+export declare function ka_html(htmlContent: string): HTMLTemplateElement;

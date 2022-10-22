@@ -21,3 +21,4 @@ var dom_ready_1 = require("./core/dom-ready");
 Object.defineProperty(exports, "ka_dom_ready", { enumerable: true, get: function () { return dom_ready_1.ka_dom_ready; } });
 __exportStar(require("./decorators/custom-element"), exports);
 __exportStar(require("./element/KaHtmlElement"), exports);
+__exportStar(require("./ce/html"), exports);
