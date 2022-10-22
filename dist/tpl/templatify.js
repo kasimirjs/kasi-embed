@@ -40,7 +40,7 @@ function ka_templatify(elem, returnMode = true) {
     };
     (0, elwalk_js_1.ka_elwalk)(elem, (el) => {
         //console.log(el);
-        if (!el instanceof HTMLElement)
+        if (!(el instanceof HTMLElement))
             return;
         let tpl = null;
         for (let attrName of el.getAttributeNames()) {
