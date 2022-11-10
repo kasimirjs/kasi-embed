@@ -10,7 +10,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
-var _KaModal_element, _KaModal_backdrop, _KaModal_main, _KaModal_configDefaults, _KaModal_promise;
+var _KaModal_element, _KaModal_main, _KaModal_configDefaults, _KaModal_promise;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KaModal = void 0;
 const template_1 = require("../tpl/template");
@@ -20,7 +20,6 @@ const templatify_js_1 = require("../tpl/templatify.js");
 class KaModal {
     constructor(tagName = "ka-modal", shadowRootInit = null, modalConfig = {}) {
         _KaModal_element.set(this, void 0);
-        _KaModal_backdrop.set(this, void 0);
         _KaModal_main.set(this, void 0);
         this.$tpl = null;
         _KaModal_configDefaults.set(this, {
@@ -38,7 +37,7 @@ class KaModal {
         let config = __classPrivateFieldGet(this, _KaModal_configDefaults, "f");
         config = Object.assign(Object.assign({}, config), modalConfig);
         __classPrivateFieldSet(this, _KaModal_element, (0, create_element_1.ka_create_element)(tagName, { hidden: "hidden" }, null, config.parentElement), "f");
-        __classPrivateFieldSet(this, _KaModal_backdrop, (0, create_element_1.ka_create_element)("div", { style: `${config.styleBase};${config.styleBackdrop};z-index:${config.zIndex};` }, null, __classPrivateFieldGet(this, _KaModal_element, "f")), "f");
+        this.backdrop = (0, create_element_1.ka_create_element)("div", { style: `${config.styleBase};${config.styleBackdrop};z-index:${config.zIndex};` }, null, __classPrivateFieldGet(this, _KaModal_element, "f"));
         let master = (0, create_element_1.ka_create_element)("div", { style: `position:fixed;left:0;right:0;display:flex;justify-content:center;z-index:${config.zIndex + 1};` }, null, __classPrivateFieldGet(this, _KaModal_element, "f"));
         __classPrivateFieldSet(this, _KaModal_main, (0, create_element_1.ka_create_element)("div", { style: `;max-height:100%;max-width:100%;` }, null, master), "f");
         this.adjustWidth(config);
@@ -73,4 +72,4 @@ class KaModal {
     }
 }
 exports.KaModal = KaModal;
-_KaModal_element = new WeakMap(), _KaModal_backdrop = new WeakMap(), _KaModal_main = new WeakMap(), _KaModal_configDefaults = new WeakMap(), _KaModal_promise = new WeakMap();
+_KaModal_element = new WeakMap(), _KaModal_main = new WeakMap(), _KaModal_configDefaults = new WeakMap(), _KaModal_promise = new WeakMap();

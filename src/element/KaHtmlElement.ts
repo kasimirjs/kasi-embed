@@ -25,7 +25,7 @@ export abstract class KaHtmlElement extends HTMLElement implements AbstractEleme
      * </example>
      *
      */
-    abstract html : (element: KaHtmlElement)=>Promise<HTMLTemplateElement|string> | HTMLTemplateElement | string | null;
+    abstract html : ((element: KaHtmlElement)=>Promise<HTMLTemplateElement|string>) | HTMLTemplateElement | string | null;
 
     protected $tpl : KaTemplate;
 

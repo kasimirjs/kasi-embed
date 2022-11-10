@@ -1,13 +1,8 @@
 import { KaTemplate } from "../tpl/template";
-export interface KaModalConfig {
-    parentElement?: HTMLElement;
-    zIndex?: number;
-    styleBase?: string;
-    styleBackdrop?: string;
-    maxWidth?: number;
-}
+import { KaModalConfig } from "./KaModalConfig";
 export declare class KaModal {
     #private;
+    protected backdrop: HTMLElement;
     protected $tpl: KaTemplate;
     adjustWidth(modalConfig: KaModalConfig): void;
     constructor(tagName?: string, shadowRootInit?: ShadowRootInit | null, modalConfig?: KaModalConfig);
@@ -23,5 +18,5 @@ export declare class KaModal {
      * </example>
      *
      */
-    html: (element: KaModal) => string | Promise<HTMLTemplateElement | string> | HTMLTemplateElement | null;
+    html: ((element: KaModal) => string) | string | Promise<HTMLTemplateElement | string> | HTMLTemplateElement | null;
 }
