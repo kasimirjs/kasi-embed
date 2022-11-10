@@ -2,12 +2,13 @@ import { KaTemplate } from "../tpl/template";
 import { KaModalConfig } from "./KaModalConfig";
 export declare class KaModal {
     #private;
+    protected element: HTMLElement;
     protected backdrop: HTMLElement;
     protected $tpl: KaTemplate;
     adjustWidth(modalConfig: KaModalConfig): void;
     constructor(tagName?: string, shadowRootInit?: ShadowRootInit | null, modalConfig?: KaModalConfig);
     render(scope?: any): void;
-    protected resolve(...params: any): void;
+    resolve(...params: any): void;
     show(): Promise<any>;
     /**
      * The HTML Template to define for this Element
