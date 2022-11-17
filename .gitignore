@@ -9,3 +9,4 @@
 /osm_data.sqlite
 /osm_data.sqlite-journal
 /node_modules
+/dist
