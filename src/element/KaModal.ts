@@ -2,19 +2,13 @@ import {KaTemplate} from "../tpl/template";
 import {ka_create_element} from "../core/create-element";
 import {ka_html} from "../ce/html.js";
 import {ka_templatify} from "../tpl/templatify.js";
+import {KaModalConfig} from "./KaModalConfig";
 
-export interface KaModalConfig {
-    parentElement?: HTMLElement,
-    zIndex?: number,
-    styleBase?: string,
-    styleBackdrop?: string,
-    maxWidth?: number
-}
 
 
 export class KaModal {
-    #element : HTMLElement;
-    #backdrop: HTMLElement;
+    protected element : HTMLElement;
+    protected backdrop: HTMLElement;
     #main : HTMLElement;
 
     protected $tpl : KaTemplate = null;
@@ -47,11 +41,10 @@ export class KaModal {
             ...config,
             ...modalConfig
         }
-        this.#element = ka_create_element(tagName, {hidden: "hidden"}, null, config.parentElement);
-        this.#backdrop = ka_create_element("div", {style: `${config.styleBase};${config.styleBackdrop};z-index:${config.zIndex};`}, null, this.#element);
-        let master = ka_create_element("div", {style: `position:fixed;left:0;right:0;display:flex;justify-content:center;z-index:${config.zIndex+1};`}, null, this.#element);
+        this.element = ka_create_element(tagName, {hidden: "hidden"}, null, config.parentElement);
+        this.backdrop = ka_create_element("div", {style: `${config.styleBase};${config.styleBackdrop};z-index:${config.zIndex};`}, null, this.element);
+        let master = ka_create_element("div", {style: `position:fixed;left:0;right:0;display:flex;justify-content:center;z-index:${config.zIndex+1};`}, null, this.element);
         this.#main = ka_create_element("div", {style: `;max-height:100%;max-width:100%;`}, null, master);
-
 
         this.adjustWidth(config);
 
@@ -74,13 +67,13 @@ export class KaModal {
         this.$tpl.render(scope);
     }
 
-    protected resolve(...params : any) : void {
-        this.#element.remove();
+    public resolve(...params : any) : void {
+        this.element.remove();
         this.#promise.resolve(...params);
     }
 
     public show() : Promise<any> {
-        this.#element.removeAttribute("hidden");
+        this.element.removeAttribute("hidden");
         return this.#promise.promise;
     }
 
@@ -93,7 +86,7 @@ export class KaModal {
      * </example>
      *
      */
-    public html : (element: KaModal)=> string | Promise<HTMLTemplateElement|string> | HTMLTemplateElement | null;
+    public html : ((element: KaModal)=> string) | string | Promise<HTMLTemplateElement|string> | HTMLTemplateElement | null;
 
 
 
