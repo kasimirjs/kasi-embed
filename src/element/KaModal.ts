@@ -7,8 +7,8 @@ import {KaModalConfig} from "./KaModalConfig";
 
 
 export class KaModal {
-    protected element : HTMLElement;
-    protected backdrop: HTMLElement;
+    public element : HTMLElement;
+    public backdrop: HTMLElement;
     #main : HTMLElement;
 
     protected $tpl : KaTemplate = null;
