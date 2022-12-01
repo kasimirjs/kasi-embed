@@ -1,15 +1,13 @@
 {
   "name": "@kasimirjs/embed",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "",
-
-  "main": "./dist/index",
-  "module": "./src/index",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.js"
   },
-
   "directories": {
     "doc": "docs",
     "lib": "lib"
@@ -17,8 +15,6 @@
   "files": [
     "/dist"
   ],
-
-
   "scripts": {
     "make.mjs": "tsc -d && mv dist/index.js dist/index.mjs",
     "make.cjs": "tsc -m commonjs",
