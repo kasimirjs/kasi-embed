@@ -30,10 +30,12 @@ export abstract class KaHtmlElement extends HTMLElement implements AbstractEleme
     protected $tpl : KaTemplate;
 
     public async connectedCallback() {
-        let htmlTpl : any;
+        let htmlTpl : any = null;
         if (typeof this.html === "function") {
             let fn = this.html as (element: KaHtmlElement)=>Promise<HTMLTemplateElement|string>;
             htmlTpl = await fn(this);
+        } else {
+            htmlTpl = this.html;
         }
 
         if (typeof htmlTpl === "string")
@@ -44,7 +46,7 @@ export abstract class KaHtmlElement extends HTMLElement implements AbstractEleme
             attachTo = this.attachShadow(this.shadowRootInit);
         }
 
-        if (this.html !== null) {
+        if (htmlTpl !== null) {
             let tpl = ka_templatify(htmlTpl);
             this.$tpl = new KaTemplate(tpl);
             attachTo.appendChild(tpl);

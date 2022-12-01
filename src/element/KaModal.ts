@@ -67,9 +67,9 @@ export class KaModal {
         this.$tpl.render(scope);
     }
 
-    public resolve(...params : any) : void {
+    public resolve(value : any) : void {
         this.element.remove();
-        this.#promise.resolve(...params);
+        this.#promise.resolve(value);
     }
 
     public show() : Promise<any> {
