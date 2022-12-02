@@ -43,7 +43,7 @@ export class KaModal {
         }
         this.element = ka_create_element(tagName, {hidden: "hidden"}, null, config.parentElement);
         this.backdrop = ka_create_element("div", {style: `${config.styleBase};${config.styleBackdrop};z-index:${config.zIndex};`}, null, this.element);
-        let master = ka_create_element("div", {style: `position:fixed;left:0;right:0;display:flex;justify-content:center;z-index:${config.zIndex+1};`}, null, this.element);
+        let master = ka_create_element("div", {style: `position:fixed;left:0;right:0;top:0;bottom:0;display:flex;justify-content:center;z-index:${config.zIndex+1};`}, null, this.element);
         this.#main = ka_create_element("div", {style: `;max-height:100%;max-width:100%;`}, null, master);
 
         this.adjustWidth(config);
@@ -72,7 +72,7 @@ export class KaModal {
         this.#promise.resolve(value);
     }
 
-    public show() : Promise<any> {
+    public show(...params) : Promise<any> {
         this.element.removeAttribute("hidden");
         return this.#promise.promise;
     }
@@ -86,6 +86,7 @@ export class KaModal {
      * </example>
      *
      */
+    // language=html
     public html : ((element: KaModal)=> string) | string | Promise<HTMLTemplateElement|string> | HTMLTemplateElement | null;
 
 
