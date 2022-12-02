@@ -29,6 +29,7 @@ window._ka_el_idx = 0;
 export function ka_templatify (elem, returnMode=true) {
     if (typeof elem === "string")
         elem = ka_query_selector(elem);
+
     if ( ! (elem instanceof Node)) {
         console.error("[ka-templatify] Parameter 1 is not a html element: ", elem)
         throw `[ka-templify] Parameter 1 is not a html element: ${elem}`;

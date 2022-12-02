@@ -62,6 +62,24 @@ export function ka_apply (selector, scope, recursive=false) {
             r = ka_eval(attVal, scope, selector);
 
         switch (attType) {
+            case "wich":
+                if ( ! (r instanceof HTMLElement)) {
+                    console.error("ka.wich is expected to be HtmlElement:", r, "found in ", selector);
+                    throw "ka.wich is expected to be HtmlElement:"
+                }
+                selector.setAttribute("ka.stop", true);
+                selector.getAttributeNames().map((name) => {
+                    if (name === "ka.wich")
+                        return;
+                    r.setAttribute(name, selector.getAttribute(name));
+                })
+
+                selector.replaceWith(r);
+                continue;
+
+            case "stop":
+                continue;
+
             case "ref":
                 if (typeof scope.$ref === "undefined")
                     scope.$ref = {};

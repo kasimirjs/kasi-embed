@@ -58,11 +58,22 @@ export class KaModal {
                 html = ka_html(html);
             }
 
-            let elem = ka_templatify(html as HTMLTemplateElement);
+            if ( ! (html instanceof HTMLTemplateElement)) {
+                console.error("html is not HtmlTemplateElement", html, "on", this);
+                throw "html is not HtmlTemplateElement"
+            }
+            console.log("html", html);
+            let elem;
+            try {
+                elem = ka_templatify(html as HTMLTemplateElement);
+            } catch (e) {
+                console.log("error templatify for element", this, ":", e);
+                throw e;
+            }
+
             this.#main.appendChild(elem);
             this.$tpl = new KaTemplate(elem);
         }
-        console.log("render", this);
 
         this.$tpl.render(scope);
     }

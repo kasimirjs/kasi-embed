@@ -1,4 +1,4 @@
-
+export * from "./functions";
 export * from "./core/sleep";
 export * from "./core/create-element";
 
