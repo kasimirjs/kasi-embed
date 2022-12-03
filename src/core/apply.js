@@ -74,6 +74,15 @@ export function ka_apply (selector, scope, recursive=false) {
                 selector.use(r, scope)
                 continue;
 
+            case "scope":
+                if ( ! (r instanceof Object)) {
+                    console.error("ka.scope must be object type <ka-use/> Elements: Value is ", r, "found in ", selector);
+                    throw "ka.scope insuffient value";
+                }
+
+                selector.setScope(r);
+                continue;
+
             case "stop":
                 continue;
 

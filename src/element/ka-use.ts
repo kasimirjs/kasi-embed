@@ -29,9 +29,12 @@ export class KaUse extends HTMLElement {
         if (isset(val["setParentScope"]))
             val["setParentScope"](parentScope);
 
-
         this.myComponent = val;
         this.innerHTML = "";
+
+        // If not specified scope is the parent scope.
+        if ( ! this.hasAttribute("ka.scope"))
+            val["setScope"](parentScope);
 
         if (val instanceof KaCustomFragment) {
             val.fragementConnectedCallback(this);
@@ -39,6 +42,17 @@ export class KaUse extends HTMLElement {
         }
 
         this.append(val);
+    }
+
+    /**
+     * set dedicated scope using ka.scope
+     *
+     * @param scope
+     */
+    public setScope(scope : KaScope) {
+        if (this.myComponent instanceof KaCustomFragment) {
+            this.myComponent.setScope(scope);
+        }
     }
 
     disconnectedCallback() {

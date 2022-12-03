@@ -6,7 +6,7 @@ import {KaTemplate} from "../tpl/template";
 
 
 export class KaCustomFragment {
-    private __scope : KaScope = null;
+    protected __scope : KaScope = {};
     private __html = "<div>No Template defined</div>"
     private tpl : HTMLElement
 
@@ -18,16 +18,25 @@ export class KaCustomFragment {
         let tpl = ka_templatify(ka_html(this.__html));
         this.tpl = tpl;
 
-        this.__scope = bindScope(scope, new KaTemplate(tpl));
+        this.__scope = bindScope({...this.__scope, ...scope}, new KaTemplate(tpl));
         return scope;
     }
+
 
     setParentScope(scope : KaScope) {
         this.__scope.$parent = scope;
     }
 
+    setScope(scope : KaScope) {
+        for (let key of Object.keys(scope)) {
+            if (key.startsWith("$"))
+                continue
+            this.__scope[key] = scope[key];
+        }
+    }
+
     fragementConnectedCallback(parentElement : HTMLElement) {
-        if (this.__scope === null)
+        if ( ! isset (this.__scope.$tpl))
             this.init({});
         parentElement.append(this.tpl);
     }

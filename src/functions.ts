@@ -8,6 +8,7 @@ import {KaTemplate} from "./tpl/template";
 import {ka_debounce} from "./core/debounce";
 import {ka_templatify} from "./tpl/templatify";
 import {ka_html} from "./ce/html";
+import {ka_sleep} from "./core/sleep";
 
 
 /**
