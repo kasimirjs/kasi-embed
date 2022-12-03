@@ -64,6 +64,7 @@ export abstract class KaHtmlElement extends HTMLElement implements AbstractEleme
     }
 
     public async disconnectedCallback() {
+        this.$tpl.dispose();
         this.disconnected();
     }
 }

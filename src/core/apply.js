@@ -1,5 +1,6 @@
 import {ka_eval} from "./eval.js";
 import {ka_str_to_camel_case} from "./str-to-camelcase.js";
+import {KaUse} from "../element/ka-use";
 
 
 export function ka_apply (selector, scope, recursive=false) {
@@ -62,19 +63,12 @@ export function ka_apply (selector, scope, recursive=false) {
             r = ka_eval(attVal, scope, selector);
 
         switch (attType) {
-            case "wich":
-                if ( ! (r instanceof HTMLElement)) {
-                    console.error("ka.wich is expected to be HtmlElement:", r, "found in ", selector);
-                    throw "ka.wich is expected to be HtmlElement:"
+            case "use":
+                if ( ! (selector instanceof KaUse)) {
+                    console.error("ka.wich is only available on <ka-use/> Elements: Used on ", r, "found in ", selector);
+                    throw "ka.wich called on non <ka-use/> Element."
                 }
-                selector.setAttribute("ka.stop", true);
-                selector.getAttributeNames().map((name) => {
-                    if (name === "ka.wich")
-                        return;
-                    r.setAttribute(name, selector.getAttribute(name));
-                })
-
-                selector.replaceWith(r);
+                selector.use(r)
                 continue;
 
             case "stop":
