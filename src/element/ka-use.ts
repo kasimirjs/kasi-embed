@@ -1,4 +1,6 @@
-import {customElement} from "../functions";
+import {customElement, isset} from "../functions";
+import {KaCustomFragment} from "./KaCustomFragment";
+import {KaScope} from "../types";
 
 @customElement("ka-use")
 export class KaUse extends HTMLElement {
@@ -20,11 +22,22 @@ export class KaUse extends HTMLElement {
      *
      * @param val
      */
-    public use(val : HTMLElement) {
+    public use(val : HTMLElement, parentScope : KaScope) {
         if (val === this.myComponent)
             return;
+
+        if (isset(val.setParentScope))
+            val.setParentScope(parentScope);
+
+
         this.myComponent = val;
         this.innerHTML = "";
+
+        if (val instanceof KaCustomFragment) {
+            val.fragementConnectedCallback(this);
+            return;
+        }
+
         this.append(val);
     }
 

@@ -21,6 +21,7 @@ export type KaScope = {
     $ref?: Map<string, HTMLElement>
     $on?: KaScopeOn
     $tpl?: KaTemplate
+    $parent?: KaScope
     render?: () => this
     [x: string] : any
 }

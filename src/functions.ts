@@ -6,6 +6,8 @@
 import {KaScope} from "./types";
 import {KaTemplate} from "./tpl/template";
 import {ka_debounce} from "./core/debounce";
+import {ka_templatify} from "./tpl/templatify";
+import {ka_html} from "./ce/html";
 
 
 /**
@@ -29,7 +31,7 @@ export function isset(input : any) : boolean {
  * @param template
  * @param deep
  */
-export function bindScope<T extends KaScope>(scopedef : T, template: KaTemplate, deep: boolean = false) : KaScope {
+export function bindScope<T extends KaScope>(scopedef : T, template: KaTemplate, deep: boolean = false) : T {
     scopedef.$tpl = template;
     scopedef.render = () : this => {
         template.render(proxy);
@@ -52,7 +54,7 @@ export function bindScope<T extends KaScope>(scopedef : T, template: KaTemplate,
             return true;
         }
     });
-    return proxy;
+    return proxy as T;
 }
 
 
@@ -74,10 +76,25 @@ export function bindTemplate(template : KaTemplate) {
  *
  * @param tagName
  */
-export function customElement(tagName : string) {
+export function customElement(tagName : string, template : string = null) {
     return function (classOrDescriptor: any) : void {
+        if (template !== null) {
+            console.log("set template", template);
+            classOrDescriptor.html = template;
+        }
+
         console.debug("registering custom element", classOrDescriptor, tagName);
         customElements.define(tagName, classOrDescriptor);
         return classOrDescriptor;
     }
+}
+
+
+export function template(template : string | HTMLTemplateElement) {
+     return function (classOrDescriptor: any) : void {
+
+         classOrDescriptor.html = template;
+
+         return classOrDescriptor;
+     }
 }

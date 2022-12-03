@@ -1,6 +1,8 @@
 import {ka_eval} from "./eval.js";
 import {ka_str_to_camel_case} from "./str-to-camelcase.js";
 import {KaUse} from "../element/ka-use";
+import {isset} from "../functions";
+import {KaCustomFragment} from "../element/KaCustomFragment";
 
 
 export function ka_apply (selector, scope, recursive=false) {
@@ -65,10 +67,11 @@ export function ka_apply (selector, scope, recursive=false) {
         switch (attType) {
             case "use":
                 if ( ! (selector instanceof KaUse)) {
-                    console.error("ka.wich is only available on <ka-use/> Elements: Used on ", r, "found in ", selector);
-                    throw "ka.wich called on non <ka-use/> Element."
+                    console.error("ka.use is only available on <ka-use/> Elements: Used on ", r, "found in ", selector);
+                    throw "ka.use called on non <ka-use/> Element."
                 }
-                selector.use(r)
+
+                selector.use(r, scope)
                 continue;
 
             case "stop":
@@ -161,6 +164,11 @@ export function ka_apply (selector, scope, recursive=false) {
                     continue;
                 if (typeof r === "undefined") {
                     // Bind default values
+                    if (isset (selector.value)) {
+                        scope = {$scope: scope,...scope, __curVal: selector.value}
+                        ka_eval(`${attVal} = __curVal`, scope, selector);
+                        r = scope.__curVal;
+                    }
                     if (selector.hasAttribute("ka.bind.default")) {
                         scope = {$scope: scope, ...scope};
                         scope = {$scope: scope, ...scope, __curVal: ka_eval(selector.getAttribute("ka.bind.default"), scope, selector)}
