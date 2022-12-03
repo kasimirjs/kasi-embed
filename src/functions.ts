@@ -33,24 +33,26 @@ export function isset(input : any) : boolean {
  */
 export function bindScope<T extends KaScope>(scopedef : T, template: KaTemplate, deep: boolean = false) : T {
     scopedef.$tpl = template;
-    scopedef.render = () : this => {
+    scopedef.render = () : T => {
         template.render(proxy);
         return proxy;
     }
 
-    let proxy = new Proxy<KaScope>(scopedef, {
-        get(target : T, prop, receiver: RTCRtpReceiver) {
-            if (prop.toString().startsWith("$"))
+    let proxy = new Proxy(scopedef, {
+        get(target : any, prop : string, receiver: RTCRtpReceiver) {
+            if (prop.startsWith("$"))
                 return target[prop];
             return target[prop];
         },
-        async set(target: T, p: string | symbol, value: any, receiver: any) : boolean {
-            if (target[p] === value)
-                return true; // Nothing changed
+        set(target: any, p: string, value: any, receiver: any) : boolean {
+            (async() => {
+                if (target[p] === value)
+                    return true; // Nothing changed
 
-            target[p] = value;
-            await ka_debounce(1,1);
-            template.render(proxy);
+                target[p] = value;
+                await ka_debounce(1,1);
+                template.render(proxy);
+            })()
             return true;
         }
     });

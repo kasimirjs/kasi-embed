@@ -83,7 +83,7 @@ export class KaModal {
         this.#promise.resolve(value);
     }
 
-    public show(...params) : Promise<any> {
+    public show(...params : any[]) : Promise<any> {
         this.element.removeAttribute("hidden");
         return this.#promise.promise;
     }

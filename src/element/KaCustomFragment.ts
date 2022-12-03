@@ -7,12 +7,13 @@ import {KaTemplate} from "../tpl/template";
 
 export class KaCustomFragment {
     private __scope : KaScope = null;
+    private __html = "<div>No Template defined</div>"
     private tpl : HTMLElement
 
     public init<T extends KaScope>(scope : T) : T {
         // Check template set by customElement annotation
-        if (isset(this.constructor.html))
-            this.__html = this.constructor.html;
+        if (isset(this.constructor["html"]))
+            this.__html = this.constructor["html"];
 
         let tpl = ka_templatify(ka_html(this.__html));
         this.tpl = tpl;

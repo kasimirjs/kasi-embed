@@ -16,7 +16,7 @@ export type KaScopeOn = {
     onBeforeRender?: (e : Event) => any
 }
 
-export type KaScope = {
+export interface KaScope {
     $fn?: Map<string, ()=>any>
     $ref?: Map<string, HTMLElement>
     $on?: KaScopeOn

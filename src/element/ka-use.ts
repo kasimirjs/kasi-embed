@@ -26,8 +26,8 @@ export class KaUse extends HTMLElement {
         if (val === this.myComponent)
             return;
 
-        if (isset(val.setParentScope))
-            val.setParentScope(parentScope);
+        if (isset(val["setParentScope"]))
+            val["setParentScope"](parentScope);
 
 
         this.myComponent = val;
