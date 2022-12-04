@@ -126,6 +126,10 @@ export class KaTemplate {
     }
 
 
+    setScope($scope) {
+        this.$scope = $scope;
+    }
+
     /**
      * Render / Update the Template
      *

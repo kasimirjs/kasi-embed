@@ -1,4 +1,7 @@
 import {KaTemplate} from "./tpl/template";
+import {ka_debounce} from "./core/debounce";
+import {isset} from "./functions";
+import {ka_sleep} from "./core/sleep";
 
 export type KaScopeOn = {
     /**
@@ -17,11 +20,89 @@ export type KaScopeOn = {
 }
 
 export interface KaScope {
-    $fn?: Map<string, ()=>any>
+    $__scope_orig?: any
+    $fn?: {[x : string] : (...param : any[])=>any}
     $ref?: Map<string, HTMLElement>
     $on?: KaScopeOn
     $tpl?: KaTemplate
     $parent?: KaScope
-    render?: () => this
     [x: string] : any
+
+    render?: () => this
+    importFrom?(scope : any);
+    init?(scopeDef : any);
+    isInitialized?() : boolean;
+    raw?() : KaScope;
+    dump?() : any;
+}
+
+
+class KaDefaultScope implements KaScope {
+    private __isInitialized = false;
+    isInitialized(): boolean {
+        return this.__isInitialized;
+    }
+
+    async render() {
+        this.$tpl.render(this);
+
+    }
+
+    raw() : KaScope {
+        return this.$__scope_orig;
+    }
+
+    importFrom(scope : any) {
+        for(let key of Object.keys(scope)) {
+            if (key.startsWith("$") || key.startsWith("__"))
+                continue;
+            this["$__scope_orig"][key] = scope[key];
+        }
+    }
+
+    dump() : any {
+        return {...this}
+    }
+
+    init(scopeDef : any) {
+        if (this.isInitialized())
+            throw "Scope is already initalized";
+        this.__isInitialized = true;
+        for(let key of Object.keys(scopeDef)) {
+            this[key] = scopeDef[key];
+        }
+    }
+    [x: string] : any
+}
+
+export function createScopeObject<T extends KaScope>(init : T = null) : T | KaScope {
+    let scopeDef = new KaDefaultScope();
+    scopeDef["$__scope_orig"] = scopeDef;
+    let proxy = new Proxy(scopeDef, {
+        get(target : any, prop : string, receiver: RTCRtpReceiver) {
+            if (prop.startsWith("$"))
+                return target[prop];
+            return target[prop];
+        },
+        set(target: any, p: string, value: any, receiver: any) : boolean {
+            if (target[p] === value)
+                return true; // Nothing changed
+
+            target[p] = value;
+
+            if (p.startsWith("$") || p.startsWith("__"))
+                return true;
+
+            if (isset (scopeDef.$tpl))
+                scopeDef.$tpl.render();
+            (async() => {
+                await ka_debounce(50,50);
+
+            })()
+            return true;
+        }
+    });
+    if (init !== null)
+        scopeDef.init(init);
+    return proxy as T;
 }

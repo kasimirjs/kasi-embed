@@ -1,25 +1,28 @@
-import {KaScope} from "../types";
+import {createScopeObject, KaScope} from "../types";
 import {bindScope, isset} from "../functions";
 import {ka_templatify} from "../tpl/templatify";
 import {ka_html} from "../ce/html";
 import {KaTemplate} from "../tpl/template";
+import {ka_sleep} from "../core/sleep";
 
 
 export class KaCustomFragment {
-    protected __scope : KaScope = {};
+    protected readonly __scope : KaScope = createScopeObject();
     private __html = "<div>No Template defined</div>"
+    private tplPrototype : HTMLElement
     private tpl : HTMLElement
 
-    public init<T extends KaScope>(scope : T) : T {
+    public init<T extends KaScope>(scope : T) : T | KaScope {
         // Check template set by customElement annotation
         if (isset(this.constructor["html"]))
             this.__html = this.constructor["html"];
 
-        let tpl = ka_templatify(ka_html(this.__html));
-        this.tpl = tpl;
+        if ( ! isset (this.tplPrototype))
+            this.tplPrototype = ka_templatify(ka_html(this.__html));
 
-        this.__scope = bindScope({...this.__scope, ...scope}, new KaTemplate(tpl));
-        return scope;
+        this.__scope.init(scope);
+
+        return this.__scope;
     }
 
 
@@ -28,20 +31,23 @@ export class KaCustomFragment {
     }
 
     setScope(scope : KaScope) {
-        for (let key of Object.keys(scope)) {
-            if (key.startsWith("$"))
-                continue
-            this.__scope[key] = scope[key];
-        }
+        this.__scope.importFrom(scope);
     }
 
-    fragementConnectedCallback(parentElement : HTMLElement) {
-        if ( ! isset (this.__scope.$tpl))
-            this.init({});
+    async fragementConnectedCallback(parentElement : HTMLElement) {
+        if ( ! this.__scope.isInitialized()) {
+           this.init({});
+        }
+
+        this.tpl = this.tplPrototype.cloneNode(true) as HTMLElement;
+        this.__scope.$tpl = new KaTemplate(this.tpl);
         parentElement.append(this.tpl);
+
+        await ka_sleep(1);
+        this.__scope.render();
     }
 
     fragmentDisconnectedCallback() {
-        this.tpl.remove();
+        this.__scope.$tpl.dispose();
     }
 }

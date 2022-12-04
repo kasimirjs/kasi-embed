@@ -3,10 +3,13 @@ import {ka_create_element} from "../core/create-element";
 import {ka_html} from "../ce/html.js";
 import {ka_templatify} from "../tpl/templatify.js";
 import {KaModalConfig} from "./KaModalConfig";
+import {createScopeObject} from "../types";
 
 
 
 export class KaModal {
+    protected readonly scope = createScopeObject();
+
     public element : HTMLElement;
     public backdrop: HTMLElement;
     #main : HTMLElement;

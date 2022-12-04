@@ -23,8 +23,7 @@ export class KaUse extends HTMLElement {
      * @param val
      */
     public use(val : HTMLElement, parentScope : KaScope) {
-        if (val === this.myComponent)
-            return;
+
 
         if (isset(val["setParentScope"]))
             val["setParentScope"](parentScope);
@@ -62,5 +61,8 @@ export class KaUse extends HTMLElement {
     connectedCallback() {
         this.style.display = "contents";
         this.setAttribute("ka.stop", "true");
+        if (this.myComponent instanceof KaCustomFragment) {
+            this.myComponent.fragementConnectedCallback(this);
+        }
     }
 }
