@@ -9,7 +9,7 @@ import {ka_sleep} from "../core/sleep";
 export class KaCustomElement extends HTMLElement {
     public __html = "<div>No template defined</div>";
 
-    protected readonly __scope : KaScope = createScopeObject();
+    protected readonly scope : KaScope = createScopeObject();
     protected tplPrototype : HTMLElement = null;
     private tpl : HTMLElement
 
@@ -21,24 +21,26 @@ export class KaCustomElement extends HTMLElement {
         if (this.tplPrototype === null)
             this.tplPrototype = ka_templatify(ka_html(this.__html));
 
-        this.__scope.init(scope);
-        return this.__scope;
+        this.scope.init(scope);
+        return this.scope;
     }
 
     setParentScope(scope : KaScope) {
-        this.__scope.$parent = scope;
+        this.scope.$parent = scope;
     }
 
     async connectedCallback() {
-        if ( ! this.__scope.isInitialized())
+        this.setAttribute("ka.stop", "true");
+
+        if ( ! this.scope.isInitialized())
             this.init({});
 
         this.tpl = this.tplPrototype.cloneNode(true) as HTMLElement;
         this.append(this.tpl);
-        this.__scope.$tpl = new KaTemplate(this.tpl);
+        this.scope.$tpl = new KaTemplate(this.tpl);
     }
 
     disconnectedCallback() {
-        this.__scope.$tpl.dispose();
+        this.scope.$tpl.dispose();
     }
 }

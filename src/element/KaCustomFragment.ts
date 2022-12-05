@@ -7,47 +7,49 @@ import {ka_sleep} from "../core/sleep";
 
 
 export class KaCustomFragment {
-    protected readonly __scope : KaScope = createScopeObject();
-    private __html = "<div>No Template defined</div>"
+    protected readonly scope : KaScope = createScopeObject();
+    protected html : string = null
     private tplPrototype : HTMLElement
     private tpl : HTMLElement
 
     public init<T extends KaScope>(scope : T) : T | KaScope {
         // Check template set by customElement annotation
-        if (isset(this.constructor["html"]))
-            this.__html = this.constructor["html"];
+        if (isset(this.constructor["html"]) && this.html === null)
+            this.html = this.constructor["html"];
 
         if ( ! isset (this.tplPrototype))
-            this.tplPrototype = ka_templatify(ka_html(this.__html));
+            this.tplPrototype = ka_templatify(ka_html(this.html));
 
-        this.__scope.init(scope);
+        this.scope.init(scope);
 
-        return this.__scope;
+        return this.scope;
     }
 
 
     setParentScope(scope : KaScope) {
-        this.__scope.$parent = scope;
+        this.scope.$parent = scope;
     }
 
     setScope(scope : KaScope) {
-        this.__scope.importFrom(scope);
+        this.scope.importFrom(scope);
     }
 
     async fragementConnectedCallback(parentElement : HTMLElement) {
-        if ( ! this.__scope.isInitialized()) {
+        parentElement.setAttribute("ka.stop", "true");
+
+        if ( ! this.scope.isInitialized()) {
            this.init({});
         }
 
         this.tpl = this.tplPrototype.cloneNode(true) as HTMLElement;
-        this.__scope.$tpl = new KaTemplate(this.tpl);
+        this.scope.$tpl = new KaTemplate(this.tpl);
         parentElement.append(this.tpl);
 
         await ka_sleep(1);
-        this.__scope.render();
+        this.scope.render();
     }
 
     fragmentDisconnectedCallback() {
-        this.__scope.$tpl.dispose();
+        this.scope.$tpl.dispose();
     }
 }

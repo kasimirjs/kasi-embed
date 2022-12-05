@@ -1,7 +1,7 @@
 import {ka_eval} from "./eval.js";
 import {ka_str_to_camel_case} from "./str-to-camelcase.js";
 import {KaUse} from "../element/ka-use";
-import {isset} from "../functions";
+import {isset, isUndefined} from "../functions";
 import {KaCustomFragment} from "../element/KaCustomFragment";
 
 
@@ -86,8 +86,12 @@ export function ka_apply (selector, scope, recursive=false) {
             case "stop":
                 continue;
 
+            case "debug":
+                console.log("ka.debug on element", selector, "value:", r, "scope:", scope);
+                continue;
+
             case "ref":
-                if (typeof scope.$ref === "undefined")
+                if (isUndefined(scope.$ref))
                     scope.$ref = {};
                 // Allow ref without parameter to use $ref.$last
                 if (r !== null)
@@ -132,7 +136,7 @@ export function ka_apply (selector, scope, recursive=false) {
             case "bindarray":
                 if (attSelector === "default")
                     continue;
-                if (typeof r === "undefined") {
+                if (isUndefined(r)) {
                     // Bind default values
                     if (selector.hasAttribute("ka.bind.default")) {
                         scope = {$scope: scope, ...scope};
@@ -171,7 +175,7 @@ export function ka_apply (selector, scope, recursive=false) {
             case "bind":
                 if (attSelector === "default")
                     continue;
-                if (typeof r === "undefined") {
+                if (isUndefined(r)) {
                     // Bind default values
                     if (isset (selector.value)) {
                         scope = {$scope: scope,...scope, __curVal: selector.value}

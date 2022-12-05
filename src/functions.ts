@@ -20,6 +20,9 @@ export function isset(input : any) : boolean {
     return  (typeof input !== "undefined" && input !== null)
 }
 
+export function isUndefined(input : any) : boolean {
+    return (typeof input === "undefined");
+}
 
 /**
  * Defines a customElement
