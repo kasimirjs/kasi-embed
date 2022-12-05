@@ -1,7 +1,6 @@
 import {KaTemplate} from "./tpl/template";
 import {ka_debounce} from "./core/debounce";
 import {isset} from "./functions";
-import {ka_sleep} from "./core/sleep";
 
 export type KaScopeOn = {
     /**
@@ -28,9 +27,9 @@ export interface KaScope {
     $parent?: KaScope
     [x: string] : any
 
-    render?: () => this
-    importFrom?(scope : any);
-    init?(scopeDef : any);
+    render?: () => KaScope
+    importFrom?(scope : any) : void;
+    init?(scopeDef : any) : void;
     isInitialized?() : boolean;
     raw?() : KaScope;
     dump?() : any;

@@ -1,5 +1,5 @@
 import {createScopeObject, KaScope} from "../types";
-import {bindScope, isset} from "../functions";
+import {isset} from "../functions";
 import {ka_templatify} from "../tpl/templatify";
 import {ka_html} from "../ce/html";
 import {KaTemplate} from "../tpl/template";
