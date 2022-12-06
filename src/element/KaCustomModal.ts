@@ -1,21 +1,21 @@
-import {KaTemplate} from "../tpl/template";
-import {ka_create_element} from "../core/create-element";
-import {ka_html} from "../ce/html";
+import {createScopeObject, KaScope} from "../types";
+import {isset} from "../functions";
 import {ka_templatify} from "../tpl/templatify";
+import {ka_html} from "../ce/html";
 import {KaModalConfig} from "./KaModalConfig";
-import {createScopeObject} from "../types";
+import {ka_create_element} from "../core/create-element";
+import {KaTemplate} from "../tpl/template";
 
 
-
-export class KaModal {
-    protected readonly scope = createScopeObject();
+export class KaCustomModal {
+    protected readonly scope : KaScope = createScopeObject();
+    private __html = "<div>No Template defined</div>"
+    private tplPrototype : HTMLElement
+    private tpl : HTMLElement
 
     public element : HTMLElement;
     public backdrop: HTMLElement;
     #main : HTMLElement;
-
-    protected $tpl : KaTemplate = null;
-
     #configDefaults : KaModalConfig = {
         parentElement: document.body,
         zIndex: 9999,
@@ -54,31 +54,27 @@ export class KaModal {
         this.#promise.promise = new Promise((resolve, reject) => {this.#promise.resolve = resolve; this.#promise.reject = reject})
     }
 
-    public render(scope : any = null) {
-        if (this.$tpl === null) {
-            let html = this.html as unknown;
-            if (typeof html === "string") {
-                html = ka_html(html);
-            }
 
-            if ( ! (html instanceof HTMLTemplateElement)) {
-                console.error("html is not HtmlTemplateElement", html, "on", this);
-                throw "html is not HtmlTemplateElement"
-            }
-            console.log("html", html);
-            let elem;
-            try {
-                elem = ka_templatify(html as HTMLTemplateElement);
-            } catch (e) {
-                console.log("error templatify for element", this, ":", e);
-                throw e;
-            }
+    public init<T extends KaScope>(scope : T) : T | KaScope {
+        // Check template set by customElement annotation
+        if (isset(this.constructor["html"]))
+            this.__html = this.constructor["html"];
 
-            this.#main.appendChild(elem);
-            this.$tpl = new KaTemplate(elem);
-        }
+        if ( ! isset (this.tplPrototype))
+            this.tplPrototype = ka_templatify(ka_html(this.__html));
 
-        this.$tpl.render(scope);
+        this.scope.init(scope);
+
+        return this.scope;
+    }
+
+
+    setParentScope(scope : KaScope) {
+        this.scope.$parent = scope;
+    }
+
+    setScope(scope : KaScope) {
+        this.scope.importFrom(scope);
     }
 
     public resolve(value : any) : void {
@@ -86,26 +82,23 @@ export class KaModal {
         this.#promise.resolve(value);
     }
 
-    public show(...params : any[]) : Promise<any> {
+    async show(...params: any[]) : Promise<any> {
+
+        if ( ! this.scope.isInitialized()) {
+           this.init({});
+        }
+
+        this.tpl = this.tplPrototype.cloneNode(true) as HTMLElement;
+        this.scope.$tpl = new KaTemplate(this.tpl);
+        this.#main.append(this.tpl);
+
         this.element.removeAttribute("hidden");
+        this.scope.render();
+
         return this.#promise.promise;
     }
 
-    /**
-     * The HTML Template to define for this Element
-     *
-     * <example>
-     *     html = (element: KaHtmlElement) => `<div ka.for...></div>`;
-     *     html = `<div ka.for="let e of element"></div>`
-     * </example>
-     *
-     */
-    // language=html
-    public html : ((element: KaModal)=> string) | string | Promise<HTMLTemplateElement|string> | HTMLTemplateElement | null;
-
-
-
+    fragmentDisconnectedCallback() {
+        this.scope.$tpl.dispose();
+    }
 }
-
-
-

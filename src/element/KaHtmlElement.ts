@@ -2,6 +2,7 @@ import {AbstractElement} from "./AbstractElement";
 import {KaTemplate} from "../tpl/template";
 import {ka_templatify} from "../tpl/templatify";
 import {ka_html} from "../ce/html";
+import {isset} from "../functions";
 
 
 export abstract class KaHtmlElement extends HTMLElement implements AbstractElement  {
@@ -46,8 +47,15 @@ export abstract class KaHtmlElement extends HTMLElement implements AbstractEleme
             attachTo = this.attachShadow(this.shadowRootInit);
         }
 
-        if (htmlTpl !== null) {
-            let tpl = ka_templatify(htmlTpl);
+        if (isset(htmlTpl)) {
+            let tpl;
+            try {
+                tpl = ka_templatify(htmlTpl);
+            } catch (e) {
+                console.error("Templatify failed on element", this, "for template", htmlTpl)
+                throw e;
+            }
+
             this.$tpl = new KaTemplate(tpl);
             attachTo.appendChild(tpl);
         }
@@ -56,6 +64,7 @@ export abstract class KaHtmlElement extends HTMLElement implements AbstractEleme
     }
 
     public async disconnectedCallback() {
+        this.$tpl.dispose();
         this.disconnected();
     }
 }

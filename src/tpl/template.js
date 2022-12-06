@@ -86,6 +86,7 @@ export class KaTemplate {
             child._ka_for_index = forIndex;
             ka_elwalk(child, (el) => {
                 //console.log("walk", el);
+
                 if (el instanceof HTMLTemplateElement) {
                     //console.log("maintain", el);
                     let r = new this.constructor(el);
@@ -98,7 +99,7 @@ export class KaTemplate {
                 }
 
                 ka_apply(el, $scope);
-                if (el instanceof HTMLElement && (el.hasAttribute("ka.stop") || el instanceof KaCustomElement))
+                if ((el instanceof HTMLElement && (el.hasAttribute("ka.stop" )) || el instanceof KaCustomElement))
                     return false; // Skip Element rendering
             }, true, true);
         }
@@ -125,6 +126,10 @@ export class KaTemplate {
             this._removeLastChild();
     }
 
+
+    setScope($scope) {
+        this.$scope = $scope;
+    }
 
     /**
      * Render / Update the Template

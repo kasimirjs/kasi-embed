@@ -1,5 +1,8 @@
 import {ka_eval} from "./eval.js";
 import {ka_str_to_camel_case} from "./str-to-camelcase.js";
+import {KaUse} from "../element/ka-use";
+import {isset, isUndefined} from "../functions";
+import {KaCustomFragment} from "../element/KaCustomFragment";
 
 
 export function ka_apply (selector, scope, recursive=false) {
@@ -62,8 +65,33 @@ export function ka_apply (selector, scope, recursive=false) {
             r = ka_eval(attVal, scope, selector);
 
         switch (attType) {
+            case "use":
+                if ( ! (selector instanceof KaUse)) {
+                    console.error("ka.use is only available on <ka-use/> Elements: Used on ", r, "found in ", selector);
+                    throw "ka.use called on non <ka-use/> Element."
+                }
+
+                selector.use(r, scope)
+                continue;
+
+            case "scope":
+                if ( ! (r instanceof Object)) {
+                    console.error("ka.scope must be object type <ka-use/> Elements: Value is ", r, "found in ", selector);
+                    throw "ka.scope insuffient value";
+                }
+
+                selector.setScope(r);
+                continue;
+
+            case "stop":
+                continue;
+
+            case "debug":
+                console.log("ka.debug on element", selector, "value:", r, "scope:", scope);
+                continue;
+
             case "ref":
-                if (typeof scope.$ref === "undefined")
+                if (isUndefined(scope.$ref))
                     scope.$ref = {};
                 // Allow ref without parameter to use $ref.$last
                 if (r !== null)
@@ -108,7 +136,7 @@ export function ka_apply (selector, scope, recursive=false) {
             case "bindarray":
                 if (attSelector === "default")
                     continue;
-                if (typeof r === "undefined") {
+                if (isUndefined(r)) {
                     // Bind default values
                     if (selector.hasAttribute("ka.bind.default")) {
                         scope = {$scope: scope, ...scope};
@@ -147,8 +175,13 @@ export function ka_apply (selector, scope, recursive=false) {
             case "bind":
                 if (attSelector === "default")
                     continue;
-                if (typeof r === "undefined") {
+                if (isUndefined(r)) {
                     // Bind default values
+                    if (isset (selector.value)) {
+                        scope = {$scope: scope,...scope, __curVal: selector.value}
+                        ka_eval(`${attVal} = __curVal`, scope, selector);
+                        r = scope.__curVal;
+                    }
                     if (selector.hasAttribute("ka.bind.default")) {
                         scope = {$scope: scope, ...scope};
                         scope = {$scope: scope, ...scope, __curVal: ka_eval(selector.getAttribute("ka.bind.default"), scope, selector)}
