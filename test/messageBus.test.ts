@@ -1,6 +1,6 @@
-import {MessageBus} from "../src/default/MessageBus";
+import {MessageBus} from "../../kasi-app/src/message/MessageBus";
 import * as util from "util";
-import {BasicMessage, Message} from "../src/default/Message";
+import {BasicMessage, Message} from "../../kasi-app/src/message/Message";
 
 
 class HelloMessage implements Message {

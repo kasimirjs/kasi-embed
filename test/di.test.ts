@@ -1,4 +1,4 @@
-import {MessageBus} from "../src/default/MessageBus";
+import {MessageBus} from "../../kasi-app/src/message/MessageBus";
 import {inject} from "../src/decorators/inject";
 import * as util from "util";
 import {container} from "../src/app/ka-container";
