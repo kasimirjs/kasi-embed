@@ -10,7 +10,7 @@ type MessageConstructor = {new () : Message};
  *
  *
  */
-export class MessageBus {
+class MessageBus {
 
     public index : number = 0;
     public listeners : any = {};
@@ -33,7 +33,7 @@ export class MessageBus {
 
         console.log("register", message.name);
         this.listeners[listenerId] = {
-            on:  message.prototype.MsgName,
+            on:  message,
             fn: fn
         };
         return listenerId;
@@ -54,3 +54,6 @@ export class MessageBus {
         }
     }
 }
+
+
+export const messageBus = new MessageBus();
