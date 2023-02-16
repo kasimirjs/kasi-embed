@@ -1,9 +1,9 @@
 
 
-export function ka_set_options(element : HTMLSelectElement, options: any, value=null) {
+export function ka_set_options(element : HTMLSelectElement, options: any, value : string | null = null) {
     element.innerHTML = "";
-    for (let option : any in options) {
-        if (isNaN(option)) {
+    for (let option in options) {
+        if (isNaN(option as any)) {
             element.appendChild(new Option(options[option], option));
         } else {
             if (typeof options[option].text !== "undefined") {
