@@ -34,7 +34,7 @@ export class KaCustomFragment {
         this.scope.importFrom(scope);
     }
 
-    async fragementConnectedCallback(parentElement : HTMLElement) {
+    async fragmentConnectedCallback(parentElement : HTMLElement) {
         parentElement.setAttribute("ka.stop", "true");
 
         if ( ! this.scope.isInitialized()) {
