@@ -36,7 +36,7 @@ export class KaUse extends HTMLElement {
             val["setScope"](parentScope);
 
         if (val instanceof KaCustomFragment) {
-            val.fragementConnectedCallback(this);
+            val.fragmentConnectedCallback(this);
             return;
         }
 
@@ -62,7 +62,7 @@ export class KaUse extends HTMLElement {
         this.style.display = "contents";
         this.setAttribute("ka.stop", "true");
         if (this.myComponent instanceof KaCustomFragment) {
-            this.myComponent.fragementConnectedCallback(this);
+            this.myComponent.fragmentConnectedCallback(this);
         }
     }
 }
