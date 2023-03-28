@@ -240,12 +240,15 @@ export function ka_apply (selector, scope, recursive=false) {
                 let value = selector.value;
                 selector.innerHTML = "";
                 for (let option in r) {
-                    if (isNaN(option)) {
+                    if (! Array.isArray(r)) {
+                        // Object key => value value => text
                         selector.appendChild(new Option(r[option], option));
                     } else {
+                        // Array
                         if (typeof r[option].text !== "undefined") {
                             selector.appendChild(new Option(r[option].text, r[option].value));
                         } else {
+                            // Array value and text will be array value
                             selector.appendChild(new Option(r[option], r[option]));
                         }
                     }
