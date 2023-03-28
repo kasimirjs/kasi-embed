@@ -2,6 +2,7 @@ export * from "./functions";
 export * from "./types";
 
 export * from "./core/sleep";
+export * from "./core/debounce";
 export * from "./core/create-element";
 export * from "./core/ka-set-options";
 
