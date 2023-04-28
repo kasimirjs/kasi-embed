@@ -18,4 +18,5 @@ export * from "./core/query-select"
 export * from "./core/eval"
 export * from "./ce/html";
 export * from "./tpl/templatify";
+export * from "./core/debouncer";
 

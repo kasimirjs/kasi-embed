@@ -45,6 +45,20 @@ export function customElement(tagName : string, template : string = null) {
 }
 
 
+export async function ka_await_element(selector : string, parent : ParentNode = document,  maxWait : number = 2000) : Promise<HTMLElement> {
+    let elem = parent.querySelector(selector);
+    let rounds = 1;
+    while(elem === null && maxWait > 0) {
+        let delay = 20 * rounds++;
+        await ka_sleep(delay);
+        elem = parent.querySelector(selector);
+        maxWait -= delay;
+    }
+    return elem as HTMLElement;
+}
+
+
+
 export function template(template : string | HTMLTemplateElement) {
      return function (classOrDescriptor: any) : void {
 
