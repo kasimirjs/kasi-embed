@@ -1,4 +1,4 @@
-import {createScopeObject, KaScope} from "../types";
+import {createScopeObject, KaScope, KaScopeType} from "../types";
 import {isset} from "../functions";
 import {ka_templatify} from "../tpl/templatify";
 import {ka_html} from "../ce/html";
@@ -12,7 +12,7 @@ export class KaCustomElement extends HTMLElement {
     protected tplPrototype : HTMLElement = null;
     private tpl : HTMLElement
 
-    public init<T extends KaScope>(scope : T) : T | KaScope {
+    public init<T extends KaScope>(scope : T) : KaScopeType | T | KaScope  {
         // Check template set by customElement annotation
         if (isset (this.constructor["html"]))
             this.__html = this.constructor["html"];

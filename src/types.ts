@@ -18,6 +18,22 @@ export type KaScopeOn = {
     onBeforeRender?: (e : Event) => any
 }
 
+export type KaScopeType = {
+    $__scope_orig: any
+    $fn: {[x : string] : (...param : any[])=>any}
+    $ref: Map<string, HTMLElement>
+    $on: KaScopeOn
+    $tpl: KaTemplate
+    $parent: KaScope
+    [x: string] : any
+    render: () => KaScope
+    importFrom(scope : any) : void;
+    init(scopeDef : any) : void;
+    isInitialized() : boolean;
+    raw() : KaScope;
+    dump() : any;
+}
+
 export interface KaScope {
     $__scope_orig?: any
     $fn?: {[x : string] : (...param : any[])=>any}

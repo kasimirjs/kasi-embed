@@ -74,6 +74,17 @@ export function ka_apply (selector, scope, recursive=false) {
                 selector.use(r, scope)
                 continue;
 
+            case "become":
+                if ( ! (r instanceof HTMLElement)) {
+                    console.error("ka.become is only available on HTMLElements: Used on ", r, "found in ", selector);
+                    throw "ka.become called on non HTMLElement."
+                }
+                let attributes = selector.attributes;
+
+                selector.replaceWith(r);
+                selector.attributes = attributes;
+                continue;
+
             case "scope":
                 if ( ! (r instanceof Object)) {
                     console.error("ka.scope must be object type <ka-use/> Elements: Value is ", r, "found in ", selector);
