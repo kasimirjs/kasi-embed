@@ -4,9 +4,9 @@ export class Debouncer {
     constructor( private min : number = 100, private max : number = null) {
     }
 
-    #resolve = [];
-    #interval = null;
-    #time = null;
+    #resolve : any[] = [];
+    #interval : any = null;
+    #time : any = null;
 
     async debounce(min : number = this.min, max : number=this.max) : Promise<void> {
         if (max === null)
