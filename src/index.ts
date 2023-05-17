@@ -20,3 +20,4 @@ export * from "./ce/html";
 export * from "./tpl/templatify";
 export * from "./core/debouncer";
 
+export * from "./core/storage"

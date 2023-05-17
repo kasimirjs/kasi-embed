@@ -1,4 +1,4 @@
-import {ka_query_selector} from "../core/query-select.js";
+import {ka_query_selector} from "../core/query-select";
 import {ka_elwalk} from "../core/elwalk.js";
 
 function quoteattr(s, preserveCR) {
