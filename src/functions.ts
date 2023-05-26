@@ -34,7 +34,6 @@ export function isUndefined(input : any) : boolean {
 export function customElement(tagName : string, template : string = null) {
     return function (classOrDescriptor: any) : void {
         if (template !== null) {
-            console.log("set template", template);
             classOrDescriptor.html = template;
         }
 

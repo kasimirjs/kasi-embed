@@ -4,7 +4,9 @@ import {ka_templatify} from "../tpl/templatify";
 import {ka_html} from "../ce/html";
 import {isset} from "../functions";
 
-
+/**
+ * @deprecated
+ */
 export abstract class KaHtmlElement extends HTMLElement implements AbstractElement  {
 
     constructor(
