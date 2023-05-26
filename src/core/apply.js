@@ -86,6 +86,10 @@ export function ka_apply (selector, scope, recursive=false) {
                 continue;
 
             case "content":
+                if (typeof r === "string") {
+                    selector.innerHTML = r;
+                    continue;
+                }
                 if ( ! (r instanceof HTMLElement)) {
                     console.error("ka.content is only available on HTMLElements: Used on ", r, "found in ", selector);
                     throw "ka.content called on non HTMLElement."
