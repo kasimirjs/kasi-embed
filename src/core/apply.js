@@ -86,6 +86,7 @@ export function ka_apply (selector, scope, recursive=false) {
                 continue;
 
             case "content":
+                selector.setAttribute("ka.stop", "");
                 if (typeof r === "string") {
                     selector.innerHTML = r;
                     continue;

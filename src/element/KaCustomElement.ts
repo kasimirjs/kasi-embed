@@ -38,21 +38,23 @@ export class KaCustomElement extends HTMLElement {
     }
 
     async connectedCallback() {
-        this.setAttribute("ka.stop", "true");
 
         if ( ! this.scope.isInitialized())
             this.init({});
 
         this.tpl = this.tplPrototype.cloneNode(true) as HTMLElement;
+        this.scope.$tpl = new KaTemplate(this.tpl);
 
         if (this.wrapper !== null) {
-            this.append(this.wrapper.wrapTemplate(this.tpl));
             await this.wrapper.fragmentConnectedCallback();
+            this.append(this.wrapper.wrapTemplate(this.tpl));
+            this.wrapper.wrapFinish();
         } else {
             this.append(this.tpl);
         }
 
-        this.scope.$tpl = new KaTemplate(this.tpl);
+        this.scope.render();
+
     }
 
     disconnectedCallback() {

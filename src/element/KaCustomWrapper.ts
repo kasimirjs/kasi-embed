@@ -30,23 +30,21 @@ export class KaCustomWrapper {
     private returnedTpl : HTMLElement;
 
     public wrapTemplate(tpl : HTMLElement) : HTMLElement {
-        let wrapelem = ka_create_element("div");
-        wrapelem.setAttribute("ka.stop", "true");
         this.scope.$content = tpl;
-        this.returnedTpl = wrapelem;
-        return wrapelem;
+        return this.tpl;
     }
 
     async fragmentConnectedCallback() {
         if ( ! this.scope.isInitialized()) {
            this.init({});
         }
+        this.returnedTpl = this.tplPrototype;
 
         this.tpl = this.tplPrototype.cloneNode(true) as HTMLElement;
         this.scope.$tpl = new KaTemplate(this.tpl);
-        this.returnedTpl.append(this.tpl);
+    }
 
-        await ka_sleep(1);
+    public async wrapFinish() {
         this.scope.render();
     }
 
