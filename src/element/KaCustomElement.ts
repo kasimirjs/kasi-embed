@@ -8,7 +8,7 @@ import {KaCustomWrapper} from "./KaCustomWrapper";
 
 
 export class KaCustomElement extends HTMLElement {
-    public __html = "<div>No template defined</div>";
+    public html = null;
 
     protected readonly scope : KaScope = createScopeObject();
     protected tplPrototype : HTMLElement = null;
@@ -18,10 +18,10 @@ export class KaCustomElement extends HTMLElement {
     public init<T extends KaScope>(scope : T) : KaScopeType | T | KaScope  {
         // Check template set by customElement annotation
         if (isset (this.constructor["html"]))
-            this.__html = this.constructor["html"];
+            this.html = this.constructor["html"];
 
         if (this.tplPrototype === null) {
-            this.tplPrototype = ka_templatify(ka_html(this.__html));
+            this.tplPrototype = ka_templatify(ka_html(this.html));
         }
 
         this.scope.init(scope);
