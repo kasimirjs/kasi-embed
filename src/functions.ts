@@ -34,11 +34,12 @@ export function isUndefined(input : any) : boolean {
 export function customElement(tagName : string, template : string = null) {
     return function (classOrDescriptor: any) : void {
         if (template !== null) {
-            classOrDescriptor.html = template;
+            classOrDescriptor["html"] = template;
         }
 
         console.debug("registering custom element", classOrDescriptor, tagName);
         customElements.define(tagName, classOrDescriptor);
+
         return classOrDescriptor;
     }
 }
@@ -61,7 +62,7 @@ export async function ka_await_element(selector : string, parent : ParentNode = 
 export function template(template : string | HTMLTemplateElement) {
      return function (classOrDescriptor: any) : void {
 
-         classOrDescriptor.html = template;
+         classOrDescriptor["html"] = template;
 
          return classOrDescriptor;
      }

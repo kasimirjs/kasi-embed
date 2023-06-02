@@ -8,8 +8,7 @@ import {KaCustomWrapper} from "./KaCustomWrapper";
 
 
 export class KaCustomElement extends HTMLElement {
-    public html = null;
-
+    private html : string = "Undefined Template";
     protected readonly scope : KaScope = createScopeObject();
     protected tplPrototype : HTMLElement = null;
     protected wrapper : KaCustomWrapper = null;
@@ -17,8 +16,10 @@ export class KaCustomElement extends HTMLElement {
 
     public init<T extends KaScope>(scope : T) : KaScopeType | T | KaScope  {
         // Check template set by customElement annotation
-        if (isset (this.constructor["html"]))
+
+        if (isset (this.constructor["html"])) {
             this.html = this.constructor["html"];
+        }
 
         if (this.tplPrototype === null) {
             this.tplPrototype = ka_templatify(ka_html(this.html));
@@ -38,7 +39,6 @@ export class KaCustomElement extends HTMLElement {
     }
 
     async connectedCallback() {
-
         if ( ! this.scope.isInitialized())
             this.init({});
 
@@ -46,6 +46,7 @@ export class KaCustomElement extends HTMLElement {
         this.scope.$tpl = new KaTemplate(this.tpl);
 
         if (this.wrapper !== null) {
+
             await this.wrapper.fragmentConnectedCallback();
             this.append(this.wrapper.wrapTemplate(this.tpl));
             this.wrapper.wrapFinish();
@@ -58,6 +59,7 @@ export class KaCustomElement extends HTMLElement {
     }
 
     disconnectedCallback() {
-        this.scope.$tpl.dispose();
+        if (this.scope.$tpl !== undefined)
+            this.scope.$tpl.dispose();
     }
 }
