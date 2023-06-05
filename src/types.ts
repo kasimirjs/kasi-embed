@@ -1,7 +1,7 @@
 import {KaTemplate} from "./tpl/template";
 import {ka_debounce} from "./core/debounce";
 import {isset} from "./functions";
-import {Debouncer} from "@kasimirjs/embed";
+import {Debouncer} from "./core/debouncer";
 
 export type KaScopeOn = {
     /**

@@ -1,5 +1,5 @@
 
-export function ka_html(htmlContent : string) : HTMLTemplateElement {
+export function ka_html(htmlContent : string | HTMLTemplateElement) : HTMLTemplateElement {
     if (htmlContent instanceof HTMLTemplateElement) {
         return htmlContent;
     }
