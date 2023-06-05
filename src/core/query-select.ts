@@ -17,5 +17,5 @@ export function ka_query_selector (query : string, parent : HTMLElement | Docume
         console.warn(exception, "on parent: ", parent);
         throw exception;
     }
-    return e[0];
+    return e[0] as HTMLElement;
 }
