@@ -82,7 +82,20 @@ export function ka_apply (selector, scope, recursive=false) {
                 let attributes = selector.attributes;
 
                 selector.replaceWith(r);
-                selector.attributes = attributes;
+
+                continue;
+
+            case "content":
+                selector.setAttribute("ka.stop", "");
+                if (typeof r === "string") {
+                    selector.innerHTML = r;
+                    continue;
+                }
+                if ( ! (r instanceof HTMLElement)) {
+                    console.error("ka.content is only available on HTMLElements: Used on ", r, "found in ", selector);
+                    throw "ka.content called on non HTMLElement."
+                }
+                selector.append(r);
                 continue;
 
             case "scope":

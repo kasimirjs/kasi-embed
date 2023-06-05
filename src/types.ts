@@ -1,6 +1,7 @@
 import {KaTemplate} from "./tpl/template";
 import {ka_debounce} from "./core/debounce";
 import {isset} from "./functions";
+import {Debouncer} from "@kasimirjs/embed";
 
 export type KaScopeOn = {
     /**
@@ -105,13 +106,14 @@ export function createScopeObject<T extends KaScope>(init : T = null) : T | KaSc
 
             target[p] = value;
 
+            let debouncer = new Debouncer(50, 50);
             if (p.startsWith("$") || p.startsWith("__"))
                 return true;
 
             if (isset (scopeDef.$tpl))
                 scopeDef.$tpl.render();
             (async() => {
-                await ka_debounce(50,50);
+                await debouncer.debounce();
 
             })()
             return true;
