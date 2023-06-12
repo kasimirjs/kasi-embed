@@ -14,7 +14,6 @@ export * from "./element/KaCustomWrapper";
 export * from "./element/KaCustomModal";
 export * from "./tpl/template";
 export * from "./element/KaModal"
-export * from "./element/ka-use"
 export * from "./core/query-select"
 export * from "./core/eval"
 export * from "./ce/html";
