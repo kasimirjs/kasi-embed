@@ -15,15 +15,7 @@ export class KaCustomElement extends HTMLElement {
     private tpl : HTMLElement
 
     public init<T extends KaScope>(scope : T) : KaScopeType | T | KaScope  {
-        // Check template set by customElement annotation
 
-        if (isset (this.constructor["html"])) {
-            this.html = this.constructor["html"];
-        }
-
-        if (this.tplPrototype === null) {
-            this.tplPrototype = ka_templatify(ka_html(this.html));
-        }
 
         this.scope.init(scope);
         return this.scope;
@@ -41,6 +33,16 @@ export class KaCustomElement extends HTMLElement {
     async connectedCallback() {
         if ( ! this.scope.isInitialized())
             this.init({});
+
+        // Check template set by customElement annotation
+        // Cannot be done in constructor because of async behavior
+        if (isset (this.constructor["html"])) {
+            this.html = this.constructor["html"];
+        }
+
+        if (this.tplPrototype === null) {
+            this.tplPrototype = ka_templatify(ka_html(this.html));
+        }
 
         this.tpl = this.tplPrototype.cloneNode(true) as HTMLElement;
         this.scope.$tpl = new KaTemplate(this.tpl);

@@ -1,6 +1,5 @@
 import {ka_eval} from "./eval.js";
 import {ka_str_to_camel_case} from "./str-to-camelcase.js";
-import {KaUse} from "../element/ka-use";
 import {isset, isUndefined} from "../functions";
 import {KaCustomFragment} from "../element/KaCustomFragment";
 
@@ -142,6 +141,11 @@ export function ka_apply (selector, scope, recursive=false) {
                 break;
 
             case "style":
+
+                if (attSelector !== null && attSelector.startsWith("--")) {
+                    selector.style.setProperty(attSelector, r);
+                    break;
+                }
                 if (attSelector  !== null) {
                     let val = r;
                     if (typeof val === "number" && ["left", "top", "height", "width", "bottom", "right", "line-height", "font-size"].indexOf(attSelector) !== -1)
