@@ -37,7 +37,7 @@ export function customElement(tagName : string, template : string = null) {
             classOrDescriptor["html"] = template;
         }
 
-        console.debug("registering custom element", classOrDescriptor, tagName);
+        //console.debug("registering custom element", classOrDescriptor, tagName);
         customElements.define(tagName, classOrDescriptor);
 
         return classOrDescriptor;
