@@ -8,6 +8,8 @@ import {KaCustomWrapper} from "./KaCustomWrapper";
 
 
 export class KaCustomElement extends HTMLElement {
+    public __ka_stop_render : boolean = true; // Stop rendering if this element is reached
+
     private html : string = "Undefined Template";
     protected readonly scope : KaScope = createScopeObject();
     protected tplPrototype : HTMLElement = null;
