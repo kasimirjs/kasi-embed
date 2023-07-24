@@ -49,6 +49,7 @@ export class KaCustomFragment {
         this.scope.render();
     }
 
+
     fragmentDisconnectedCallback() {
         this.scope.$tpl.dispose();
     }

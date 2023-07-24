@@ -21,7 +21,8 @@ export function ka_eval (stmt, __scope, e, __refs) {
     }
     try {
         // console.log(r + '(' + stmt + ')');
-        return eval(r  + '('+stmt+')')
+        const func = new Function('e', '__scope', r + '; return ' + stmt);
+        return func(e, __scope);
     } catch (ex) {
         console.error("cannot eval() stmt: '" + stmt + "': " + ex, " on element ", e, ex, "(context:", __scope, ")");
         throw "eval('" + stmt + "') failed: " + ex;
