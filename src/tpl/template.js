@@ -99,8 +99,10 @@ export class KaTemplate {
                 }
 
                 ka_apply(el, $scope);
-                if ((el instanceof HTMLElement && (el.hasAttribute("ka.stop" )) || el instanceof KaCustomElement))
+                if ((el instanceof HTMLElement && el.hasAttribute("ka.stop" )) || el["__ka_stop_render"]) {
                     return false; // Skip Element rendering
+                }
+
             }, true, true);
         }
     }

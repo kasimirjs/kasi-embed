@@ -7,8 +7,8 @@
  * @param exception
  * @return {HTMLElement}
  */
-export function ka_query_selector (query, parent, exception) {
-    if (typeof exception === "undefined")
+export function ka_query_selector (query : string, parent : HTMLElement | Document | DocumentFragment  = null, exception : any = null) : HTMLElement{
+    if (typeof exception === "undefined" || exception === null)
         exception = `querySelector '${query}' not found`
     if (typeof parent === "undefined" || parent === null)
         parent = document;
@@ -17,5 +17,5 @@ export function ka_query_selector (query, parent, exception) {
         console.warn(exception, "on parent: ", parent);
         throw exception;
     }
-    return e[0];
+    return e[0] as HTMLElement;
 }

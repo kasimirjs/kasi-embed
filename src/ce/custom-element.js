@@ -1,6 +1,6 @@
 import {ka_templatify} from "../tpl/templatify.js";
 import {KaTemplate} from "../tpl/template.js";
-import {ka_query_selector} from "../core/query-select.js";
+import {ka_query_selector} from "../core/query-select";
 import {RemoteTemplate} from "./htmlFile";
 
 export class KaCustomElement extends HTMLElement {

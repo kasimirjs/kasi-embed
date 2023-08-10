@@ -1,4 +1,4 @@
-import {ka_query_selector} from "../core/query-select.js";
+import {ka_query_selector} from "../core/query-select";
 import {ka_elwalk} from "../core/elwalk.js";
 
 function quoteattr(s, preserveCR) {
@@ -35,9 +35,15 @@ export function ka_templatify (elem, returnMode=true) {
         throw `[ka-templify] Parameter 1 is not a html element: ${elem}`;
     }
 
+    const elIdxName = "_ka_el_idx";
+    if (window[elIdxName] === null)
+        window[elIdxName] = 5;
+    window[elIdxName]++;
+
+
     if (returnMode) {
         let returnTpl = document.createElement("template");
-        returnTpl.setAttribute("_kaidx", (window._ka_el_idx++).toString())
+        returnTpl.setAttribute("_kaidx", (window[elIdxName]).toString())
         /* @var {HTMLTemplateElement} returnTpl */
         returnTpl.innerHTML = elem.innerHTML
             .replace(/\[\[(.*?)\]\]/g, (matches, m1) => `<span ka.textContent="${quoteattr(m1)}"></span>`);
@@ -49,9 +55,12 @@ export function ka_templatify (elem, returnMode=true) {
     if (elem instanceof HTMLTemplateElement)
         elem = elem.content;
 
+
+
+
     let wrapElem = (el, attName, attVal) => {
         let tpl = document.createElement("template");
-        tpl.setAttribute("_kaidx", (window._ka_el_idx++).toString())
+        tpl.setAttribute("_kaidx", (window[elIdxName]).toString())
         let clonedEl = el.cloneNode(true);
         clonedEl.removeAttribute(attName);
         tpl.content.append(clonedEl);

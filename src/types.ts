@@ -1,6 +1,7 @@
 import {KaTemplate} from "./tpl/template";
 import {ka_debounce} from "./core/debounce";
 import {isset} from "./functions";
+import {Debouncer} from "./core/debouncer";
 
 export type KaScopeOn = {
     /**
@@ -16,6 +17,22 @@ export type KaScopeOn = {
      * @param e
      */
     onBeforeRender?: (e : Event) => any
+}
+
+export type KaScopeType = {
+    $__scope_orig: any
+    $fn: {[x : string] : (...param : any[])=>any}
+    $ref: Map<string, HTMLElement>
+    $on: KaScopeOn
+    $tpl: KaTemplate
+    $parent: KaScope
+    [x: string] : any
+    render: () => KaScope
+    importFrom(scope : any) : void;
+    init(scopeDef : any) : void;
+    isInitialized() : boolean;
+    raw() : KaScope;
+    dump() : any;
 }
 
 export interface KaScope {
@@ -89,13 +106,14 @@ export function createScopeObject<T extends KaScope>(init : T = null) : T | KaSc
 
             target[p] = value;
 
+            let debouncer = new Debouncer(50, 50);
             if (p.startsWith("$") || p.startsWith("__"))
                 return true;
 
             if (isset (scopeDef.$tpl))
                 scopeDef.$tpl.render();
             (async() => {
-                await ka_debounce(50,50);
+                await debouncer.debounce();
 
             })()
             return true;

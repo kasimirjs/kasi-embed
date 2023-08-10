@@ -1,8 +1,8 @@
-import {customElement, isset} from "../functions";
+import {customElement, isset, random_string} from "../functions";
 import {KaCustomFragment} from "./KaCustomFragment";
 import {KaScope} from "../types";
 
-@customElement("ka-use")
+@customElement("ka-use-" + random_string().toLowerCase())
 export class KaUse extends HTMLElement {
 
     private myComponent : HTMLElement;

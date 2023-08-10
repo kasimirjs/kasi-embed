@@ -1,8 +1,8 @@
 import {ka_eval} from "./eval.js";
 import {ka_str_to_camel_case} from "./str-to-camelcase.js";
-import {KaUse} from "../element/ka-use";
 import {isset, isUndefined} from "../functions";
 import {KaCustomFragment} from "../element/KaCustomFragment";
+import {KaUse} from "../element/ka-use";
 
 
 export function ka_apply (selector, scope, recursive=false) {
@@ -67,11 +67,41 @@ export function ka_apply (selector, scope, recursive=false) {
         switch (attType) {
             case "use":
                 if ( ! (selector instanceof KaUse)) {
-                    console.error("ka.use is only available on <ka-use/> Elements: Used on ", r, "found in ", selector);
-                    throw "ka.use called on non <ka-use/> Element."
+                    let elem = new KaUse();
+
+                    // Copy all attributes from selector to elem
+                    for(let attName of selector.getAttributeNames()) {
+                        elem.setAttribute(attName, selector.getAttribute(attName));
+                    }
+                    selector.replaceWith(elem);
+                    selector = elem;
                 }
 
                 selector.use(r, scope)
+                continue;
+
+            case "become":
+                if ( ! (r instanceof HTMLElement)) {
+                    console.error("ka.become is only available on HTMLElements: Used on ", r, "found in ", selector);
+                    throw "ka.become called on non HTMLElement."
+                }
+                let attributes = selector.attributes;
+
+                selector.replaceWith(r);
+
+                continue;
+
+            case "content":
+                selector.setAttribute("ka.stop", "");
+                if (typeof r === "string") {
+                    selector.innerHTML = r;
+                    continue;
+                }
+                if ( ! (r instanceof HTMLElement)) {
+                    console.error("ka.content is only available on HTMLElements: Used on ", r, "found in ", selector);
+                    throw "ka.content called on non HTMLElement."
+                }
+                selector.append(r);
                 continue;
 
             case "scope":
@@ -118,6 +148,11 @@ export function ka_apply (selector, scope, recursive=false) {
                 break;
 
             case "style":
+
+                if (attSelector !== null && attSelector.startsWith("--")) {
+                    selector.style.setProperty(attSelector, r);
+                    break;
+                }
                 if (attSelector  !== null) {
                     let val = r;
                     if (typeof val === "number" && ["left", "top", "height", "width", "bottom", "right", "line-height", "font-size"].indexOf(attSelector) !== -1)

@@ -4,9 +4,10 @@ import {ka_templatify} from "../tpl/templatify";
 import {ka_html} from "../ce/html";
 import {KaTemplate} from "../tpl/template";
 import {ka_sleep} from "../core/sleep";
+import {ka_create_element} from "../core/create-element";
 
 
-export class KaCustomFragment {
+export class KaCustomWrapper {
     protected readonly scope : KaScope = createScopeObject();
     protected html : string = null
     private tplPrototype : HTMLElement
@@ -26,29 +27,26 @@ export class KaCustomFragment {
     }
 
 
-    setParentScope(scope : KaScope) {
-        this.scope.$parent = scope;
+    private returnedTpl : HTMLElement;
+
+    public wrapTemplate(tpl : HTMLElement) : HTMLElement {
+        this.scope.$content = tpl;
+        return this.tpl;
     }
 
-    setScope(scope : KaScope) {
-        this.scope.importFrom(scope);
-    }
-
-    async fragmentConnectedCallback(parentElement : HTMLElement) {
-        parentElement.setAttribute("ka.stop", "true");
-
+    async fragmentConnectedCallback() {
         if ( ! this.scope.isInitialized()) {
            this.init({});
         }
+        this.returnedTpl = this.tplPrototype;
 
         this.tpl = this.tplPrototype.cloneNode(true) as HTMLElement;
         this.scope.$tpl = new KaTemplate(this.tpl);
-        parentElement.append(this.tpl);
-
-        await ka_sleep(1);
-        this.scope.render();
     }
 
+    public async wrapFinish() {
+        this.scope.render();
+    }
 
     fragmentDisconnectedCallback() {
         this.scope.$tpl.dispose();

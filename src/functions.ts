@@ -34,22 +34,47 @@ export function isUndefined(input : any) : boolean {
 export function customElement(tagName : string, template : string = null) {
     return function (classOrDescriptor: any) : void {
         if (template !== null) {
-            console.log("set template", template);
-            classOrDescriptor.html = template;
+            classOrDescriptor["html"] = template;
         }
 
-        console.debug("registering custom element", classOrDescriptor, tagName);
+        //console.debug("registering custom element", classOrDescriptor, tagName);
         customElements.define(tagName, classOrDescriptor);
+
         return classOrDescriptor;
     }
 }
 
 
+export async function ka_await_element(selector : string, parent : ParentNode = document,  maxWait : number = 2000) : Promise<HTMLElement> {
+    let elem = parent.querySelector(selector);
+    let rounds = 1;
+    while(elem === null && maxWait > 0) {
+        let delay = 20 * rounds++;
+        await ka_sleep(delay);
+        elem = parent.querySelector(selector);
+        maxWait -= delay;
+    }
+    return elem as HTMLElement;
+}
+
+
+
 export function template(template : string | HTMLTemplateElement) {
      return function (classOrDescriptor: any) : void {
 
-         classOrDescriptor.html = template;
+         classOrDescriptor["html"] = template;
 
          return classOrDescriptor;
      }
+}
+
+
+export function random_string(len : number = 12) : string {
+    let result           = '';
+    let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let charactersLength = characters.length;
+    for ( let i = 0; i < len; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
 }

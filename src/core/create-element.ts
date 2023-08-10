@@ -8,7 +8,7 @@
  * @param children {HTMLElement[]}
  * @return HTMLElement
  */
-export function ka_create_element (tagName : string, attributes : any = null,  children : HTMLElement[] | NodeList = null, appendToElement : HTMLElement = null) : HTMLElement{
+export function ka_create_element (tagName : string, attributes : any = null,  children : HTMLElement[] | NodeList | string = null, appendToElement : ParentNode = null) : HTMLElement{
     let e = document.createElement(tagName);
     if (attributes === null)
         attributes = {}
@@ -25,6 +25,10 @@ export function ka_create_element (tagName : string, attributes : any = null,  c
         for(let ce of children) {
             e.appendChild(ce);
         }
+    }
+
+    if (typeof children === "string") {
+        e.innerText = children;
     }
 
     if (appendToElement !== null) {
