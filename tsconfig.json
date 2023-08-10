@@ -3,14 +3,14 @@
     "outDir": "./dist/",
     "noImplicitAny": true,
     "declaration": true,
-    "module": "esnext",
+    "module": "es6",
     "target": "es6",
     "allowJs": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "suppressImplicitAnyIndexErrors": true,
     "emitDecoratorMetadata": true,
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "lib": [
       "es2021",
       "dom"
