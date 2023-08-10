@@ -1,11 +1,11 @@
 {
   "name": "@kasimirjs/embed",
 
-  "version": "1.1.3",
+  "version": "1.1.4",
 
   "description": "",
   "main": "./dist/index.js",
-  "module": "./dist/index.module.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "directories": {
     "doc": "docs",
@@ -15,7 +15,7 @@
     "/dist"
   ],
   "scripts": {
-    "make.mjs": "tsc -d && mv dist/index.js dist/index.module.js",
+    "make.mjs": "tsc -d",
     "make.cjs": "tsc -m commonjs",
     "build": "npm run make.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
