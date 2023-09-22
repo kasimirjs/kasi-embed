@@ -9,7 +9,7 @@ import {KaTemplate} from "../tpl/template";
 
 export class KaCustomModal {
     protected readonly scope : KaScope = createScopeObject();
-    private __html = "<div>No Template defined</div>"
+    protected __html = "<div>No Template defined</div>"
     private tplPrototype : HTMLElement
     private tpl : HTMLElement
 
