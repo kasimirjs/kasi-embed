@@ -3,7 +3,7 @@
  * @param object
  * @param scopeName
  */
-export function ka_session_storage<T>(object : T | null, scopeName : string = null) : T {
+export function ka_session_storage<T>(object : T | null | object = {}, scopeName : string = null) : T {
     if (scopeName == null) {
         scopeName = "ka_session_storage";
     }
