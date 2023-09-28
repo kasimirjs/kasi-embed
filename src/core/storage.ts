@@ -16,7 +16,7 @@ export function ka_session_storage<T>(object : T | null | object = {}, scopeName
     }
     let savedObject = JSON.parse(sessionStorage.getItem(scopeName));
 
-    for (let key in object) {
+    for (let key in object as any) {
         if (typeof savedObject[key] === "undefined") {
             savedObject[key] = object[key];
         }
