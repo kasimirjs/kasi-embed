@@ -280,7 +280,7 @@ export function ka_apply (selector, scope, recursive=false) {
                         selector.appendChild(new Option(r[option], option));
                     } else {
                         // Array
-                        if (typeof r[option].text !== "undefined") {
+                        if (r[option]?.text !== undefined) {
                             selector.appendChild(new Option(r[option].text, r[option].value));
                         } else {
                             // Array value and text will be array value
