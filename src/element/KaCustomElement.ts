@@ -5,11 +5,18 @@ import {ka_html} from "../ce/html";
 import {KaTemplate} from "../tpl/template";
 import {KaCustomFragment} from "./KaCustomFragment";
 import {KaCustomWrapper} from "./KaCustomWrapper";
+import {ka_create_element} from "../core/create-element";
 
+
+class ShadowRootConfig {
+    public mode : null | "open" | "closed" = null; // Default null: No shadowRoot
+    public stylesheets : string[] = [];
+}
 
 export class KaCustomElement extends HTMLElement {
-    public __ka_stop_render : boolean = true; // Stop rendering if this element is reached
+    public __ka_stop_render : true = true; // Stop rendering if this element is reached
 
+    protected shadowRootConfig : ShadowRootConfig = new ShadowRootConfig(); // Activate shadowRoot
     private html : string = "Undefined Template";
     protected readonly scope : KaScope = createScopeObject();
     protected tplPrototype : HTMLElement = null;
@@ -49,13 +56,22 @@ export class KaCustomElement extends HTMLElement {
         this.tpl = this.tplPrototype.cloneNode(true) as HTMLElement;
         this.scope.$tpl = new KaTemplate(this.tpl);
 
+        // Adding Shadow Root
+        let domRoot : any = this;
+        if (this.shadowRootConfig.mode !== null) {
+            domRoot = this.attachShadow({mode: this.shadowRootConfig.mode});
+            this.shadowRootConfig.stylesheets.forEach((stylesheet) => {
+                ka_create_element("link", {rel: "stylesheet", href: stylesheet}, null, domRoot);
+            });
+        }
+
         if (this.wrapper !== null) {
 
             await this.wrapper.fragmentConnectedCallback();
-            this.append(this.wrapper.wrapTemplate(this.tpl));
+            domRoot.append(this.wrapper.wrapTemplate(this.tpl));
             this.wrapper.wrapFinish();
         } else {
-            this.append(this.tpl);
+            domRoot.append(this.tpl);
         }
 
         this.scope.render();
