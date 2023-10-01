@@ -138,6 +138,18 @@ export function ka_apply (selector, scope, recursive=false) {
                     }
                     break;
                 }
+                if (typeof r === "string") {
+                    // Split and add all classes
+                    r = r.split(" ").filter((e) => e.trim() !== "");
+                }
+                if (Array.isArray(r)) {
+                    for (let cname of r) {
+                        if (r.trim() === "")
+                            continue;
+                        selector.classList.add(cname);
+                    }
+                    break;
+                }
                 for (let cname in r) {
                     if (r[cname] === true) {
                         selector.classList.add(cname);
