@@ -144,7 +144,7 @@ export function ka_apply (selector, scope, recursive=false) {
                 }
                 if (Array.isArray(r)) {
                     for (let cname of r) {
-                        if (r.trim() === "")
+                        if (cname.trim() === "")
                             continue;
                         selector.classList.add(cname);
                     }
