@@ -31,14 +31,28 @@ export function isUndefined(input : any) : boolean {
  *
  * @param tagName
  */
-export function customElement(tagName : string, template : string = null) {
+export function customElement(tagName : string|null = null, template : string = null) {
     return function (classOrDescriptor: any) : void {
         if (template !== null) {
             classOrDescriptor["html"] = template;
         }
 
+        if (window["_kasi_defined_custom_elements"] === undefined) {
+            window["_kasi_defined_custom_elements"] = [];
+        }
+        if (tagName === null) {
+            if (window["_kasi_anon_element_id"] === undefined) {
+                window["_kasi_anon_element_id"] = 0;
+            }
+            tagName = "kasimirjs-anon-element-" + window["_kasi_anon_element_id"]++;
+        }
+
         //console.debug("registering custom element", classOrDescriptor, tagName);
-        customElements.define(tagName, classOrDescriptor);
+        if ( ! window["_kasi_defined_custom_elements"].includes(tagName) ) {
+            customElements.define(tagName, classOrDescriptor);
+            window["_kasi_defined_custom_elements"].push(tagName);
+        }
+
 
         return classOrDescriptor;
     }
