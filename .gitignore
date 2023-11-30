@@ -10,3 +10,4 @@
 /osm_data.sqlite-journal
 /node_modules
 /dist
+.keystore.yml

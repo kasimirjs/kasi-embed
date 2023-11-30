@@ -1,23 +1,14 @@
 {
-  "name": "kasimirjs/embed",
-  "description": "Embedded WebComponents VanillaJS Library",
-  "keywords": ["Keyword1", "Keyword2"],
-  "license": "Proprietary",
-  "authors": [
-    { "name": "Matthias Leuffen", "email": "m@tth.es" }
-  ],
-  "require": {
-    "php": ">7.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "KasimirJS\\": "src/"
+
+    "require": {
+        "brixlab/coder": "dev-main"
+    },
+
+    "minimum-stability": "dev",
+    "config": {
+        "preferred-install": "source",
+        "allow-plugins": {
+            "php-http/discovery": false
+        }
     }
-  },
-  "minimum-stability": "dev",
-  "require-dev": {
-  },
-  "config": {
-    "preferred-install": "source"
-  }
 }
