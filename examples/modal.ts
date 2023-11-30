@@ -1,6 +1,8 @@
 /**
  * This example demonstrates how to define and use a modal window with a custom template using the KaToolsV1 framework.
  * It shows how to create a modal class, define its HTML content, and invoke the modal with dynamic data.
+ *
+ * This is a raw example with custom Modal HTML. Want to use Boostrap modals? Use the predefined classed from https://github.com/kasimirjs/kasimirjs-kit-bootstrap (Include this link in README.md)
  */
 
 import { KaCustomModal, template } from "../src";
@@ -45,9 +47,8 @@ export class ImageDetailsModal extends KaCustomModal {
 
 // Usage example:
 // To use the modal, create an instance of ImageDetailsModal and call the show method with the media object.
-// let media = { name: 'example', extension: 'jpg', url: 'path/to/image.jpg', description: 'An example image' };
-// let modal = new ImageDetailsModal();
-// let data = await modal.show(media);
+let media = { name: 'example', extension: 'jpg', url: 'path/to/image.jpg', description: 'An example image' };
+let data = await (new ImageDetailsModal()).show(media);
 
 /**
  * Comments on the example:

@@ -108,6 +108,8 @@ modal.show({
 
 For the complete example, see [Modal Example](/examples/modal.ts).
 
+For Bootstrap modals and elements see [KasimirJS KIT Bootstrap](https://github.com/kasimirjs/kasimirjs-kit-bootstrap).
+
 ### Templating Example
 
 Shows how to define a custom element with a template:
