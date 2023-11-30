@@ -90,8 +90,36 @@ For more on debouncing, see [Using the Debouncer](/docs/usage_debouncer.md).
 
 ## Examples
 
-- [Modal Example](/examples/modal.ts): Demonstrates how to create and use a modal.
-- [Templating Example](/examples/templating.ts): Shows how to define a custom element with a template.
+### Modal Example
+
+This example demonstrates how to create and use a modal window with a custom template:
+
+```typescript
+import { ImageDetailsModal } from "./modal";
+
+let modal = new ImageDetailsModal();
+modal.show({
+  name: 'example',
+  extension: 'jpg',
+  url: 'path/to/image.jpg',
+  description: 'An example image'
+});
+```
+
+For the complete example, see [Modal Example](/examples/modal.ts).
+
+### Templating Example
+
+Shows how to define a custom element with a template:
+
+```typescript
+import { IndexPage } from "./templating";
+
+// Use the custom element in your HTML
+<index-page></index-page>
+```
+
+For the complete example, see [Templating Example](/examples/templating.ts).
 
 ## HTML Properties (`ka.*`)
 
