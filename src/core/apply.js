@@ -80,7 +80,10 @@ export function ka_apply (selector, scope, recursive=false) {
                 selector.use(r, scope)
                 continue;
 
+
             case "become":
+                // ka.become="variable" => Replace the current element with the value of the variable (must be HTMLElement)
+                // e.g. to connect a Component defined in a variable to the DOM
                 if ( ! (r instanceof HTMLElement)) {
                     console.error("ka.become is only available on HTMLElements: Used on ", r, "found in ", selector);
                     throw "ka.become called on non HTMLElement."
@@ -91,12 +94,19 @@ export function ka_apply (selector, scope, recursive=false) {
 
                 continue;
 
+
             case "content":
+                // ka.content="variable" => Add the element to the current element
                 selector.setAttribute("ka.stop", "");
                 if (typeof r === "string") {
                     selector.innerHTML = r;
                     continue;
                 }
+                if (r === null || r === false) {
+                    selector.innerHTML = "";
+                    continue;
+                }
+
                 if ( ! (r instanceof HTMLElement)) {
                     console.error("ka.content is only available on HTMLElements: Used on ", r, "found in ", selector);
                     throw "ka.content called on non HTMLElement."
