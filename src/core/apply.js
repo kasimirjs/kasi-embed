@@ -111,6 +111,9 @@ export function ka_apply (selector, scope, recursive=false) {
                     console.error("ka.content is only available on HTMLElements: Used on ", r, "found in ", selector);
                     throw "ka.content called on non HTMLElement."
                 }
+                if (selector.firstElementChild === r)
+                    continue;
+                selector.innerHTML = "";
                 selector.append(r);
                 continue;
 
