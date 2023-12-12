@@ -23,7 +23,7 @@ export class KaCustomElement extends HTMLElement {
     protected wrapper : KaCustomWrapper = null;
     private tpl : HTMLElement
 
-    public init<T extends KaScope>(scope : T) : KaScopeType | T | KaScope  {
+    public init<T extends KaScope>(scope : T, autorender : boolean = true) : KaScopeType | T | KaScope  {
 
 
         this.scope.init(scope);

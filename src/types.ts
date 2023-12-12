@@ -91,33 +91,41 @@ class KaDefaultScope implements KaScope {
     [x: string] : any
 }
 
+
+
 export function createScopeObject<T extends KaScope>(init : T = null) : T | KaScope {
     let scopeDef = new KaDefaultScope();
     scopeDef["$__scope_orig"] = scopeDef;
-    let proxy = new Proxy(scopeDef, {
-        get(target : any, prop : string, receiver: RTCRtpReceiver) {
-            if (prop.startsWith("$"))
-                return target[prop];
-            return target[prop];
-        },
-        set(target: any, p: string, value: any, receiver: any) : boolean {
-            if (target[p] === value)
-                return true; // Nothing changed
 
-            target[p] = value;
 
-            let debouncer = new Debouncer(50, 50);
-            if (p.startsWith("$") || p.startsWith("__"))
-                return true;
 
-            if (isset (scopeDef.$tpl))
-                scopeDef.$tpl.render();
-            (async() => {
-                await debouncer.debounce();
+    let setAction = (target: any, p: string, value: any, receiver: any) : boolean => {
+        if (target[p] === value)
+            return true; // Nothing changed
 
-            })()
+        target[p] = value;
+
+        let debouncer = new Debouncer(50, 50);
+        if (p.startsWith("$") || p.startsWith("__"))
             return true;
-        }
+
+        if (isset (scopeDef.$tpl))
+            scopeDef.$tpl.render();
+        (async() => {
+            await debouncer.debounce();
+
+        })()
+        return true;
+    }
+    let getAction = (target: any, prop: string, receiver: any) : any => {
+        if (prop.startsWith("$"))
+            return target[prop];
+
+        return target[prop];
+    }
+    let proxy = new Proxy(scopeDef, {
+        get: getAction,
+        set: setAction,
     });
     if (init !== null)
         scopeDef.init(init);
