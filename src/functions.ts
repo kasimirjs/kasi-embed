@@ -75,7 +75,7 @@ export async function ka_await_element(selector : string, parent : ParentNode = 
 
 
 
-export function template(template : string | HTMLTemplateElement, shadowRootConfig : ShadowRootConfig = {mode: null}) {
+export function template(template : string | HTMLTemplateElement, shadowRootConfig : ShadowRootConfig = {mode: null, stylesheets: []}) {
      return function (classOrDescriptor: any) : void {
 
          classOrDescriptor["html"] = template;

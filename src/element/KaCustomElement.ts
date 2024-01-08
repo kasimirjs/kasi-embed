@@ -62,7 +62,7 @@ export class KaCustomElement extends HTMLElement {
 
         // Adding Shadow Root
         let domRoot : any = this;
-        if (this.shadowRootConfig.mode !== null) {
+        if (this.shadowRootConfig.mode !== null && this.shadowRootConfig.mode !== undefined) {
             domRoot = this.attachShadow({mode: this.shadowRootConfig.mode});
             this.shadowRootConfig.stylesheets?.forEach((stylesheet) => {
                 ka_create_element("link", {rel: "stylesheet", href: stylesheet}, null, domRoot);
