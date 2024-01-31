@@ -8,15 +8,15 @@ import {KaCustomWrapper} from "./KaCustomWrapper";
 import {ka_create_element} from "../core/create-element";
 
 
-class ShadowRootConfig {
-    public mode : null | "open" | "closed" = null; // Default null: No shadowRoot
-    public stylesheets : string[] = [];
+export type ShadowRootConfig = {
+    mode? : null | "open" | "closed"; // Default null: No shadowRoot
+    stylesheets? : string[] | null;
 }
 
 export class KaCustomElement extends HTMLElement {
     public __ka_stop_render : true = true; // Stop rendering if this element is reached
 
-    protected shadowRootConfig : ShadowRootConfig = new ShadowRootConfig(); // Activate shadowRoot
+    protected shadowRootConfig : ShadowRootConfig = {}; // Activate shadowRoot
     private html : string = "Undefined Template";
     protected readonly scope : KaScope = createScopeObject();
     protected tplPrototype : HTMLElement = null;
@@ -39,6 +39,7 @@ export class KaCustomElement extends HTMLElement {
         this.scope.$parent = scope;
     }
 
+    // @ts-nocheck
     async connectedCallback() {
         if ( ! this.scope.isInitialized())
             this.init({});
@@ -46,7 +47,10 @@ export class KaCustomElement extends HTMLElement {
         // Check template set by customElement annotation
         // Cannot be done in constructor because of async behavior
         if (isset (this.constructor["html"])) {
-            this.html = this.constructor["html"];
+            this.html = this.constructor["html"] as string;
+        }
+        if (isset(this.constructor["shadowRootConfig"])) {
+            this.shadowRootConfig = this.constructor["shadowRootConfig"] as ShadowRootConfig;
         }
 
         if (this.tplPrototype === null) {
@@ -58,9 +62,9 @@ export class KaCustomElement extends HTMLElement {
 
         // Adding Shadow Root
         let domRoot : any = this;
-        if (this.shadowRootConfig.mode !== null) {
+        if (this.shadowRootConfig.mode !== null && this.shadowRootConfig.mode !== undefined) {
             domRoot = this.attachShadow({mode: this.shadowRootConfig.mode});
-            this.shadowRootConfig.stylesheets.forEach((stylesheet) => {
+            this.shadowRootConfig.stylesheets?.forEach((stylesheet) => {
                 ka_create_element("link", {rel: "stylesheet", href: stylesheet}, null, domRoot);
             });
         }

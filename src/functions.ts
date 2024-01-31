@@ -9,6 +9,7 @@ import {ka_debounce} from "./core/debounce";
 import {ka_templatify} from "./tpl/templatify";
 import {ka_html} from "./ce/html";
 import {ka_sleep} from "./core/sleep";
+import {ShadowRootConfig} from "./element/KaCustomElement";
 
 
 /**
@@ -31,6 +32,7 @@ export function isUndefined(input : any) : boolean {
  *
  * @param tagName
  */
+// @ts-nocheck
 export function customElement(tagName : string|null = null, template : string = null) {
     return function (classOrDescriptor: any) : void {
         if (template !== null) {
@@ -58,7 +60,7 @@ export function customElement(tagName : string|null = null, template : string = 
     }
 }
 
-
+// @ts-nocheck
 export async function ka_await_element(selector : string, parent : ParentNode = document,  maxWait : number = 2000) : Promise<HTMLElement> {
     let elem = parent.querySelector(selector);
     let rounds = 1;
@@ -73,11 +75,11 @@ export async function ka_await_element(selector : string, parent : ParentNode = 
 
 
 
-export function template(template : string | HTMLTemplateElement) {
+export function template(template : string | HTMLTemplateElement, shadowRootConfig : ShadowRootConfig = {mode: null, stylesheets: []}) {
      return function (classOrDescriptor: any) : void {
 
          classOrDescriptor["html"] = template;
-
+         classOrDescriptor["shadowRootConfig"] = shadowRootConfig;
          return classOrDescriptor;
      }
 }
