@@ -7,7 +7,8 @@
 let html = `
 <div class="container">
     <h2>Pages:</h2>
-    <div ka.for="let page of pages" class="page-details">
+    <div ka.for="let page of pages indexby pageIndex" class="page-details">
+        <div>[[pageIndex+1]]:</div>
         <details ka.attr.open="openstate[page.pid] ?? false">
             <summary ka.on.click="openstate[page.pid] = !openstate[page.pid]">Page ID: [[ page.pid ]]</summary>
             <div>

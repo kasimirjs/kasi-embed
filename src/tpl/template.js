@@ -48,7 +48,7 @@ export class KaTemplate {
 
     _renderFor($scope, stmt) {
         //console.log("kachilds", this.template.__kachilds);
-        let matches = stmt.match(/^(let)?\s*(?<target>.+)\s+(?<type>of|in|repeat)\s+(?<select>.+)$/);
+        let matches = stmt.match(/^(let)?\s*(?<target>.+)\s+(?<type>of|in|repeat)\s+(?<select>.+?)\s*(indexby\s*(?<indexby>.+)|)$/);
         if (matches === null) {
             this._error(`Can't parse ka.for='${stmt}'`);
         }
@@ -60,10 +60,18 @@ export class KaTemplate {
             selectVal = new Array(selectVal).fill(null);
         }
 
+        let indexBy = null;
+        if (matches.groups.indexby) {
+            indexBy = matches.groups.indexby;
+        }
+
         let eIndex = 0;
         for (let index in selectVal) {
             let curScope = {$scope: $scope, ...$scope};
             curScope[matches.groups.target] = index;
+
+            if (indexBy !== null)
+                curScope[indexBy] = eIndex;
 
             if (matches.groups.type === "of")
                 curScope[matches.groups.target] = selectVal[index];
