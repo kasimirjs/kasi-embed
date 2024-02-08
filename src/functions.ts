@@ -148,3 +148,16 @@ export function timeAgo(date: Date): string {
     }
     return Math.floor(seconds) + " seconds ago";
 }
+
+
+export function timeToNow(date: Date): string {
+    const now = new Date();
+    let seconds = Math.floor((date.getTime() - now.getTime()) / 1000);
+
+    // use timeao if date is in the past or timeTo if date is in the future
+    if (seconds < 0) {
+        return timeAgo(date);
+    } else {
+        return timeTo(date);
+    }
+}
