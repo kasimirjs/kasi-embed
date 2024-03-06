@@ -21,7 +21,7 @@ export class KaCustomElement extends HTMLElement {
     protected readonly scope : KaScope = createScopeObject();
     protected tplPrototype : HTMLElement = null;
     protected wrapper : KaCustomWrapper = null;
-    private tpl : HTMLElement
+    private tpl : HTMLElement = null;
 
     public init<T extends KaScope>(scope : T, autorender : boolean = true) : KaScopeType | T | KaScope  {
 
@@ -57,6 +57,11 @@ export class KaCustomElement extends HTMLElement {
             this.tplPrototype = ka_templatify(ka_html(this.html));
         }
 
+        if (this.tpl !== null) {
+            // Already rendered (reconnected element)
+            return;
+
+        }
         this.tpl = this.tplPrototype.cloneNode(true) as HTMLElement;
         this.scope.$tpl = new KaTemplate(this.tpl);
 
