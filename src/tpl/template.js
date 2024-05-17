@@ -46,17 +46,17 @@ export class KaTemplate {
 
     }
 
-    _renderFor($scope, stmt) {
+    _renderFor($scope, forStmt, forIfStmt) {
         //console.log("kachilds", this.template.__kachilds);
-        let matches = stmt.match(/^(let)?\s*(?<target>.+)\s+(?<type>of|in|repeat)\s+(?<select>.+?)\s*(indexby\s*(?<indexby>.+)|)$/);
+        let matches = forStmt.match(/^(let)?\s*(?<target>.+)\s+(?<type>of|in|repeat)\s+(?<select>.+?)\s*(indexby\s*(?<indexby>.+)|)$/);
         if (matches === null) {
-            this._error(`Can't parse ka.for='${stmt}'`);
+            this._error(`Can't parse ka.for='${forStmt}'`);
         }
         let selectVal = ka_eval(matches.groups.select, $scope, this.template);
 
         if (matches.groups.type === "repeat") {
             if (typeof selectVal !== "number")
-                this._error(`Error ka.for='${stmt}': Selected val must be number in repeat loop`);
+                this._error(`Error ka.for='${forStmt}': Selected val must be number in repeat loop`);
             selectVal = new Array(selectVal).fill(null);
         }
 
@@ -80,6 +80,17 @@ export class KaTemplate {
                 //console.log("append", eIndex, this.template.__kachilds.length);
                 this._appendTemplate();
             }
+
+            // Skip element if ka.for-if statement is not true
+            if (forIfStmt !== null) {
+                if (! ka_eval(forIfStmt, curScope, this.template) ) {
+                    console.log("skip line");
+                    continue; // Skip this node
+                }
+            }
+
+
+
             this._maintain(curScope, this.template.__kachilds[eIndex], eIndex);
             eIndex++;
         }
@@ -156,7 +167,7 @@ export class KaTemplate {
         this.__renderCount++;
 
         if (this.template.hasAttribute("ka.for")) {
-            this._renderFor($scope, this.template.getAttribute("ka.for"));
+            this._renderFor($scope, this.template.getAttribute("ka.for"), this.template.getAttribute("ka.for-if"));
         } else if (this.template.hasAttribute("ka.if")) {
             this._renderIf($scope, this.template.getAttribute("ka.if"));
         } else {

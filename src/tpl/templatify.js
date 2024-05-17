@@ -77,6 +77,9 @@ export function ka_templatify (elem, returnMode=true) {
         for (let attrName of el.getAttributeNames()) {
             if (attrName === "ka.for") {
                 tpl = wrapElem(el, "ka.for", el.getAttribute("ka.for"));
+                let forIfStmt = el.getAttribute("ka.for-if");
+                if (forIfStmt !== null)
+                    tpl.setAttribute("ka.for-if", forIfStmt);
                 ka_templatify(tpl, false);
                 break;
             }
